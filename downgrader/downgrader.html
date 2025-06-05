@@ -1,75 +1,466 @@
 <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ByteForge - Forge Your Power</title>
+    <link rel="icon" href="/byteforge-icon.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Base styles */
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #0d0a1b; /* Dark base */
+            color: #ffffff;
+            overflow-x: hidden;
+        }
 
-<!--
-    Copyright (C) 2024-2024 Latte Softworks <latte.to> | MIT License
--->
+        /* Gradient background mimicking the React component's `bg-gradient-to-br from-black via-red-950/30 to-purple-950/40` */
+        .page-background {
+            background: linear-gradient(to bottom right, #000000, rgba(128, 0, 0, 0.1), rgba(64, 0, 64, 0.2));
+            min-height: 100vh;
+        }
 
-<html lang=”en”>
-    <head>
-        <title>ByteForge-Downgrader</title>
-        <link rel="icon" href="favicon.svg">
+        /* Animated background elements */
+        .animated-blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px); /* Simulates Tailwind's blur-3xl */
+            opacity: 0.3;
+            animation: pulse 4s infinite alternate;
+            z-index: 0;
+        }
 
-        <style>
-            <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+        .blob-1 {
+            top: -100px;
+            right: -100px;
+            width: 300px;
+            height: 300px;
+            background-color: #e04a7a; /* Reddish pink */
+            animation-delay: 0s;
+        }
+        .blob-2 {
+            bottom: -100px;
+            left: -100px;
+            width: 350px;
+            height: 350px;
+            background-color: #7a4ae0; /* Purplish blue */
+            animation-delay: 1.5s;
+        }
+        .blob-3 {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            height: 400px;
+            background-color: #e04ae0; /* Pinkish purple */
+            animation-delay: 3s;
+        }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Inter', sans-serif;
-    }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.2; }
+            100% { transform: scale(1.05); opacity: 0.4; }
+        }
 
-    body {
-      background-color: #0f0f0f;
-      color: #f1f1f1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 40px 20px;
-    }
+        /* General sections */
+        section {
+            padding: 80px 24px;
+            position: relative;
+            z-index: 1; /* Ensure content is above animated background */
+        }
+        .max-w-7xl { max-width: 1280px; margin-left: auto; margin-right: auto; }
+        .max-w-6xl { max-width: 1152px; margin-left: auto; margin-right: auto; }
+        .max-w-4xl { max-width: 896px; margin-left: auto; margin-right: auto; }
+        .max-w-2xl { max-width: 672px; margin-left: auto; margin-right: auto; }
+        .text-center { text-align: center; }
 
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 20px;
-      color: #ffffff;
-    }
+        /* Neon gradient text (using webkit for clip-text) */
+        .neon-text {
+            background-image: linear-gradient(to right, #FF4081, #7C4DFF, #FFC107); /* Pink, Purple, Amber for vibrant neon */
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-family: 'Orbitron', sans-serif;
+        }
 
-    p {
-      font-size: 1.1rem;
-      color: #b3b3b3;
-      text-align: center;
-      max-width: 700px;
-      margin-bottom: 30px;
-    }
+        .neon-text-title {
+            background-image: linear-gradient(to right, #e04a7a, #7a4ae0, #e04ae0); /* Custom neon gradient */
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-family: 'Orbitron', sans-serif;
+            animation: pulse-glow 2s infinite alternate;
+        }
+        @keyframes pulse-glow {
+            0% { text-shadow: 0 0 5px rgba(255, 64, 129, 0.4), 0 0 10px rgba(124, 77, 255, 0.4); }
+            100% { text-shadow: 0 0 10px rgba(255, 64, 129, 0.7), 0 0 20px rgba(124, 77, 255, 0.7); }
+        }
 
-    .button {
-      padding: 12px 30px;
-      background: linear-gradient(135deg, #3b82f6, #6366f1);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: background 0.3s ease;
-      text-decoration: none;
-    }
+        /* Glassmorphism card/element styles */
+        .glass-card {
+            background-color: rgba(0, 0, 0, 0.2); /* Slightly darker background */
+            backdrop-filter: blur(10px); /* Blur effect */
+            border-radius: 16px; /* Rounded corners */
+            border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle white border */
+            transition: all 0.3s ease-in-out; /* Smooth transitions */
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        }
+        .glass-card:hover {
+            border-color: rgba(124, 77, 255, 0.4); /* Glow on hover */
+            box-shadow: 0 0 20px rgba(124, 77, 255, 0.3); /* Enhanced shadow/glow */
+            transform: translateY(-2px);
+        }
 
-    .button:hover {
-      background: linear-gradient(135deg, #2563eb, #4f46e5);
-    }
+        /* Buttons */
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 48px;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 16px; /* More rounded */
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            color: #ffffff;
+            background: linear-gradient(45deg, #7C4DFF, #FF4081); /* Blue-purple to pink gradient */
+            box-shadow: 0 8px 20px rgba(124, 77, 255, 0.4);
+            transition: all 0.3s ease-in-out;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 30px rgba(124, 77, 255, 0.6);
+            background: linear-gradient(45deg, #FF4081, #7C4DFF); /* Reverse gradient or intensify */
+        }
 
-    .footer {
-      margin-top: 60px;
-      font-size: 0.9rem;
-      color: #777;
-    }
-  </style>
-        </style>
-    </head>
+        /* Icons (Lucide-react placeholders) */
+        .icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 12px;
+            color: #FF4081; /* Pink accent */
+        }
+        .icon-lg {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 16px;
+            color: #7C4DFF; /* Purple accent */
+        }
+        .icon-small {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+            color: #FFC107; /* Amber accent */
+        }
 
-    <body>
-        <noscript><p>&#40;This site doesn't work without JavaScript Enabled!&#41;</p></noscript>
+        /* Layout grids */
+        .grid-3-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 32px; }
+        .grid-2-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px; }
+
+        /* Header Navigation */
+        header {
+            padding: 24px;
+            position: relative;
+            z-index: 10;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05); /* Subtle border */
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1280px;
+            margin: auto;
+        }
+        nav .logo {
+            display: flex;
+            align-items: center;
+            font-size: 28px;
+            font-weight: bold;
+            font-family: 'Orbitron', sans-serif;
+            color: #ffffff;
+            letter-spacing: 1px;
+        }
+        nav .logo img {
+            width: 48px;
+            height: 48px;
+            margin-right: 12px;
+            filter: drop-shadow(0 0 5px #7C4DFF); /* Icon glow */
+        }
+        nav .nav-links a {
+            color: #b0b0b0;
+            text-decoration: none;
+            font-weight: 500;
+            margin-left: 32px;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+        nav .nav-links a:hover {
+            color: #FF4081; /* Pink hover */
+            text-shadow: 0 0 8px rgba(255, 64, 129, 0.6);
+        }
+        nav .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: #7C4DFF; /* Purple underline */
+            transition: width 0.3s ease;
+        }
+        nav .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            padding-top: 100px;
+            padding-bottom: 100px;
+        }
+        .hero-section h1 {
+            font-size: 80px;
+            margin-bottom: 24px;
+            line-height: 1;
+            text-transform: uppercase;
+        }
+        .hero-section p {
+            font-size: 24px;
+            margin-bottom: 40px;
+            line-height: 1.6;
+            color: #c0c0c0;
+        }
+        .feature-highlights {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+        .highlight-item {
+            display: flex;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.4);
+            border-radius: 9999px; /* Fully rounded */
+            padding: 8px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 14px;
+            color: #e0e0e0;
+            backdrop-filter: blur(5px);
+        }
+        .highlight-item .icon-small { margin-right: 8px; }
+        .highlight-item:nth-child(1) .icon-small { color: #FF4081; } /* Pink */
+        .highlight-item:nth-child(2) .icon-small { color: #7C4DFF; } /* Purple */
+        .highlight-item:nth-child(3) .icon-small { color: #FFC107; } /* Amber */
+
+        /* Feature Cards */
+        .feature-card {
+            padding: 32px;
+            text-align: center;
+        }
+        .feature-card h3 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 16px;
+            color: #ffffff;
+            font-family: 'Orbitron', sans-serif;
+        }
+        .feature-card p {
+            color: #b0b0b0;
+            line-height: 1.7;
+        }
+        .feature-card .icon-lg {
+            margin-bottom: 24px;
+        }
+
+        /* Stats */
+        .stat-item {
+            background-color: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+            border-radius: 16px;
+            padding: 32px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .stat-item .icon {
+            margin-bottom: 8px;
+            color: #FF4081; /* Pink icon */
+        }
+        .stat-item h3 {
+            font-size: 32px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 4px;
+            font-family: 'Orbitron', sans-serif;
+        }
+        .stat-item p {
+            color: #a0a0a0;
+        }
+
+        /* FAQ Section */
+        .faq-item {
+            margin-bottom: 16px;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(8px);
+            transition: all 0.3s ease-in-out;
+        }
+        .faq-item:hover {
+            border-color: rgba(124, 77, 255, 0.4);
+            box-shadow: 0 0 15px rgba(124, 77, 255, 0.3);
+        }
+        .faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px;
+            cursor: pointer;
+            user-select: none;
+            font-weight: 600;
+            color: #ffffff;
+        }
+        .faq-question h3 { margin: 0; font-size: 18px; }
+        .faq-question .arrow {
+            width: 20px;
+            height: 20px;
+            color: #b0b0b0;
+            transition: transform 0.3s ease;
+        }
+        .faq-question.active .arrow {
+            transform: rotate(180deg);
+            color: #FF4081; /* Active color */
+        }
+        .faq-answer {
+            padding: 0 24px 24px;
+            color: #c0c0c0;
+            line-height: 1.7;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, padding 0.4s ease-out;
+        }
+        .faq-answer.open {
+            max-height: 200px; /* Or a value large enough for all answers */
+            padding-top: 16px;
+        }
+
+        /* Footer */
+        footer {
+            padding: 48px 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        footer .logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 24px;
+            font-size: 24px;
+            font-weight: bold;
+            font-family: 'Orbitron', sans-serif;
+        }
+        footer .logo img {
+            width: 40px;
+            height: 40px;
+            margin-right: 12px;
+            filter: drop-shadow(0 0 3px #e04a7a);
+        }
+        footer p {
+            color: #a0a0a0;
+            margin-bottom: 32px;
+            font-size: 15px;
+        }
+        footer .footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 24px;
+            font-size: 14px;
+        }
+        footer .footer-links a {
+            color: #b0b0b0;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        footer .footer-links a:hover {
+            color: #7C4DFF; /* Purple hover */
+            text-shadow: 0 0 5px rgba(124, 77, 255, 0.5);
+        }
+        footer .copyright {
+            margin-top: 40px;
+            font-size: 12px;
+            color: #808080;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 56px;
+            }
+            .hero-section p {
+                font-size: 18px;
+            }
+            nav .nav-links {
+                display: none; /* Hide for mobile for simplicity, could be a hamburger menu */
+            }
+            .grid-3-cols, .grid-2-cols {
+                grid-template-columns: 1fr; /* Stack columns on smaller screens */
+            }
+            .feature-card, .testimonial-card, .stat-item {
+                margin-left: 16px;
+                margin-right: 16px;
+            }
+            .screenshot-item {
+                margin: 0 16px;
+            }
+            .faq-item {
+                 margin: 0 16px;
+            }
+            .btn-primary {
+                padding: 18px 32px;
+                font-size: 16px;
+            }
+            .header nav {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+
+        /* Basic SVG Icon styles (replacing Lucide-react) */
+        .svg-icon {
+            display: inline-block;
+            vertical-align: middle;
+            fill: currentColor; /* Use current text color for icons */
+        }
+    </style>
+</head>
+<body>
+    <div class="page-background">
+        <div class="animated-blob blob-1"></div>
+        <div class="animated-blob blob-2"></div>
+        <div class="animated-blob blob-3"></div>
+
+        <header>
+            <nav>
+                <div class="logo">
+                    <img src="/byteforge-icon.png" alt="ByteForge Icon">
+                    <div class="neon-text-title">ByteForge</div>
+                </div>
+                <div class="nav-links">
+                    <a href="#features">Features</a>
+                    <a href="#faq">FAQ</a>
+                    <a href="/downgrader/downgrader.html">Downgrader</a>
+                </div>
+            </nav>
+        </header>
+
+        <section class="hero-section text-center">
+             <noscript><p>&#40;This site doesn't work without JavaScript Enabled!&#41;</p></noscript>
 
         <div hidden id="downloadFormDiv">
             <form id="downloadForm" target="_blank" action="">
@@ -102,8 +493,9 @@
 
         <output id="consoleText"></output>
         <br>
-    </body>
-
+        </section>
+</body>
     <script src="js/jszip.min.js"></script>
     <script src="js/rdd.js"></script>
 </html>
+
