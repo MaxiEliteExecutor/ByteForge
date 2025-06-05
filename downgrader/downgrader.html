@@ -70,18 +70,19 @@
             padding: 16px 32px;
             font-size: 18px;
             font-weight: bold;
-            border-radius: 8px;
+            border-radius: 12px;
             border: none;
             cursor: pointer;
+            text-decoration: none;
             color: #ffffff;
-            background: linear-gradient(45deg, #7C4DFF, #FF4080);
-            box-shadow: 0 8px 20px rgba(44, 77, 255, 0.4);
+            background: linear-gradient(45deg, #7C4DFF, #FF4081);
+            box-shadow: 0 8px 20px rgba(124, 77, 255, 0.4);
             transition: all 0.3s ease-in-out;
         }
         .btn-primary:hover {
             transform: scale(1.05);
-            box-shadow: 0 12px 30px rgba(44, 77, 255, 0.6);
-            background: linear-gradient(45deg, #FF4080, #7C4DFF);
+            box-shadow: 0 12px 30px rgba(124, 77, 255, 0.6);
+            background: linear-gradient(45deg, #FF4081, #7C4DFF);
         }
         header {
             padding: 24px;
@@ -119,7 +120,7 @@
             position: relative;
         }
         nav .nav-links a:hover {
-            color: #FF4080;
+            color: #FF4081;
             text-shadow: 0 0 8px rgba(255, 64, 129, 0.6);
         }
         nav .nav-links a::after {
@@ -157,7 +158,7 @@
         }
         .download-form {
             max-width: 600px;
-            margin: 0 auto;
+            margin: 0;
         }
         .download-form label {
             display: block;
@@ -184,6 +185,23 @@
         .download-form .btn-primary {
             margin: 8px 8px 0 0;
         }
+        .layout-container {
+            display: flex;
+            justify-content: space-between;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        .left-content {
+            flex: 1;
+            max-width: 60%;
+            padding-right: 24px;
+        }
+        .right-output {
+            flex: 1;
+            max-width: 40%;
+            position: relative;
+        }
         .output-console {
             margin-top: 24px;
             padding: 16px;
@@ -199,8 +217,8 @@
             display: block;
             position: fixed;
             top: 0;
-            left: 0;
-            width: 100vw;
+            right: 0;
+            width: 40vw; /* Right side width when not full-screen */
             height: 100vh;
             z-index: 50;
             background-color: rgba(0, 0, 0, 0.8);
@@ -209,8 +227,12 @@
             font-size: 24px;
             overflow-y: auto;
         }
+        .output-console.visible.fullscreen {
+            width: 100vw; /* Full-screen when needed */
+            left: 0;
+        }
         .output-console a {
-            color: #FF4080;
+            color: #FF4081;
             text-decoration: underline;
         }
         .output-console a:hover {
@@ -220,7 +242,7 @@
             background-color: rgba(255, 64, 129, 0.2);
             padding: 16px;
             border-radius: 8px;
-            color: #FF4080;
+            color: #FF4081;
             margin-bottom: 24px;
         }
         footer {
@@ -284,7 +306,24 @@
             .download-form input[type="text"],
             .download-form input[type="number"] { font-size: 14px; }
             .btn-primary { padding: 12px 24px; font-size: 16px; }
-            .output-console.visible { font-size: 18px; padding: 20px; }
+            .layout-container {
+                flex-direction: column;
+                padding: 0;
+            }
+            .left-content, .right-output {
+                max-width: 100%;
+                padding: 0;
+            }
+            .output-console.visible {
+                width: 100vw;
+                right: auto;
+                font-size: 18px;
+                padding: 20px;
+            }
+            .output-console.visible.fullscreen {
+                width: 100vw;
+                left: 0;
+            }
         }
         .svg-icon { display: inline-block; vertical-align: middle; fill: currentColor; }
     </style>
@@ -314,43 +353,49 @@
                 <noscript>
                     <p class="noscript-message">This site requires JavaScript to function properly. Please enable JavaScript in your browser.</p>
                 </noscript>
-                <h1 class="neon-text-title">Forge Your Power with ByteForge</h1>
-                <p>Unlock the full potential of your applications with our cutting-edge downgrader tool. Customize, compress, and conquer.</p>
-                <div class="glass-card download-form">
-                    <form id="downloadForm" action="">
-                        <label for="binaryType">Binary Type:</label>
-                        <select id="binaryType" name="binaryType" aria-describedby="binaryTypeHelp">
-                            <option value="WindowsPlayer">Windows Player</option>
-                            <option value="WindowsStudio64">Windows Studio 64</option>
-                            <option value="MacPlayer">Mac Player</option>
-                            <option value="MacStudio">Mac Studio</option>
-                        </select>
-                        <small id="binaryTypeHelp" class="form-text">Select the type of binary you want to download.</small>
+                <div class="layout-container">
+                    <div class="left-content">
+                        <h1 class="neon-text-title">Forge Your Power with ByteForge</h1>
+                        <p>Unlock the full potential of your applications with our cutting-edge downgrader tool. Customize, compress, and conquer.</p>
+                        <div class="glass-card download-form">
+                            <form id="downloadForm" target="_blank" action="">
+                                <label for="binaryType">Binary Type:</label>
+                                <select id="binaryType" name="binaryType" aria-describedby="binaryTypeHelp">
+                                    <option value="WindowsPlayer">Windows Player</option>
+                                    <option value="WindowsStudio64">Windows Studio 64</option>
+                                    <option value="MacPlayer">Mac Player</option>
+                                    <option value="MacStudio">Mac Studio</option>
+                                </select>
+                                <small id="binaryTypeHelp" class="form-text">Select the type of binary you want to download.</small>
 
-                        <label for="channel">Channel Name:</label>
-                        <input id="channel" name="channel" type="text" placeholder="LIVE" aria-describedby="channelHelp">
-                        <small id="channelHelp" class="form-text">Enter the channel name (e.g., LIVE).</small>
+                                <label for="channel">Channel Name:</label>
+                                <input id="channel" name="channel" type="text" placeholder="LIVE" aria-describedby="channelHelp">
+                                <small id="channelHelp" class="form-text">Enter the channel name (e.g., LIVE).</small>
 
-                        <label for="version">Version Hash:</label>
-                        <input id="version" name="version" type="text" placeholder="Optional" aria-describedby="versionHelp">
-                        <small id="versionHelp" class="form-text">Provide a version hash if specific version is needed.</small>
+                                <label for="version">Version Hash:</label>
+                                <input id="version" name="version" type="text" placeholder="Optional" aria-describedby="versionHelp">
+                                <small id="versionHelp" class="form-text">Provide a version hash if specific version is needed.</small>
 
-                        <label for="compressZip">
-                            <input id="compressZip" name="compressZip" type="checkbox" aria-describedby="compressZipHelp">
-                            Compress Output Zip
-                        </label>
-                        <small id="compressZipHelp" class="form-text">Check to compress the output as a ZIP file.</small>
+                                <label for="compressZip">
+                                    <input id="compressZip" name="compressZip" type="checkbox" aria-describedby="compressZipHelp">
+                                    Compress Output Zip
+                                </label>
+                                <small id="compressZipHelp" class="form-text">Check to compress the output as a ZIP file.</small>
 
-                        <label for="compressionLevel">Zip Compression Level (1-9):</label>
-                        <input id="compressionLevel" name="compressionLevel" type="number" min="1" max="9" value="5" aria-describedby="compressionLevelHelp">
-                        <small id="compressionLevelHelp" class="form-text">Set compression level (1 = low, 9 = high).</small>
+                                <label for="compressionLevel">Zip Compression Level (1-9):</label>
+                                <input id="compressionLevel" name="compressionLevel" type="number" min="1" max="9" value="5" aria-describedby="compressionLevelHelp">
+                                <small id="compressionLevelHelp" class="form-text">Set compression level (1 = low, 9 = high).</small>
 
-                        <div>
-                            <button type="button" id="downloadButton" class="btn-primary">Download</button>
-                            <button type="button" id="copyLinkButton" class="btn-primary">Copy Permanent Link</button>
+                                <div>
+                                    <button type="button" class="btn-primary" onclick="downloadFromForm()">Download</button>
+                                    <button type="button" class="btn-primary" onclick="copyPermLink()">Copy Permanent Link</button>
+                                </div>
+                            </form>
                         </div>
-                    </form>
-                    <output id="consoleText" class="output-console" aria-live="polite"></output>
+                    </div>
+                    <div class="right-output">
+                        <output id="consoleText" class="output-console" aria-live="polite"></output>
+                    </div>
                 </div>
             </div>
         </section>
