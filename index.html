@@ -1,1 +1,79 @@
-<h1>HI</h1>
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-950 text-white">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ByteForge Injector</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <style>
+    body {
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
+    }
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+    }
+
+    .neon-button {
+      box-shadow: 0 0 20px #8a2be2, 0 0 40px #8a2be2;
+      transition: all 0.3s ease;
+    }
+
+    .neon-button:hover {
+      box-shadow: 0 0 30px #a95dff, 0 0 60px #a95dff;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center px-4">
+
+  <!-- Hero Section -->
+  <section class="text-center pt-20 animate__animated animate__fadeIn">
+    <div class="glass p-10 rounded-3xl max-w-2xl mx-auto">
+      <h1 class="text-5xl font-extrabold text-purple-400 mb-4">MaxiElite Injector</h1>
+      <p class="text-gray-300 text-lg mb-6">
+        A sleek, lightning-fast Roblox Lua injector built for stealth and performance.
+      </p>
+      <a href="https://github.com/MaxiEliteVscripts/MaxiEliteinjector/raw/refs/heads/main/MaxiElite%5BBeta%5D.zip"
+         class="neon-button bg-purple-700 text-white font-semibold py-3 px-8 rounded-full text-lg">
+        🚀 Download Now
+      </a>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="mt-32 max-w-4xl w-full text-center animate__animated animate__fadeInUp">
+    <h2 class="text-3xl font-bold mb-10 text-white">✨ Features</h2>
+    <div class="grid sm:grid-cols-3 gap-6 text-left text-gray-200">
+      <div class="glass p-6 rounded-xl">
+        <h3 class="text-xl font-semibold text-purple-300 mb-2">⚡ Fast Injection</h3>
+        <p>Inject scripts in milliseconds using our optimized native layer.</p>
+      </div>
+      <div class="glass p-6 rounded-xl">
+        <h3 class="text-xl font-semibold text-purple-300 mb-2">🛡️ Undetected</h3>
+        <p>Stay safe with built-in anti-detection and constant stealth updates.</p>
+      </div>
+      <div class="glass p-6 rounded-xl">
+        <h3 class="text-xl font-semibold text-purple-300 mb-2">🔄 Auto Updates</h3>
+        <p>Never worry about patches. We handle updates automatically.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="mt-32 mb-10 text-gray-400 text-sm text-center animate__animated animate__fadeInUp">
+    © 2025 ByteForge Injector. All rights reserved.
+  </footer>
+
+</body>
+</html>
