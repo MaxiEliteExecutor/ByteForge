@@ -82,6 +82,8 @@ const binaryTypes = {
 const urlParams = new URLSearchParams(window.location.search);
 const consoleText = document.getElementById("consoleText");
 const downloadForm = document.getElementById("downloadForm");
+const heroSection = document.querySelector(".hero-section");
+const footer = document.querySelector("footer");
 
 function getPermLink() {
     const channelName = downloadForm.channel.value.trim() || downloadForm.channel.placeholder;
@@ -124,18 +126,18 @@ function scrollToBottom() {
 
 function escHtml(originalText) {
     return originalText
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#39;")
-        .replace(/ /g, "&nbsp;")
+        .replace(/&/g, "&")
+        .replace(/</g, "<")
+        .replace(/>/g, ">")
+        .replace(/"/g, """)
+        .replace(/'/g, "'")
+        .replace(/ /g, " ")
         .replace(/\n/g, "<br>");
 }
 
 function log(msg = "", end = "\n", autoScroll = true) {
     if (consoleText) {
-        consoleText.classList.add("visible"); // Show output when logging
+        consoleText.classList.add("visible"); // Show output in full-screen
         consoleText.innerHTML += escHtml(msg) + end;
         if (autoScroll) {
             scrollToBottom();
@@ -143,6 +145,16 @@ function log(msg = "", end = "\n", autoScroll = true) {
     } else {
         console.warn("Console output element not found:", msg);
     }
+}
+
+function hideContentDuringDownload() {
+    if (heroSection) heroSection.classList.add("hidden");
+    if (footer) footer.classList.add("hidden");
+}
+
+function showContentAfterDownload() {
+    if (heroSection) heroSection.classList.remove("hidden");
+    if (footer) footer.classList.remove("hidden");
 }
 
 function downloadBinaryFile(fileName, data, mimeType = "application/zip") {
@@ -158,6 +170,7 @@ function downloadBinaryFile(fileName, data, mimeType = "application/zip") {
     URL.revokeObjectURL(link.href);
 
     log(`[+] Downloaded ${fileName}`);
+    showContentAfterDownload(); // Restore content after download
 }
 
 function requestBinary(url, callback) {
@@ -169,12 +182,14 @@ function requestBinary(url, callback) {
         const statusCode = httpRequest.status;
         if (statusCode !== 200) {
             log(`[!] Binary request error (${statusCode}) @ ${url}`);
+            showContentAfterDownload(); // Restore content on error
             return;
         }
 
         const arrayBuffer = httpRequest.response;
         if (!arrayBuffer) {
             log(`[!] Binary request error (${statusCode}) @ ${url} - Failed to get binary ArrayBuffer`);
+            showContentAfterDownload(); // Restore content on error
             return;
         }
 
@@ -183,6 +198,7 @@ function requestBinary(url, callback) {
 
     httpRequest.onerror = function (e) {
         log(`[!] Binary request error @ ${url} - ${e}`);
+        showContentAfterDownload(); // Restore content on error
     };
 
     httpRequest.send();
@@ -290,6 +306,7 @@ function main() {
     }
 
     async function fetchManifest() {
+        hideContentDuringDownload(); // Hide hero section and footer
         versionPath = `${channelPath}${blobDir}${version}-`;
 
         if (binaryType === "MacPlayer" || binaryType === "MacStudio") {
@@ -314,11 +331,13 @@ function main() {
 
                 if (!resp.ok) {
                     log(`[!] Failed to fetch rbxPkgManifest: (status: ${resp.status}, err: ${(await resp.text()) || "<failed to get response from server>"})`);
+                    showContentAfterDownload();
                     return;
                 }
                 manifestBody = await resp.text();
             } catch (err) {
                 log(`[!] Error fetching rbxPkgManifest: ${err}`);
+                showContentAfterDownload();
                 return;
             }
             downloadZipsFromManifest(manifestBody);
@@ -329,16 +348,19 @@ function main() {
         const pkgManifestLines = manifestBody.split("\n").map(line => line.trim());
         if (pkgManifestLines[0] !== "v0") {
             log(`[!] Error: Unknown rbxPkgManifest format version; expected "v0", got "${pkgManifestLines[0]}"`);
+            showContentAfterDownload();
             return;
         }
 
         binExtractRoots = pkgManifestLines.includes("RobloxApp.zip") ? extractRoots.player : extractRoots.studio;
         if (pkgManifestLines.includes("RobloxApp.zip") && binaryType === "WindowsStudio64") {
             log(`[!] Error: BinaryType \`${binaryType}\` given, but "RobloxApp.zip" found in manifest!`);
+            showContentAfterDownload();
             return;
         }
         if (pkgManifestLines.includes("RobloxStudio.zip") && binaryType === "WindowsPlayer") {
             log(`[!] Error: BinaryType \`${binaryType}\` given, but "RobloxStudio.zip" found in manifest!`);
+            showContentAfterDownload();
             return;
         }
 
@@ -385,6 +407,7 @@ function main() {
                 downloadBinaryFile(outputFileName, outputZipData);
             }).catch(err => {
                 log(`[!] Error generating zip: ${err}`);
+                showContentAfterDownload();
             });
         }
 
@@ -423,6 +446,7 @@ function main() {
             } catch (err) {
                 log(`[!] Error extracting "${packageName}": ${err}`);
                 doneCallback();
+                showContentAfterDownload();
             }
         });
     }
