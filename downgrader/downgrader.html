@@ -11,22 +11,22 @@
         body {
             margin: 0;
             font-family: 'Roboto', sans-serif;
-            background-color: #0d0a1b; /* Dark base */
+            background-color: #0d0a1b;
             color: #ffffff;
             overflow-x: hidden;
         }
 
-        /* Gradient background mimicking the React component's `bg-gradient-to-br from-black via-red-950/30 to-purple-950/40` */
         .page-background {
             background: linear-gradient(to bottom right, #000000, rgba(128, 0, 0, 0.1), rgba(64, 0, 64, 0.2));
             min-height: 100vh;
+            position: relative;
         }
 
         /* Animated background elements */
         .animated-blob {
             position: fixed;
             border-radius: 50%;
-            filter: blur(80px); /* Simulates Tailwind's blur-3xl */
+            filter: blur(80px);
             opacity: 0.3;
             animation: pulse 4s infinite alternate;
             z-index: 0;
@@ -37,7 +37,7 @@
             right: -100px;
             width: 300px;
             height: 300px;
-            background-color: #e04a7a; /* Reddish pink */
+            background-color: #e04a7a;
             animation-delay: 0s;
         }
         .blob-2 {
@@ -45,7 +45,7 @@
             left: -100px;
             width: 350px;
             height: 350px;
-            background-color: #7a4ae0; /* Purplish blue */
+            background-color: #7a4ae0;
             animation-delay: 1.5s;
         }
         .blob-3 {
@@ -54,7 +54,7 @@
             transform: translate(-50%, -50%);
             width: 400px;
             height: 400px;
-            background-color: #e04ae0; /* Pinkish purple */
+            background-color: #e04ae0;
             animation-delay: 3s;
         }
 
@@ -67,17 +67,14 @@
         section {
             padding: 80px 24px;
             position: relative;
-            z-index: 1; /* Ensure content is above animated background */
+            z-index: 1;
         }
         .max-w-7xl { max-width: 1280px; margin-left: auto; margin-right: auto; }
-        .max-w-6xl { max-width: 1152px; margin-left: auto; margin-right: auto; }
-        .max-w-4xl { max-width: 896px; margin-left: auto; margin-right: auto; }
-        .max-w-2xl { max-width: 672px; margin-left: auto; margin-right: auto; }
         .text-center { text-align: center; }
 
-        /* Neon gradient text (using webkit for clip-text) */
+        /* Neon gradient text */
         .neon-text {
-            background-image: linear-gradient(to right, #FF4081, #7C4DFF, #FFC107); /* Pink, Purple, Amber for vibrant neon */
+            background-image: linear-gradient(to right, #FF4081, #7C4DFF, #FFC107);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -85,7 +82,7 @@
         }
 
         .neon-text-title {
-            background-image: linear-gradient(to right, #e04a7a, #7a4ae0, #e04ae0); /* Custom neon gradient */
+            background-image: linear-gradient(to right, #e04a7a, #7a4ae0, #e04ae0);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -97,18 +94,19 @@
             100% { text-shadow: 0 0 10px rgba(255, 64, 129, 0.7), 0 0 20px rgba(124, 77, 255, 0.7); }
         }
 
-        /* Glassmorphism card/element styles */
+        /* Glassmorphism card */
         .glass-card {
-            background-color: rgba(0, 0, 0, 0.2); /* Slightly darker background */
-            backdrop-filter: blur(10px); /* Blur effect */
-            border-radius: 16px; /* Rounded corners */
-            border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle white border */
-            transition: all 0.3s ease-in-out; /* Smooth transitions */
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            background-color: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            padding: 24px;
         }
         .glass-card:hover {
-            border-color: rgba(124, 77, 255, 0.4); /* Glow on hover */
-            box-shadow: 0 0 20px rgba(124, 77, 255, 0.3); /* Enhanced shadow/glow */
+            border-color: rgba(124, 77, 255, 0.4);
+            box-shadow: 0 0 20px rgba(124, 77, 255, 0.3);
             transform: translateY(-2px);
         }
 
@@ -117,55 +115,44 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 24px 48px;
-            font-size: 20px;
+            padding: 16px 32px;
+            font-size: 18px;
             font-weight: bold;
-            border-radius: 16px; /* More rounded */
+            border-radius: 12px;
             border: none;
             cursor: pointer;
             text-decoration: none;
             color: #ffffff;
-            background: linear-gradient(45deg, #7C4DFF, #FF4081); /* Blue-purple to pink gradient */
+            background: linear-gradient(45deg, #7C4DFF, #FF4081);
             box-shadow: 0 8px 20px rgba(124, 77, 255, 0.4);
             transition: all 0.3s ease-in-out;
-            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         .btn-primary:hover {
             transform: scale(1.05);
             box-shadow: 0 12px 30px rgba(124, 77, 255, 0.6);
-            background: linear-gradient(45deg, #FF4081, #7C4DFF); /* Reverse gradient or intensify */
+            background: linear-gradient(45deg, #FF4081, #7C4DFF);
         }
 
-        /* Icons (Lucide-react placeholders) */
+        /* Icons */
         .icon {
             width: 24px;
             height: 24px;
             margin-right: 12px;
-            color: #FF4081; /* Pink accent */
-        }
-        .icon-lg {
-            width: 48px;
-            height: 48px;
-            margin-bottom: 16px;
-            color: #7C4DFF; /* Purple accent */
+            color: #FF4081;
         }
         .icon-small {
             width: 20px;
             height: 20px;
             margin-right: 8px;
-            color: #FFC107; /* Amber accent */
+            color: #FFC107;
         }
-
-        /* Layout grids */
-        .grid-3-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 32px; }
-        .grid-2-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px; }
 
         /* Header Navigation */
         header {
             padding: 24px;
             position: relative;
             z-index: 10;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05); /* Subtle border */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         nav {
             display: flex;
@@ -181,13 +168,12 @@
             font-weight: bold;
             font-family: 'Orbitron', sans-serif;
             color: #ffffff;
-            letter-spacing: 1px;
         }
         nav .logo img {
             width: 48px;
             height: 48px;
             margin-right: 12px;
-            filter: drop-shadow(0 0 5px #7C4DFF); /* Icon glow */
+            filter: drop-shadow(0 0 5px #7C4DFF);
         }
         nav .nav-links a {
             color: #b0b0b0;
@@ -198,7 +184,7 @@
             position: relative;
         }
         nav .nav-links a:hover {
-            color: #FF4081; /* Pink hover */
+            color: #FF4081;
             text-shadow: 0 0 8px rgba(255, 64, 129, 0.6);
         }
         nav .nav-links a::after {
@@ -208,7 +194,7 @@
             height: 2px;
             bottom: -5px;
             left: 0;
-            background-color: #7C4DFF; /* Purple underline */
+            background-color: #7C4DFF;
             transition: width 0.3s ease;
         }
         nav .nav-links a:hover::after {
@@ -221,130 +207,61 @@
             padding-bottom: 100px;
         }
         .hero-section h1 {
-            font-size: 80px;
+            font-size: 64px;
             margin-bottom: 24px;
-            line-height: 1;
+            line-height: 1.1;
             text-transform: uppercase;
         }
         .hero-section p {
-            font-size: 24px;
-            margin-bottom: 40px;
+            font-size: 20px;
+            margin-bottom: 32px;
             line-height: 1.6;
             color: #c0c0c0;
         }
-        .feature-highlights {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 24px;
-            margin-bottom: 48px;
-        }
-        .highlight-item {
-            display: flex;
-            align-items: center;
-            background-color: rgba(0, 0, 0, 0.4);
-            border-radius: 9999px; /* Fully rounded */
-            padding: 8px 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            font-size: 14px;
-            color: #e0e0e0;
-            backdrop-filter: blur(5px);
-        }
-        .highlight-item .icon-small { margin-right: 8px; }
-        .highlight-item:nth-child(1) .icon-small { color: #FF4081; } /* Pink */
-        .highlight-item:nth-child(2) .icon-small { color: #7C4DFF; } /* Purple */
-        .highlight-item:nth-child(3) .icon-small { color: #FFC107; } /* Amber */
 
-        /* Feature Cards */
-        .feature-card {
-            padding: 32px;
-            text-align: center;
+        /* Form Styling */
+        .download-form {
+            max-width: 600px;
+            margin: 0 auto;
         }
-        .feature-card h3 {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 16px;
-            color: #ffffff;
-            font-family: 'Orbitron', sans-serif;
-        }
-        .feature-card p {
-            color: #b0b0b0;
-            line-height: 1.7;
-        }
-        .feature-card .icon-lg {
-            margin-bottom: 24px;
-        }
-
-        /* Stats */
-        .stat-item {
-            background-color: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(5px);
-            border-radius: 16px;
-            padding: 32px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        .stat-item .icon {
+        .download-form label {
+            display: block;
             margin-bottom: 8px;
-            color: #FF4081; /* Pink icon */
+            font-weight: 500;
+            color: #e0e0e0;
         }
-        .stat-item h3 {
-            font-size: 32px;
-            font-weight: bold;
-            color: #ffffff;
-            margin-bottom: 4px;
-            font-family: 'Orbitron', sans-serif;
-        }
-        .stat-item p {
-            color: #a0a0a0;
-        }
-
-        /* FAQ Section */
-        .faq-item {
+        .download-form select,
+        .download-form input[type="text"],
+        .download-form input[type="number"] {
+            width: 100%;
+            padding: 12px;
             margin-bottom: 16px;
-            border-radius: 16px;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background-color: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(8px);
-            transition: all 0.3s ease-in-out;
-        }
-        .faq-item:hover {
-            border-color: rgba(124, 77, 255, 0.4);
-            box-shadow: 0 0 15px rgba(124, 77, 255, 0.3);
-        }
-        .faq-question {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 24px;
-            cursor: pointer;
-            user-select: none;
-            font-weight: 600;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background-color: rgba(255, 255, 255, 0.1);
             color: #ffffff;
+            font-size: 16px;
         }
-        .faq-question h3 { margin: 0; font-size: 18px; }
-        .faq-question .arrow {
-            width: 20px;
-            height: 20px;
-            color: #b0b0b0;
-            transition: transform 0.3s ease;
+        .download-form input[type="checkbox"] {
+            margin-right: 8px;
         }
-        .faq-question.active .arrow {
-            transform: rotate(180deg);
-            color: #FF4081; /* Active color */
+        .download-form .btn-primary {
+            margin: 8px 8px 0 0;
         }
-        .faq-answer {
-            padding: 0 24px 24px;
+        .output-console {
+            margin-top: 24px;
+            padding: 16px;
+            border-radius: 8px;
+            background-color: rgba(0, 0, 0, 0.3);
             color: #c0c0c0;
-            line-height: 1.7;
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s ease-out, padding 0.4s ease-out;
+            min-height: 50px;
         }
-        .faq-answer.open {
-            max-height: 200px; /* Or a value large enough for all answers */
-            padding-top: 16px;
+        .noscript-message {
+            background-color: rgba(255, 64, 129, 0.2);
+            padding: 16px;
+            border-radius: 8px;
+            color: #FF4081;
+            margin-bottom: 24px;
         }
 
         /* Footer */
@@ -388,7 +305,7 @@
             transition: color 0.3s ease;
         }
         footer .footer-links a:hover {
-            color: #7C4DFF; /* Purple hover */
+            color: #7C4DFF;
             text-shadow: 0 0 5px rgba(124, 77, 255, 0.5);
         }
         footer .copyright {
@@ -400,42 +317,34 @@
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .hero-section h1 {
-                font-size: 56px;
+                font-size: 48px;
             }
             .hero-section p {
-                font-size: 18px;
-            }
-            nav .nav-links {
-                display: none; /* Hide for mobile for simplicity, could be a hamburger menu */
-            }
-            .grid-3-cols, .grid-2-cols {
-                grid-template-columns: 1fr; /* Stack columns on smaller screens */
-            }
-            .feature-card, .testimonial-card, .stat-item {
-                margin-left: 16px;
-                margin-right: 16px;
-            }
-            .screenshot-item {
-                margin: 0 16px;
-            }
-            .faq-item {
-                 margin: 0 16px;
-            }
-            .btn-primary {
-                padding: 18px 32px;
                 font-size: 16px;
             }
-            .header nav {
+            nav .nav-links {
+                display: none;
+            }
+            nav {
                 flex-direction: column;
                 gap: 20px;
             }
+            .download-form select,
+            .download-form input[type="text"],
+            .download-form input[type="number"] {
+                font-size: 14px;
+            }
+            .btn-primary {
+                padding: 12px 24px;
+                font-size: 16px;
+            }
         }
 
-        /* Basic SVG Icon styles (replacing Lucide-react) */
+        /* SVG Icon styles */
         .svg-icon {
             display: inline-block;
             vertical-align: middle;
-            fill: currentColor; /* Use current text color for icons */
+            fill: currentColor;
         }
     </style>
 </head>
@@ -448,7 +357,7 @@
         <header>
             <nav>
                 <div class="logo">
-                    <img src="/byteforge-icon.png" alt="ByteForge Icon">
+                    <img src="/byteforge-icon.png" alt="ByteForge Icon" aria-hidden="true">
                     <div class="neon-text-title">ByteForge</div>
                 </div>
                 <div class="nav-links">
@@ -460,42 +369,84 @@
         </header>
 
         <section class="hero-section text-center">
-             <noscript><p>&#40;This site doesn't work without JavaScript Enabled!&#41;</p></noscript>
+            <div class="max-w-7xl">
+                <noscript>
+                    <p class="noscript-message">This site requires JavaScript to function properly. Please enable JavaScript in your browser.</p>
+                </noscript>
+                <h1 class="neon-text-title">Forge Your Power with ByteForge</h1>
+                <p>Unlock the full potential of your applications with our cutting-edge downgrader tool. Customize, compress, and conquer.</p>
+                <div class="glass-card download-form">
+                    <form id="downloadForm" target="_blank" action="">
+                        <label for="binaryType">Binary Type:</label>
+                        <select id="binaryType" name="binaryType" aria-describedby="binaryTypeHelp">
+                            <option value="WindowsPlayer">Windows Player</option>
+                            <option value="WindowsStudio64">Windows Studio 64</option>
+                            <option value="MacPlayer">Mac Player</option>
+                            <option value="MacStudio">Mac Studio</option>
+                        </select>
+                        <small id="binaryTypeHelp" class="form-text">Select the type of binary you want to download.</small>
 
-        <div hidden id="downloadFormDiv">
-            <form id="downloadForm" target="_blank" action="">
-                <label for="binaryType">Binary Type:</label>
-                <select id="binaryType" name="binaryType">
-                    <option value="WindowsPlayer">WindowsPlayer</option>
-                    <option value="WindowsStudio64">WindowsStudio64</option>
-                    <option value="MacPlayer">MacPlayer</option>
-                    <option value="MacStudio">MacStudio</option>
-                </select>
-                <br>
-                <label for="channel">Channel Name:</label>
-                <input id="channel" name="channel" type="text" placeholder="LIVE">
-                <br>
-                <label for="version">Version Hash:</label>
-                <input id="version" name="version" type="text"> <b>&#40;Optional&#41;</b>
-                <br><br>
-                <label for="compressZip">Compress Output Zip:</label>
-                <input id="compressZip" name="compressZip" type="checkbox">
-                <br>
-                <label for="compressionLevel">Zip Compression Level (1-9):</label>
-                <input id="compressionLevel" name="compressionLevel" type="number" min="1" max="9" value="5">
-                <br><br>
-                <button type="button" onclick="downloadFromForm();">Download</button>
-                <button type="button" onclick="copyPermLink();">Copy Permanent Link</button>
-                <br>
-            </form>
-            <br>
-        </div>
+                        <label for="channel">Channel Name:</label>
+                        <input id="channel" name="channel" type="text" placeholder="LIVE" aria-describedby="channelHelp">
+                        <small id="channelHelp" class="form-text">Enter the channel name (e.g., LIVE).</small>
 
-        <output id="consoleText"></output>
-        <br>
+                        <label for="version">Version Hash:</label>
+                        <input id="version" name="version" type="text" placeholder="Optional" aria-describedby="versionHelp">
+                        <small id="versionHelp" class="form-text">Provide a version hash if specific version is needed.</small>
+
+                        <label for="compressZip">
+                            <input id="compressZip" name="compressZip" type="checkbox" aria-describedby="compressZipHelp">
+                            Compress Output Zip
+                        </label>
+                        <small id="compressZipHelp" class="form-text">Check to compress the output as a ZIP file.</small>
+
+                        <label for="compressionLevel">Zip Compression Level (1-9):</label>
+                        <input id="compressionLevel" name="compressionLevel" type="number" min="1" max="9" value="5" aria-describedby="compressionLevelHelp">
+                        <small id="compressionLevelHelp" class="form-text">Set compression level (1 = low, 9 = high).</small>
+
+                        <div>
+                            <button type="button" class="btn-primary" onclick="downloadFromForm()">Download</button>
+                            <button type="button" class="btn-primary" onclick="copyPermLink()">Copy Permanent Link</button>
+                        </div>
+                    </form>
+                    <output id="consoleText" class="output-console" aria-live="polite"></output>
+                </div>
+            </div>
         </section>
-</body>
+
+        <footer>
+            <div class="logo">
+                <img src="/byteforge-icon.png" alt="ByteForge Icon" aria-hidden="true">
+                <div class="neon-text-title">ByteForge</div>
+            </div>
+            <p>Empowering developers with next-generation tools.</p>
+            <div class="footer-links">
+                <a href="#features">Features</a>
+                <a href="#faq">FAQ</a>
+                <a href="/downgrader/downgrader.html">Downgrader</a>
+                <a href="/privacy">Privacy Policy</a>
+                <a href="/terms">Terms of Service</a>
+            </div>
+            <p class="copyright">&copy; 2025 ByteForge. All rights reserved.</p>
+        </footer>
+    </div>
+
     <script src="js/jszip.min.js"></script>
     <script src="js/rdd.js"></script>
-</html>
+    <script>
 
+        function copyPermLink() {
+            const consoleText = document.getElementById('consoleText');
+            consoleText.textContent = 'Copying permanent link... (This is a placeholder. Implement actual link generation in rdd.js)';
+            // Example: Copy to clipboard
+            navigator.clipboard.writeText(window.location.href)
+                .then(() => {
+                    consoleText.textContent = 'Permanent link copied to clipboard!';
+                })
+                .catch(() => {
+                    consoleText.textContent = 'Failed to copy link.';
+                });
+        }
+    </script>
+</body>
+</html>
