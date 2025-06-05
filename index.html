@@ -9,115 +9,141 @@
     :root {
       --neon-blue: #00f2ff;
       --neon-purple: #bb00ff;
-      --bg-dark: #0f0f1a;
+      --bg-dark: #0a0a0f;
       --glass-bg: rgba(255, 255, 255, 0.05);
-      --glass-border: rgba(255, 255, 255, 0.2);
+      --glass-border: rgba(255, 255, 255, 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     body {
-      margin: 0;
       font-family: 'Orbitron', sans-serif;
-      background: var(--bg-dark);
-      color: white;
+      background: linear-gradient(135deg, #0a0a0f 0%, #0d0d15 100%);
+      color: #fff;
+      line-height: 1.6;
       overflow-x: hidden;
     }
 
     header {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
       text-align: center;
-      padding: 60px 20px;
+      padding: 2rem;
+      background: radial-gradient(circle at center, #1b1b2f 0%, #0a0a0f 100%);
     }
 
     h1 {
-      font-size: 3rem;
+      font-size: 4rem;
       background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
       -webkit-background-clip: text;
       color: transparent;
+      margin-bottom: 1rem;
     }
 
     p.description {
-      max-width: 600px;
-      margin: 20px auto;
-      font-size: 1.2rem;
-      color: #aaa;
+      max-width: 700px;
+      color: #cfcfcf;
+      font-size: 1.25rem;
+      margin-bottom: 2rem;
     }
 
     .download-btn {
       background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
-      padding: 15px 40px;
+      padding: 1rem 3rem;
       border: none;
-      border-radius: 20px;
+      border-radius: 30px;
       font-size: 1.2rem;
       color: white;
       cursor: pointer;
-      transition: transform 0.3s ease;
-      box-shadow: 0 0 15px var(--neon-blue);
+      transition: all 0.3s ease;
+      box-shadow: 0 0 25px var(--neon-purple);
     }
 
     .download-btn:hover {
-      transform: scale(1.1);
+      transform: translateY(-4px);
+      box-shadow: 0 0 30px var(--neon-blue);
     }
 
     section {
-      padding: 60px 20px;
+      padding: 4rem 2rem;
+      max-width: 1200px;
+      margin: auto;
     }
 
     .glass {
       background: var(--glass-bg);
       border: 1px solid var(--glass-border);
       border-radius: 20px;
-      padding: 30px;
+      padding: 2rem;
       backdrop-filter: blur(10px);
-      box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
-      margin: 20px auto;
-      max-width: 1000px;
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
+      margin-bottom: 3rem;
+    }
+
+    .screenshots {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
     }
 
     .screenshots img {
       width: 100%;
-      max-width: 300px;
       border-radius: 15px;
-      margin: 10px;
-      transition: transform 0.3s;
+      transition: transform 0.3s, box-shadow 0.3s;
     }
 
     .screenshots img:hover {
-      transform: scale(1.05);
+      transform: scale(1.03);
+      box-shadow: 0 0 20px var(--neon-blue);
     }
 
     .testimonials {
       display: flex;
       overflow-x: auto;
-      gap: 20px;
+      gap: 1rem;
       scroll-snap-type: x mandatory;
     }
 
     .testimonial {
       min-width: 300px;
+      flex-shrink: 0;
       background: var(--glass-bg);
       border: 1px solid var(--glass-border);
       border-radius: 20px;
-      padding: 20px;
+      padding: 1.5rem;
       scroll-snap-align: start;
-      flex-shrink: 0;
-    }
-
-    .faq-item {
-      margin-bottom: 15px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
     }
 
     .faq-item summary {
       cursor: pointer;
       font-weight: bold;
       color: var(--neon-blue);
+      margin-bottom: 0.5rem;
+    }
+
+    .faq-item {
+      margin-bottom: 1rem;
+    }
+
+    details[open] summary {
+      color: var(--neon-purple);
     }
 
     @media (max-width: 768px) {
       h1 {
-        font-size: 2.2rem;
+        font-size: 2.5rem;
       }
 
       .download-btn {
-        padding: 12px 30px;
+        padding: 0.8rem 2rem;
         font-size: 1rem;
       }
     }
@@ -126,13 +152,13 @@
 <body>
   <header>
     <h1>ByteForge</h1>
-    <p class="description">Unleash the power of fast injection, built-in script hub, and cutting-edge anti-ban technology. ByteForge is the ultimate Roblox executor.</p>
+    <p class="description">Unleash fast injection, built-in script hub, and cutting-edge anti-ban features. The ultimate Roblox executor is here.</p>
     <button class="download-btn">Download Now</button>
   </header>
 
-  <section class="glass screenshots">
-    <h2>Screenshots</h2>
-    <div style="display: flex; flex-wrap: wrap; justify-content: center;">
+  <section class="glass">
+    <h2 style="margin-bottom: 1rem;">Screenshots</h2>
+    <div class="screenshots">
       <img src="screenshot1.jpg" alt="Screenshot 1" />
       <img src="screenshot2.jpg" alt="Screenshot 2" />
       <img src="screenshot3.jpg" alt="Screenshot 3" />
@@ -140,7 +166,7 @@
   </section>
 
   <section class="glass">
-    <h2>What Users Say</h2>
+    <h2 style="margin-bottom: 1rem;">What Users Say</h2>
     <div class="testimonials">
       <div class="testimonial">"ByteForge changed the game. Fast and secure!" - Alex</div>
       <div class="testimonial">"The script hub is a life-saver. 10/10." - Jamie</div>
@@ -149,7 +175,7 @@
   </section>
 
   <section class="glass">
-    <h2>FAQ</h2>
+    <h2 style="margin-bottom: 1rem;">FAQ</h2>
     <details class="faq-item">
       <summary>Is ByteForge safe to use?</summary>
       <p>Yes, it includes advanced anti-ban technology to keep your account secure.</p>
