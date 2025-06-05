@@ -88,7 +88,7 @@
         header {
             padding: 24px;
             position: relative;
-            z-index: 10;
+            z-index: 100; /* Ensure nav stays above full-screen output */
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         nav {
@@ -140,6 +140,10 @@
         .hero-section {
             padding-top: 100px;
             padding-bottom: 100px;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .hero-section.hidden {
+            display: none; /* Hide during download */
         }
         .hero-section h1 {
             font-size: 64px;
@@ -188,15 +192,24 @@
             border-radius: 8px;
             background-color: rgba(0, 0, 0, 0.3);
             color: #c0c0c0;
-            min-height: 50px;
-            font-size: 14px;
+            font-size: 16px; /* Default font size */
             line-height: 1.5;
-            display: none; /* Hide by default */
-            transition: opacity 0.3s ease-in-out;
+            display: none; /* Hidden by default */
+            transition: all 0.3s ease-in-out;
         }
         .output-console.visible {
-            display: block; /* Show when needed */
-            opacity: 1;
+            display: block;
+            position: fixed; /* Full-screen */
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 50; /* Below nav, above blobs */
+            background-color: rgba(0, 0, 0, 0.8); /* Darker for contrast */
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            font-size: 24px; /* Larger font for full-screen */
+            overflow-y: auto; /* Scrollable if content overflows */
         }
         .output-console a {
             color: #FF4081;
@@ -214,12 +227,14 @@
         }
         footer {
             padding: 48px 24px;
-            border-top: 1px solid rgba(255, 255
-
-, 255, 0.05);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
             text-align: center;
             position: relative;
             z-index: 1;
+            transition: opacity 0.3s ease-in-out;
+        }
+        footer.hidden {
+            display: none; /* Hide during download */
         }
         footer .logo {
             display: flex;
@@ -271,6 +286,7 @@
             .download-form input[type="text"],
             .download-form input[type="number"] { font-size: 14px; }
             .btn-primary { padding: 12px 24px; font-size: 16px; }
+            .output-console.visible { font-size: 18px; padding: 20px; } /* Slightly smaller on mobile */
         }
         .svg-icon { display: inline-block; vertical-align: middle; fill: currentColor; }
     </style>
@@ -327,7 +343,7 @@
                         </label>
                         <small id="compressZipHelp" class="form-text">Check to compress the output as a ZIP file.</small>
 
-                        <label for="compressionLevel">Zip Compression Level (1-9):</label>
+                        <label for=" compressionLevel">Zip Compression Level (1-9):</label>
                         <input id="compressionLevel" name="compressionLevel" type="number" min="1" max="9" value="5" aria-describedby="compressionLevelHelp">
                         <small id="compressionLevelHelp" class="form-text">Set compression level (1 = low, 9 = high).</small>
 
@@ -358,7 +374,7 @@
         </footer>
     </div>
 
-    <script src="js/jszip.min.js" onerror="document.getElementById('consoleText').innerHTML += '<p class=\"noscript-message\">[!] Error: Failed to load JSZip library. Please check your internet connection or file path.</p>';"></script>
-    <script src="js/rdd.js" onerror="document.getElementById('consoleText').innerHTML += '<p class=\"noscript-message\">[!] Error: Failed to load rdd.js. Please check your internet connection or file path.</p>';"></script>
+    <script src="js/jszip.min.js" onerror="document.getElementById('consoleText')?.classList.add('visible'); document.getElementById('consoleText')?.innerHTML += '<p class=\"noscript-message\">[!] Error: Failed to load JSZip library. Please check your internet connection or file path.</p>';"></script>
+    <script src="js/rdd.js" onerror="document.getElementById('consoleText')?.classList.add('visible'); document.getElementById('consoleText')?.innerHTML += '<p class=\"noscript-message\">[!] Error: Failed to load rdd.js. Please check your internet connection or file path.</p>';"></script>
 </body>
 </html>
