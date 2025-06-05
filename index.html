@@ -1,79 +1,167 @@
 <!DOCTYPE html>
-<html lang="en" class="bg-gray-950 text-white">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ByteForge Injector</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <title>ByteForge - Roblox Executor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
   <style>
-    body {
-      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-      background-size: 400% 400%;
-      animation: gradientShift 15s ease infinite;
+    :root {
+      --neon-blue: #00f2ff;
+      --neon-purple: #bb00ff;
+      --bg-dark: #0f0f1a;
+      --glass-bg: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.2);
     }
-    @keyframes gradientShift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+
+    body {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      background: var(--bg-dark);
+      color: white;
+      overflow-x: hidden;
+    }
+
+    header {
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    h1 {
+      font-size: 3rem;
+      background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    p.description {
+      max-width: 600px;
+      margin: 20px auto;
+      font-size: 1.2rem;
+      color: #aaa;
+    }
+
+    .download-btn {
+      background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+      padding: 15px 40px;
+      border: none;
+      border-radius: 20px;
+      font-size: 1.2rem;
+      color: white;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      box-shadow: 0 0 15px var(--neon-blue);
+    }
+
+    .download-btn:hover {
+      transform: scale(1.1);
+    }
+
+    section {
+      padding: 60px 20px;
     }
 
     .glass {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(12px);
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 30px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+      margin: 20px auto;
+      max-width: 1000px;
     }
 
-    .neon-button {
-      box-shadow: 0 0 20px #8a2be2, 0 0 40px #8a2be2;
-      transition: all 0.3s ease;
+    .screenshots img {
+      width: 100%;
+      max-width: 300px;
+      border-radius: 15px;
+      margin: 10px;
+      transition: transform 0.3s;
     }
 
-    .neon-button:hover {
-      box-shadow: 0 0 30px #a95dff, 0 0 60px #a95dff;
+    .screenshots img:hover {
       transform: scale(1.05);
+    }
+
+    .testimonials {
+      display: flex;
+      overflow-x: auto;
+      gap: 20px;
+      scroll-snap-type: x mandatory;
+    }
+
+    .testimonial {
+      min-width: 300px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 20px;
+      scroll-snap-align: start;
+      flex-shrink: 0;
+    }
+
+    .faq-item {
+      margin-bottom: 15px;
+    }
+
+    .faq-item summary {
+      cursor: pointer;
+      font-weight: bold;
+      color: var(--neon-blue);
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2.2rem;
+      }
+
+      .download-btn {
+        padding: 12px 30px;
+        font-size: 1rem;
+      }
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center px-4">
+<body>
+  <header>
+    <h1>ByteForge</h1>
+    <p class="description">Unleash the power of fast injection, built-in script hub, and cutting-edge anti-ban technology. ByteForge is the ultimate Roblox executor.</p>
+    <button class="download-btn">Download Now</button>
+  </header>
 
-  <!-- Hero Section -->
-  <section class="text-center pt-20 animate__animated animate__fadeIn">
-    <div class="glass p-10 rounded-3xl max-w-2xl mx-auto">
-      <h1 class="text-5xl font-extrabold text-purple-400 mb-4">ByteForge Injector</h1>
-      <p class="text-gray-300 text-lg mb-6">
-        A sleek, lightning-fast Roblox Lua injector built for stealth and performance.
-      </p>
-      <a href="https://github.com/MaxiEliteVscripts/MaxiEliteinjector/raw/refs/heads/main/MaxiElite%5BBeta%5D.zip"
-         class="neon-button bg-purple-700 text-white font-semibold py-3 px-8 rounded-full text-lg">
-        🚀 Download Now
-      </a>
+  <section class="glass screenshots">
+    <h2>Screenshots</h2>
+    <div style="display: flex; flex-wrap: wrap; justify-content: center;">
+      <img src="screenshot1.jpg" alt="Screenshot 1" />
+      <img src="screenshot2.jpg" alt="Screenshot 2" />
+      <img src="screenshot3.jpg" alt="Screenshot 3" />
     </div>
   </section>
 
-  <!-- Features Section -->
-  <section class="mt-32 max-w-4xl w-full text-center animate__animated animate__fadeInUp">
-    <h2 class="text-3xl font-bold mb-10 text-white">✨ Features</h2>
-    <div class="grid sm:grid-cols-3 gap-6 text-left text-gray-200">
-      <div class="glass p-6 rounded-xl">
-        <h3 class="text-xl font-semibold text-purple-300 mb-2">⚡ Fast Injection</h3>
-        <p>Inject scripts in milliseconds using our optimized native layer.</p>
-      </div>
-      <div class="glass p-6 rounded-xl">
-        <h3 class="text-xl font-semibold text-purple-300 mb-2">🛡️ Undetected</h3>
-        <p>Stay safe with built-in anti-detection and constant stealth updates.</p>
-      </div>
-      <div class="glass p-6 rounded-xl">
-        <h3 class="text-xl font-semibold text-purple-300 mb-2">🔄 Auto Updates</h3>
-        <p>Never worry about patches. We handle updates automatically.</p>
-      </div>
+  <section class="glass">
+    <h2>What Users Say</h2>
+    <div class="testimonials">
+      <div class="testimonial">"ByteForge changed the game. Fast and secure!" - Alex</div>
+      <div class="testimonial">"The script hub is a life-saver. 10/10." - Jamie</div>
+      <div class="testimonial">"Never got banned once. Super reliable." - Casey</div>
     </div>
   </section>
 
-  <!-- Footer -->
-  <footer class="mt-32 mb-10 text-gray-400 text-sm text-center animate__animated animate__fadeInUp">
-    © 2025 ByteForge Injector. All rights reserved.
-  </footer>
-
+  <section class="glass">
+    <h2>FAQ</h2>
+    <details class="faq-item">
+      <summary>Is ByteForge safe to use?</summary>
+      <p>Yes, it includes advanced anti-ban technology to keep your account secure.</p>
+    </details>
+    <details class="faq-item">
+      <summary>How do I install ByteForge?</summary>
+      <p>Just click "Download Now" and follow the installer instructions provided.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Does ByteForge come with preloaded scripts?</summary>
+      <p>Yes! Our built-in script hub features a wide variety of popular scripts.</p>
+    </details>
+  </section>
 </body>
 </html>
