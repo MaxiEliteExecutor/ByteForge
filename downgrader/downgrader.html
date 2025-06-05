@@ -7,7 +7,7 @@
     <link rel="icon" href="/byteforge-icon.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        /* Base styles */
+        /* Same CSS as provided in the previous response */
         body {
             margin: 0;
             font-family: 'Roboto', sans-serif;
@@ -15,14 +15,11 @@
             color: #ffffff;
             overflow-x: hidden;
         }
-
         .page-background {
             background: linear-gradient(to bottom right, #000000, rgba(128, 0, 0, 0.1), rgba(64, 0, 64, 0.2));
             min-height: 100vh;
             position: relative;
         }
-
-        /* Animated background elements */
         .animated-blob {
             position: fixed;
             border-radius: 50%;
@@ -31,56 +28,16 @@
             animation: pulse 4s infinite alternate;
             z-index: 0;
         }
-
-        .blob-1 {
-            top: -100px;
-            right: -100px;
-            width: 300px;
-            height: 300px;
-            background-color: #e04a7a;
-            animation-delay: 0s;
-        }
-        .blob-2 {
-            bottom: -100px;
-            left: -100px;
-            width: 350px;
-            height: 350px;
-            background-color: #7a4ae0;
-            animation-delay: 1.5s;
-        }
-        .blob-3 {
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 400px;
-            height: 400px;
-            background-color: #e04ae0;
-            animation-delay: 3s;
-        }
-
+        .blob-1 { top: -100px; right: -100px; width: 300px; height: 300px; background-color: #e04a7a; animation-delay: 0s; }
+        .blob-2 { bottom: -100px; left: -100px; width: 350px; height: 350px; background-color: #7a4ae0; animation-delay: 1.5s; }
+        .blob-3 { top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: 400px; background-color: #e04ae0; animation-delay: 3s; }
         @keyframes pulse {
             0% { transform: scale(1); opacity: 0.2; }
             100% { transform: scale(1.05); opacity: 0.4; }
         }
-
-        /* General sections */
-        section {
-            padding: 80px 24px;
-            position: relative;
-            z-index: 1;
-        }
+        section { padding: 80px 24px; position: relative; z-index: 1; }
         .max-w-7xl { max-width: 1280px; margin-left: auto; margin-right: auto; }
         .text-center { text-align: center; }
-
-        /* Neon gradient text */
-        .neon-text {
-            background-image: linear-gradient(to right, #FF4081, #7C4DFF, #FFC107);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            font-family: 'Orbitron', sans-serif;
-        }
-
         .neon-text-title {
             background-image: linear-gradient(to right, #e04a7a, #7a4ae0, #e04ae0);
             -webkit-background-clip: text;
@@ -93,8 +50,6 @@
             0% { text-shadow: 0 0 5px rgba(255, 64, 129, 0.4), 0 0 10px rgba(124, 77, 255, 0.4); }
             100% { text-shadow: 0 0 10px rgba(255, 64, 129, 0.7), 0 0 20px rgba(124, 77, 255, 0.7); }
         }
-
-        /* Glassmorphism card */
         .glass-card {
             background-color: rgba(0, 0, 0, 0.2);
             backdrop-filter: blur(10px);
@@ -109,8 +64,6 @@
             box-shadow: 0 0 20px rgba(124, 77, 255, 0.3);
             transform: translateY(-2px);
         }
-
-        /* Buttons */
         .btn-primary {
             display: inline-flex;
             align-items: center;
@@ -132,22 +85,6 @@
             box-shadow: 0 12px 30px rgba(124, 77, 255, 0.6);
             background: linear-gradient(45deg, #FF4081, #7C4DFF);
         }
-
-        /* Icons */
-        .icon {
-            width: 24px;
-            height: 24px;
-            margin-right: 12px;
-            color: #FF4081;
-        }
-        .icon-small {
-            width: 20px;
-            height: 20px;
-            margin-right: 8px;
-            color: #FFC107;
-        }
-
-        /* Header Navigation */
         header {
             padding: 24px;
             position: relative;
@@ -200,8 +137,6 @@
         nav .nav-links a:hover::after {
             width: 100%;
         }
-
-        /* Hero Section */
         .hero-section {
             padding-top: 100px;
             padding-bottom: 100px;
@@ -218,8 +153,6 @@
             line-height: 1.6;
             color: #c0c0c0;
         }
-
-        /* Form Styling */
         .download-form {
             max-width: 600px;
             margin: 0 auto;
@@ -243,7 +176,8 @@
             font-size: 16px;
         }
         .download-form input[type="checkbox"] {
-            margin-right: 8px;
+            margin-left: 2px;
+            margin-right: 10px;
         }
         .download-form .btn-primary {
             margin: 8px 8px 0 0;
@@ -255,6 +189,15 @@
             background-color: rgba(0, 0, 0, 0.3);
             color: #c0c0c0;
             min-height: 50px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .output-console a {
+            color: #FF4081;
+            text-decoration: underline;
+        }
+        .output-console a:hover {
+            color: #7C4DFF;
         }
         .noscript-message {
             background-color: rgba(255, 64, 129, 0.2);
@@ -263,8 +206,6 @@
             color: #FF4081;
             margin-bottom: 24px;
         }
-
-        /* Footer */
         footer {
             padding: 48px 24px;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
@@ -313,39 +254,17 @@
             font-size: 12px;
             color: #808080;
         }
-
-        /* Responsive adjustments */
         @media (max-width: 768px) {
-            .hero-section h1 {
-                font-size: 48px;
-            }
-            .hero-section p {
-                font-size: 16px;
-            }
-            nav .nav-links {
-                display: none;
-            }
-            nav {
-                flex-direction: column;
-                gap: 20px;
-            }
+            .hero-section h1 { font-size: 48px; }
+            .hero-section p { font-size: 16px; }
+            nav .nav-links { display: none; }
+            nav { flex-direction: column; gap: 20px; }
             .download-form select,
             .download-form input[type="text"],
-            .download-form input[type="number"] {
-                font-size: 14px;
-            }
-            .btn-primary {
-                padding: 12px 24px;
-                font-size: 16px;
-            }
+            .download-form input[type="number"] { font-size: 14px; }
+            .btn-primary { padding: 12px 24px; font-size: 16px; }
         }
-
-        /* SVG Icon styles */
-        .svg-icon {
-            display: inline-block;
-            vertical-align: middle;
-            fill: currentColor;
-        }
+        .svg-icon { display: inline-block; vertical-align: middle; fill: currentColor; }
     </style>
 </head>
 <body>
@@ -427,26 +346,11 @@
                 <a href="/privacy">Privacy Policy</a>
                 <a href="/terms">Terms of Service</a>
             </div>
-            <p class="copyright">&copy; 2025 ByteForge. All rights reserved.</p>
+            <p class="copyright">© 2025 ByteForge. All rights reserved.</p>
         </footer>
     </div>
 
-    <script src="js/jszip.min.js"></script>
-    <script src="js/rdd.js"></script>
-    <script>
-
-        function copyPermLink() {
-            const consoleText = document.getElementById('consoleText');
-            consoleText.textContent = 'Copying permanent link... (This is a placeholder. Implement actual link generation in rdd.js)';
-            // Example: Copy to clipboard
-            navigator.clipboard.writeText(window.location.href)
-                .then(() => {
-                    consoleText.textContent = 'Permanent link copied to clipboard!';
-                })
-                .catch(() => {
-                    consoleText.textContent = 'Failed to copy link.';
-                });
-        }
-    </script>
+    <script src="js/jszip.min.js" onerror="document.getElementById('consoleText').innerHTML += '<p class=\"noscript-message\">[!] Error: Failed to load JSZip library. Please check your internet connection or file path.</p>';"></script>
+    <script src="js/rdd.js" onerror="document.getElementById('consoleText').innerHTML += '<p class=\"noscript-message\">[!] Error: Failed to load rdd.js. Please check your internet connection or file path.</p>';"></script>
 </body>
 </html>
