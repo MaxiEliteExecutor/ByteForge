@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ByteForge - Forge Your Power</title>
-    <link rel="icon" href="/img.icons8.png" type="image/png">
+    <link rel="icon" href="/byteforge-icon.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         /* Base styles */
@@ -275,85 +275,6 @@
             margin-bottom: 24px;
         }
 
-        /* Screenshots Section */
-        .screenshot-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 32px;
-        }
-        .screenshot-item {
-            position: relative;
-            overflow: hidden;
-            border-radius: 16px;
-            background-color: rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-            transition: all 0.3s ease-in-out;
-        }
-        .screenshot-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 30px rgba(124, 77, 255, 0.3);
-            border-color: rgba(124, 77, 255, 0.4);
-        }
-        .screenshot-item img {
-            width: 100%;
-            display: block;
-            border-radius: 16px;
-            transition: transform 0.3s ease-in-out;
-        }
-        .screenshot-item:hover img {
-            transform: scale(1.05);
-        }
-        .screenshot-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-            opacity: 0;
-            display: flex;
-            align-items: flex-end;
-            transition: opacity 0.3s ease-in-out;
-            padding: 16px;
-        }
-        .screenshot-item:hover .screenshot-overlay {
-            opacity: 1;
-        }
-        .screenshot-overlay p {
-            color: #ffffff;
-            font-size: 14px;
-            margin: 0;
-        }
-
-        /* Testimonials */
-        .testimonial-card {
-            padding: 24px;
-            text-align: left;
-        }
-        .testimonial-card .avatar {
-            border-radius: 50%;
-            width: 48px;
-            height: 48px;
-            margin-right: 12px;
-            border: 2px solid #7C4DFF; /* Purple border */
-            box-shadow: 0 0 10px rgba(124, 77, 255, 0.5);
-        }
-        .testimonial-card h4 {
-            font-weight: bold;
-            color: #ffffff;
-            margin-bottom: 4px;
-        }
-        .testimonial-card .stars {
-            display: flex;
-            gap: 4px;
-            color: #FFC107; /* Amber stars */
-        }
-        .testimonial-card p {
-            color: #c0c0c0;
-            font-style: italic;
-            margin-top: 16px;
-            line-height: 1.6;
-        }
-
         /* Stats */
         .stat-item {
             background-color: rgba(0, 0, 0, 0.3);
@@ -527,13 +448,11 @@
         <header>
             <nav>
                 <div class="logo">
-                    <img src="/img.icons8.png" alt="ByteForge Icon">
+                    <img src="/byteforge-icon.png" alt="ByteForge Icon">
                     <div class="neon-text-title">ByteForge</div>
                 </div>
                 <div class="nav-links">
                     <a href="#features">Features</a>
-                    <a href="#screenshots">Screenshots</a>
-                    <a href="#testimonials">Reviews</a>
                     <a href="#faq">FAQ</a>
                 </div>
             </nav>
@@ -598,107 +517,8 @@
             </div>
         </section>
 
-        <section id="screenshots">
-            <div class="max-w-6xl mx-auto">
-                <h2 class="neon-text text-center" style="font-size: 40px; font-weight: bold; margin-bottom: 64px;">
-                    Forged Interface
-                </h2>
-                <div class="screenshot-grid">
-                    <div class="screenshot-item">
-                        <img src="/interface-1.png" alt="ByteForge Code Editor" width="800" height="600">
-                        <div class="screenshot-overlay">
-                            <p>Advanced Code Editor Interface</p>
-                        </div>
-                    </div>
-                    <div class="screenshot-item">
-                        <img src="/interface-2.png" alt="ByteForge Script Search" width="800" height="600">
-                        <div class="screenshot-overlay">
-                            <p>Integrated Script Search</p>
-                        </div>
-                    </div>
-                    <div class="screenshot-item">
-                        <img src="/interface-3.png" alt="ByteForge Settings" width="800" height="600">
-                        <div class="screenshot-overlay">
-                            <p>Customizable Executor Settings</p>
-                        </div>
-                    </div>
-                    <div class="screenshot-item">
-                        <img src="/interface-4.png" alt="ByteForge API Settings" width="800" height="600">
-                        <div class="screenshot-overlay">
-                            <p>Advanced API Configuration</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="text-center" style="margin-top: 48px;">
-                    <p style="font-size: 20px; color: #c0c0c0; margin-bottom: 32px;" class="max-w-3xl mx-auto">
-                        ByteForge features a sleek, modern interface with powerful tools for script execution, customization, and
-                        API integration. Built for both beginners and power users.
-                    </p>
-                    <div class="highlight-item" style="display: inline-flex;">
-                        <svg class="svg-icon icon-small" style="color: #7C4DFF;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-                        <span>Powered by advanced injection technology</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="testimonials">
+        <section>
             <div class="max-w-4xl mx-auto">
-                <h2 class="neon-text text-center" style="font-size: 40px; font-weight: bold; margin-bottom: 64px;">
-                    Forged Reviews
-                </h2>
-                <div class="grid-3-cols">
-                    <div class="glass-card testimonial-card">
-                        <div style="display: flex; align-items: center; margin-bottom: 16px;">
-                            <img src="/placeholder.svg?height=40&width=40" alt="Alex_Gamer" class="avatar">
-                            <div>
-                                <h4>Alex_Gamer</h4>
-                                <div class="stars">
-                                    <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                                    <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                                    <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                                    <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                                    <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                                </div>
-                            </div>
-                        </div>
-                        <p>"Best executor I've ever used! Lightning fast injection and never got banned."</p>
-                    </div>
-                    <div class="glass-card testimonial-card">
-                        <div style="display: flex; align-items: center; margin-bottom: 16px;">
-                            <img src="/placeholder.svg?height=40&width=40" alt="ScriptMaster99" class="avatar">
-                            <div>
-                                <h4>ScriptMaster99</h4>
-                                <div class="stars">
-                                    <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                                    <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                                    <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                                    <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                                    <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                                </div>
-                            </div>
-                        </div>
-                        <p>"The script hub is incredible. Thousands of scripts at my fingertips!"</p>
-                    </div>
-                    <div class="glass-card testimonial-card">
-                        <div style="display: flex; align-items: center; margin-bottom: 16px;">
-                            <img src="/placeholder.svg?height=40&width=40" alt="RobloxPro2024" class="avatar">
-                            <div>
-                                <h4>RobloxPro2024</h4>
-                                <div class="stars">
-                                    <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                                    <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                                    <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                                    <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                                    <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                                </div>
-                            </div>
-                        </div>
-                        <p>"Anti-ban protection actually works. Been using for months without issues."</p>
-                    </div>
-                </div>
-
                 <div class="grid-3-cols" style="margin-top: 64px;">
                     <div class="stat-item text-center">
                         <svg class="svg-icon icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -792,7 +612,7 @@
         <footer>
             <div class="max-w-6xl mx-auto text-center">
                 <div class="logo">
-                    <img src="/img.icons8.png" alt="ByteForge Icon">
+                    <img src="/byteforge-icon.png" alt="ByteForge Icon">
                     <div class="neon-text-title">ByteForge</div>
                 </div>
                 <p>The ultimate Roblox executor forged for power users.</p>
