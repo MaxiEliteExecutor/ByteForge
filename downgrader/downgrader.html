@@ -1,420 +1,545 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ByteForge - Forge Your Power</title>
-    <link rel="icon" href="/byteforge-icon.png" type="image/png">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Roboto', sans-serif;
-            background-color: #0d0a1b;
-            color: #ffffff;
-            overflow-x: hidden;
+/*
+    rdd - https://github.com/latte-soft/rdd
+
+    Copyright (C) 2024-2025 Latte Softworks <latte.to> | MIT License
+*/
+
+const basePath = window.location.href.split("?")[0];
+const usageMsg = `[*] USAGE: ${basePath}?channel=<CHANNEL_NAME>&binaryType=<BINARY_TYPE>&version=<VERSION_HASH>
+
+    Binary Types:
+    * WindowsPlayer
+    * WindowsStudio64
+    * MacPlayer
+    * MacStudio
+
+    Extra Notes:
+    * If \`channel\` isn't provided, it will default to "LIVE" (the production channel)
+
+    You can also use an extra query argument we provide, \`blobDir\`, for specifying
+    where RDD should fetch deployment files from. This is useful for using different
+    relative directories than normal for a certain client type, such as for fetching
+    stuff from /mac/arm64/ instead of /mac/
+
+    Blob Directories (Examples):
+    * "/" (Default for WindowsPlayer/WindowsStudio64)
+    * "/mac/" (Default for MacPlayer/MacStudio)
+    * "/mac/arm64/"
+    ..
+`;
+
+const hostPath = "https://setup-aws.rbxcdn.com"; // Only the AWS mirror has proper CORS cfg
+
+// Root extract locations for the Win manifests
+const extractRoots = {
+    player: {
+        "RobloxApp.zip": "",
+        "redist.zip": "",
+        "shaders.zip": "shaders/",
+        "ssl.zip": "ssl/",
+
+        "WebView2.zip": "",
+        "WebView2RuntimeInstaller.zip": "WebView2RuntimeInstaller/",
+
+        "content-avatar.zip": "content/avatar/",
+        "content-configs.zip": "content/configs/",
+        "content-fonts.zip": "content/fonts/",
+        "content-sky.zip": "content/sky/",
+        "content-sounds.zip": "content/sounds/",
+        "content-textures2.zip": "content/textures/",
+        "content-models.zip": "content/models/",
+
+        "content-platform-fonts.zip": "PlatformContent/pc/fonts/",
+        "content-platform-dictionaries.zip": "PlatformContent/pc/shared_compression_dictionaries/",
+        "content-terrain.zip": "PlatformContent/pc/terrain/",
+        "content-textures3.zip": "PlatformContent/pc/textures/",
+
+        "extracontent-luapackages.zip": "ExtraContent/LuaPackages/",
+        "extracontent-translations.zip": "ExtraContent/translations/",
+        "extracontent-models.zip": "ExtraContent/models/",
+        "extracontent-textures.zip": "ExtraContent/textures/",
+        "extracontent-places.zip": "ExtraContent/places/"
+    },
+
+    studio: {
+        "RobloxStudio.zip": "",
+        "RibbonConfig.zip": "RibbonConfig/",
+        "redist.zip": "",
+        "Libraries.zip": "",
+        "LibrariesQt5.zip": "",
+
+        "WebView2.zip": "",
+        "WebView2RuntimeInstaller.zip": "",
+
+        "shaders.zip": "shaders/",
+        "ssl.zip": "ssl/",
+
+        "Qml.zip": "Qml/",
+        "Plugins.zip": "Plugins/",
+        "StudioFonts.zip": "StudioFonts/",
+        "BuiltInPlugins.zip": "BuiltInPlugins/",
+        "ApplicationConfig.zip": "ApplicationConfig/",
+        "BuiltInStandalonePlugins.zip": "BuiltInStandalonePlugins/",
+
+        "content-qt_translations.zip": "content/qt_translations/",
+        "content-sky.zip": "content/sky/",
+        "content-fonts.zip": "content/fonts/",
+        "content-avatar.zip": "content/avatar/",
+        "content-models.zip": "content/models/",
+        "content-sounds.zip": "content/sounds/",
+        "content-configs.zip": "content/configs/",
+        "content-api-docs.zip": "content/api_docs/",
+        "content-textures2.zip": "content/textures/",
+        "content-studio_svg_textures.zip": "content/studio_svg_textures/",
+
+        "content-platform-fonts.zip": "PlatformContent/pc/fonts/",
+        "content-platform-dictionaries.zip": "PlatformContent/pc/shared_compression_dictionaries/",
+        "content-terrain.zip": "PlatformContent/pc/terrain/",
+        "content-textures3.zip": "PlatformContent/pc/textures/",
+
+        "extracontent-translations.zip": "ExtraContent/translations/",
+        "extracontent-luapackages.zip": "ExtraContent/LuaPackages/",
+        "extracontent-textures.zip": "ExtraContent/textures/",
+        "extracontent-scripts.zip": "ExtraContent/scripts/",
+        "extracontent-models.zip": "ExtraContent/models/"
+    }
+};
+
+const binaryTypes = {
+    WindowsPlayer: {
+        //versionFile: "/version",
+        blobDir: "/"
+    },
+    WindowsStudio64: {
+        //versionFile: "/versionQTStudio",
+        blobDir: "/"
+    },
+    MacPlayer: {
+        //versionFile: "/mac/version",
+        blobDir: "/mac/"
+    },
+    MacStudio: {
+        //versionFile: "/mac/versionStudio",
+        blobDir: "/mac/"
+    },
+}
+
+const urlParams = new URLSearchParams(window.location.search);
+
+const consoleText = document.getElementById("consoleText");
+const downloadForm = document.getElementById("downloadForm");
+const downloadFormDiv = document.getElementById("downloadFormDiv");
+
+function getPermLink() {
+    const channelName = downloadForm.channel.value.trim() || downloadForm.channel.placeholder;
+    let queryString = `?channel=${encodeURIComponent(channelName)}&binaryType=${encodeURIComponent(downloadForm.binaryType.value)}`;
+
+    const versionHash = downloadForm.version.value.trim();
+    if (versionHash !== "") {
+        queryString += `&version=${encodeURIComponent(versionHash)}`;
+    }
+
+    const compressZip = downloadForm.compressZip.checked;
+    const compressionLevel = downloadForm.compressionLevel.value;
+    if (compressZip === true) {
+        queryString += `&compressZip=true&compressionLevel=${compressionLevel}`;
+    }
+
+    return basePath + queryString;
+};
+
+function downloadFromForm() {
+    window.open(getPermLink(), "_self");
+};
+
+function copyPermLink() {
+    navigator.clipboard.writeText(getPermLink());
+};
+
+function scrollToBottom() {
+    window.scrollTo({
+        top: document.body.scrollHeight
+    });
+};
+
+function escHtml(originalText) {
+    return originalText
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;")
+        .replace(/ /g, "&nbsp;")
+        .replace(/\n/g, "<br>");
+};
+
+function log(msg = "", end = "\n", autoScroll = true) {
+    consoleText.append(msg + end);
+    if (autoScroll) {
+        scrollToBottom();
+    }
+};
+
+// Prompt download
+function downloadBinaryFile(fileName, data, mimeType = "application/zip") {
+    const blob = new Blob([data], { type: mimeType });
+
+    let link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = fileName;
+
+    let button = document.createElement("button");
+    button.innerText = `${fileName}`;
+    link.appendChild(button);
+
+    document.body.appendChild(link);
+    scrollToBottom();
+
+    button.click();
+};
+
+function requestBinary(url, callback) {
+    const httpRequest = new XMLHttpRequest();
+
+    httpRequest.open("GET", url, true);
+    httpRequest.responseType = "arraybuffer";
+
+    // When the request is done later..
+    httpRequest.onload = function() {
+        // Handle req issues, and don't call-back
+        const statusCode = httpRequest.status;
+        if (statusCode != 200) {
+            log(`[!] Binary request error (${statusCode}) @ ${url}`);
+            return;
         }
-        .page-background {
-            background: linear-gradient(to bottom right, #000000, rgba(128, 0, 0, 0.1), rgba(64, 0, 64, 0.2));
-            min-height: 100vh;
-            position: relative;
+
+        const arrayBuffer = httpRequest.response;
+        if (! arrayBuffer) {
+            log(`[!] Binary request error (${statusCode}) @ ${url} - Failed to get binary ArrayBuffer from response`);
+            return;
         }
-        .animated-blob {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.3;
-            animation: pulse 4s infinite alternate;
-            z-index: 0;
+
+        callback(arrayBuffer, statusCode);
+    };
+
+    httpRequest.onerror = function(e) {
+        log(`[!] Binary request error @ ${url} - ${e}`);
+    };
+
+    httpRequest.send();
+};
+
+function getQuery(queryString) {
+    if (! urlParams.has(queryString)) {
+        return null;
+    }
+
+    return urlParams.get(queryString) || null;
+};
+
+let channel = getQuery("channel");
+let version = getQuery("version") || getQuery("guid");
+let binaryType = getQuery("binaryType");
+let blobDir = getQuery("blobDir");
+
+let compressZip = getQuery("compressZip");
+let compressionLevel = getQuery("compressionLevel");
+
+let channelPath;
+let versionPath;
+
+let binExtractRoots;
+let zip;
+
+main();
+
+function main() {
+    if (window.location.search === "") {
+        downloadFormDiv.hidden = false;
+        log(usageMsg, "\n", false);
+        return;
+    }
+
+    // Query params
+
+    if (channel !== null) {
+        if (channel !== "LIVE") {
+            channel = channel.toLowerCase();
         }
-        .blob-1 { top: -100px; right: -100px; width: 300px; height: 300px; background-color: #e04a7a; animation-delay: 0s; }
-        .blob-2 { bottom: -100px; left: -100px; width: 350px; height: 350px; background-color: #7a4ae0; animation-delay: 1.5s; }
-        .blob-3 { top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: 400px; background-color: #e04ae0; animation-delay: 3s; }
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 0.2; }
-            100% { transform: scale(1.05); opacity: 0.4; }
+    } else {
+        channel = "LIVE";
+    }
+
+    if (channel === "LIVE") {
+        channelPath = `${hostPath}`;
+    } else {
+        channelPath = `${hostPath}/channel/${channel}`;
+    }
+
+    if (version !== null) {
+        version = version.toLowerCase();
+        if (! version.startsWith("version-")) { // Only the version GUID is actually necessary
+            version = "version-" + version;
         }
-        section { padding: 80px 24px; position: relative; z-index: 1; }
-        .max-w-7xl { max-width: 1280px; margin-left: auto; margin-right: auto; }
-        .text-center { text-align: center; }
-        .neon-text-title {
-            background-image: linear-gradient(to right, #e04a7a, #7a4ae0, #e04ae0);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            font-family: 'Orbitron', sans-serif;
-            animation: pulse-glow 2s infinite alternate;
+    }
+
+    // We're also checking to make sure blobDir hasn't been included too for the compatibility warning later
+    if (version && ! binaryType) {
+        log("[!] Error: If you provide a specific `version`, you need to set the `binaryType` aswell! See the usage doc below for examples of various `binaryType` inputs:", "\n\n");
+        log(usageMsg, "\n", false);
+        return;
+    }
+
+    if (blobDir !== null && blobDir !== "") {
+        if (blobDir.slice(0) !== "/") {
+            blobDir = "/" + blobDir;
         }
-        @keyframes pulse-glow {
-            0% { text-shadow: 0 0 5px rgba(255, 64, 129, 0.4), 0 0 10px rgba(124, 77, 255, 0.4); }
-            100% { text-shadow: 0 0 10px rgba(255, 64, 129, 0.7), 0 0 20px rgba(124, 77, 255, 0.7); }
+        if (blobDir.slice(-1) !== "/") {
+            blobDir += "/";
         }
-        .glass-card {
-            background-color: rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease-in-out;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-            padding: 24px;
+    }
+
+    if (compressZip !== null) {
+        if (compressZip !== "true" && compressZip !== "false") {
+            log(`[!] Error: The \`compressZip\` query must be "true" or "false", got "${compressZip}"`);
         }
-        .glass-card:hover {
-            border-color: rgba(124, 77, 255, 0.4);
-            box-shadow: 0 0 20px rgba(124, 77, 255, 0.3);
-            transform: translateY(-2px);
+
+        compressZip = (compressZip === "true");
+    } else {
+        compressZip = downloadForm.compressZip.checked;
+    }
+
+    if (compressionLevel !== null) {
+        try {
+            compressionLevel = parseInt(compressionLevel);
+        } catch (err) {
+            log(`[!] Error: Failed to parse \`compressionLevel\` query: ${err}`, "\n\n");
+            log(usageMsg, "\n", false);
+            return;
         }
-        .btn-primary {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 16px 32px;
-            font-size: 18px;
-            font-weight: bold;
-            border-radius: 12px;
-            border: none;
-            cursor: pointer;
-            text-decoration: none;
-            color: #ffffff;
-            background: linear-gradient(45deg, #7C4DFF, #FF4081);
-            box-shadow: 0 8px 20px rgba(124, 77, 255, 0.4);
-            transition: all 0.3s ease-in-out;
+
+        if (compressionLevel > 9 || compressionLevel < 1) {
+            log(`[!] Error: The \`compressionLevel\` query must be a value between 1 and 9, got ${compressionLevel}`, "\n\n");
+            log(usageMsg, "\n", false);
+            return;
         }
-        .btn-primary:hover {
-            transform: scale(1.05);
-            box-shadow: 0 12px 30px rgba(124, 77, 255, 0.6);
-            background: linear-gradient(45deg, #FF4081, #7C4DFF);
+    } else {
+        compressionLevel = downloadForm.compressionLevel.value; // Only applies to when `compressZip` is true aswell
+    }
+
+    // At this point, we expect `binaryType` to be defined
+    if (! binaryType) {
+        log("[!] Error: Missing required \`binaryType\` query, are you using an old perm link for a specific version?", "\n\n");
+        log(usageMsg, "\n", false);
+        return;
+    }
+
+    if (binaryType in binaryTypes) {
+        const binaryTypeObject = binaryTypes[binaryType];
+
+        // If `blobDir` has already been defined by the user, we don't want to override it here
+        if (! blobDir) {
+            blobDir = binaryTypeObject.blobDir;
         }
-        header {
-            padding: 24px;
-            position: relative;
-            z-index: 100;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1280px;
-            margin: auto;
-        }
-        nav .logo {
-            display: flex;
-            align-items: center;
-            font-size: 28px;
-            font-weight: bold;
-            font-family: 'Orbitron', sans-serif;
-            color: #ffffff;
-        }
-        nav .logo img {
-            width: 48px;
-            height: 48px;
-            margin-right: 12px;
-            filter: drop-shadow(0 0 5px #7C4DFF);
-        }
-        nav .nav-links a {
-            color: #b0b0b0;
-            text-decoration: none;
-            font-weight: 500;
-            margin-left: 32px;
-            transition: color 0.3s ease;
-            position: relative;
-        }
-        nav .nav-links a:hover {
-            color: #FF4081;
-            text-shadow: 0 0 8px rgba(255, 64, 129, 0.6);
-        }
-        nav .nav-links a::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -5px;
-            left: 0;
-            background-color: #7C4DFF;
-            transition: width 0.3s ease;
-        }
-        nav .nav-links a:hover::after {
-            width: 100%;
-        }
-        .hero-section {
-            padding-top: 100px;
-            padding-bottom: 100px;
-            transition: opacity 0.3s ease-in-out;
-        }
-        .hero-section.hidden {
-            display: none;
-        }
-        .hero-section h1 {
-            font-size: 64px;
-            margin-bottom: 24px;
-            line-height: 1.1;
-            text-transform: uppercase;
-        }
-        .hero-section p {
-            font-size: 20px;
-            margin-bottom: 32px;
-            line-height: 1.6;
-            color: #c0c0c0;
-        }
-        #downloadFormDiv.hidden {
-            display: none;
-        }
-        .download-form {
-            max-width: 600px;
-            margin: 0;
-        }
-        .download-form label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: #e0e0e0;
-        }
-        .download-form select,
-        .download-form input[type="text"],
-        .download-form input[type="number"] {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 16px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            background-color: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-            font-size: 16px;
-        }
-        .download-form input[type="checkbox"] {
-            margin-left: 2px;
-            margin-right: 10px;
-        }
-        .download-form .btn-primary {
-            margin: 8px 8px 0 0;
-        }
-        .layout-container {
-            display: flex;
-            justify-content: space-between;
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
-        .left-content {
-            flex: 1;
-            max-width: 60%;
-            padding-right: 24px;
-        }
-        .right-output {
-            flex: 1;
-            max-width: 40%;
-            position: relative;
-        }
-        .output-console {
-            margin-top: 24px;
-            padding: 16px;
-            border-radius: 8px;
-            background-color: rgba(0, 0, 0, 0.3);
-            color: #c0c0c0;
-            font-size: 16px;
-            line-height: 1.5;
-            display: none; /* Hidden by default */
-            transition: all 0.3s ease-in-out;
-        }
-        .output-console.visible {
-            display: block;
-            position: fixed;
-            top: 0;
-            right: 0;
-            width: 40vw;
-            height: 100vh;
-            z-index: 50;
-            background-color: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            padding: 40px;
-            font-size: 24px;
-            overflow-y: auto;
-        }
-        .output-console a {
-            color: #FF4081;
-            text-decoration: underline;
-        }
-        .output-console a:hover {
-            color: #7C4DFF;
-        }
-        .noscript-message {
-            background-color: rgba(255, 64, 129, 0.2);
-            padding: 16px;
-            border-radius: 8px;
-            color: #FF4081;
-            margin-bottom: 24px;
-        }
-        footer {
-            padding: 48px 24px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            text-align: center;
-            position: relative;
-            z-index: 1;
-            transition: opacity 0.3s ease-in-out;
-        }
-        footer.hidden {
-            display: none;
-        }
-        footer .logo {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 24px;
-            font-size: 24px;
-            font-weight: bold;
-            font-family: 'Orbitron', sans-serif;
-        }
-        footer .logo img {
-            width: 40px;
-            height: 40px;
-            margin-right: 12px;
-            filter: drop-shadow(0 0 3px #e04a7a);
-        }
-        footer p {
-            color: #a0a0a0;
-            margin-bottom: 32px;
-            font-size: 15px;
-        }
-        footer .footer-links {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 24px;
-            font-size: 14px;
-        }
-        footer .footer-links a {
-            color: #b0b0b0;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-        footer .footer-links a:hover {
-            color: #7C4DFF;
-            text-shadow: 0 0 5px rgba(124, 77, 255, 0.5);
-        }
-        footer .copyright {
-            margin-top: 40px;
-            font-size: 12px;
-            color: #808080;
-        }
-        @media (max-width: 768px) {
-            .hero-section h1 { font-size: 48px; }
-            .hero-section p { font-size: 16px; }
-            nav .nav-links { display: none; }
-            nav { flex-direction: column; gap: 20px; }
-            .download-form select,
-            .download-form input[type="text"],
-            .download-form input[type="number"] { font-size: 14px; }
-            .btn-primary { padding: 12px 24px; font-size: 16px; }
-            .layout-container {
-                flex-direction: column;
-                padding: 0;
+    } else {
+        log(`[!] Error: \`binaryType\` "${binaryType}" not supported. See below for supported \`binaryType\` inputs:`, "\n\n");
+        log(usageMsg);
+        return;
+    }
+
+    if (version) {
+        fetchManifest();
+    } else {
+        const binaryTypeEncoded = escHtml(binaryType);
+        const channelNameEncoded = escHtml(channel);
+
+        const clientSettingsUrl = `https://clientsettings.roblox.com/v2/client-version/${binaryTypeEncoded}/channel/${channelNameEncoded}`;
+        log("Copy the version hash (the area with \"version-xxxxxxxxxxxxxxxx\" in double-quotes) from the page in the link below (we can't because of CORS), and paste it in the field named \"Version Hash\" in the form above\n");
+        consoleText.innerHTML += `<a target="_blank" href="${clientSettingsUrl}">${clientSettingsUrl}</a><br><br><br>`;
+
+        // Same options as may have been input from the page before
+        downloadForm.channel.value = channelNameEncoded;
+        downloadForm.binaryType.value = binaryTypeEncoded;
+        downloadForm.compressZip.checked = compressZip;
+        downloadForm.compressionLevel.value = compressionLevel;
+
+        downloadFormDiv.hidden = false;
+
+        return;
+    }
+};
+
+async function fetchManifest() {
+    versionPath = `${channelPath}${blobDir}${version}-`;
+
+    if (binaryType === "MacPlayer" || binaryType === "MacStudio") {
+        const zipFileName = (binaryType == "MacPlayer" && "RobloxPlayer.zip") || (binaryType == "MacStudio" && "RobloxStudioApp.zip");
+        log(`[+] Fetching zip archive for BinaryType "${binaryType}" (${zipFileName})`);
+
+        const outputFileName = `${channel}-${binaryType}-${version}.zip`;
+        log(`[+] (Please wait!) Downloading ${outputFileName}..`, "");
+
+        requestBinary(versionPath + zipFileName, function(zipData) {
+            log("done!");
+            downloadBinaryFile(outputFileName, zipData);
+        });
+    } else {
+        // Now, we're only dealing with Windows bin logic
+        log(`[+] Fetching rbxPkgManifest for ${version}@${channel}..`);
+
+        // TODO: This is terrible, just a temp fix so we don't get 5 billion issue reports for not supporting /channel/common/
+        var manifestBody = "";
+        {
+            var resp = await fetch(versionPath + "rbxPkgManifest.txt");
+            if (! resp.ok) {
+                channelPath = `${hostPath}/channel/common`;
+                versionPath = `${channelPath}${blobDir}${version}-`;
+
+                resp = await fetch(versionPath + "rbxPkgManifest.txt");
             }
-            .left-content, .right-output {
-                max-width: 100%;
-                padding: 0;
+
+            if (! resp.ok) {
+                log(`[!] Failed to fetch rbxPkgManifest: (status: ${resp.status}, err: ${(await resp.text()) || "<failed to get response from server>"})`);
+                return;
             }
-            .output-console.visible {
-                width: 100vw;
-                right: auto;
-                font-size: 18px;
-                padding: 20px;
-            }
+
+            manifestBody = await resp.text();
         }
-        .svg-icon { display: inline-block; vertical-align: middle; fill: currentColor; }
-    </style>
-</head>
-<body>
-    <div class="page-background">
-        <div class="animated-blob blob-1"></div>
-        <div class="animated-blob blob-2"></div>
-        <div class="animated-blob blob-3"></div>
 
-        <header>
-            <nav>
-                <div class="logo">
-                    <img src="/byteforge-icon.png" alt="ByteForge Icon" aria-hidden="true">
-                    <div class="neon-text-title">ByteForge</div>
-                </div>
-                <div class="nav-links">
-                    <a href="#features">Features</a>
-                    <a href="#faq">FAQ</a>
-                    <a href="/downgrader/downgrader.html">Downgrader</a>
-                </div>
-            </nav>
-        </header>
+        downloadZipsFromManifest(manifestBody);
+    }
+};
 
-        <section class="hero-section text-center">
-            <div class="max-w-7xl">
-                <noscript>
-                    <p class="noscript-message">This site requires JavaScript to function properly. Please enable JavaScript in your browser.</p>
-                </noscript>
-                <div class="layout-container">
-                    <div class="left-content">
-                        <h1 class="neon-text-title">Forge Your Power with ByteForge</h1>
-                        <p>Unlock the full potential of your applications with our cutting-edge downgrader tool. Customize, compress, and conquer.</p>
-                        <div class="glass-card download-form">
-                            <div id="downloadFormDiv" hidden>
-                                <form id="downloadForm" target="_blank" action="">
-                                    <label for="binaryType">Binary Type:</label>
-                                    <select id="binaryType" name="binaryType" aria-describedby="binaryTypeHelp">
-                                        <option value="WindowsPlayer">Windows Player</option>
-                                        <option value="WindowsStudio64">Windows Studio 64</option>
-                                        <option value="MacPlayer">Mac Player</option>
-                                        <option value="MacStudio">Mac Studio</option>
-                                    </select>
-                                    <small id="binaryTypeHelp" class="form-text">Select the type of binary you want to download.</small>
+async function downloadZipsFromManifest(manifestBody) {
+    const pkgManifestLines = manifestBody.split("\n").map(line => line.trim());
 
-                                    <label for="channel">Channel Name:</label>
-                                    <input id="channel" name="channel" type="text" placeholder="LIVE" aria-describedby="channelHelp">
-                                    <small id="channelHelp" class="form-text">Enter the channel name (e.g., LIVE).</small>
+    if (pkgManifestLines[0] !== "v0") {
+        log(`[!] Error: unknown rbxPkgManifest format version; expected "v0", got "${pkgManifestLines[0]}"`);
+        return;
+    }
 
-                                    <label for="version">Version Hash:</label>
-                                    <input id="version" name="version" type="text" placeholder="Optional" aria-describedby="versionHelp">
-                                    <small id="versionHelp" class="form-text">Provide a version hash if specific version is needed.</small>
+    if (pkgManifestLines.includes("RobloxApp.zip")) {
+        binExtractRoots = extractRoots.player;
 
-                                    <label for="compressZip">
-                                        <input id="compressZip" name="compressZip" type="checkbox" aria-describedby="compressZipHelp">
-                                        Compress Output Zip
-                                    </label>
-                                    <small id="compressZipHelp" class="form-text">Check to compress the output as a ZIP file.</small>
+        if (binaryType === "WindowsStudio64") {
+            log(`[!] Error: BinaryType \`${binaryType}\` given, but "RobloxApp.zip" was found in the manifest!`);
+            return;
+        }
+    } else if (pkgManifestLines.includes("RobloxStudio.zip")) {
+        binExtractRoots = extractRoots.studio;
 
-                                    <label for="compressionLevel">Zip Compression Level (1-9):</label>
-                                    <input id="compressionLevel" name="compressionLevel" type="number" min="1" max="9" value="5" aria-describedby="compressionLevelHelp">
-                                    <small id="compressionLevelHelp" class="form-text">Set compression level (1 = low, 9 = high).</small>
+        if (binaryType === "WindowsPlayer") {
+            log(`[!] Error: BinaryType \`${binaryType}\` given, but "RobloxStudio.zip" was found in the manifest!`);
+            return;
+        }
+    } else {
+        log("[!] Error: Bad/unrecognized rbxPkgManifest, aborting");
+        return;
+    }
 
-                                    <div>
-                                        <button type="button" class="btn-primary" onclick="downloadFromForm()">Download</button>
-                                        <button type="button" class="btn-primary" onclick="copyPermLink()">Copy Permanent Link</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="right-output">
-                        <output id="consoleText" class="output-console" aria-live="polite" hidden></output>
-                    </div>
-                </div>
-            </div>
-        </section>
+    log(`[+] Fetching blobs for BinaryType \`${binaryType}\`..`);
 
-        <footer>
-            <div class="logo">
-                <img src="/byteforge-icon.png" alt="ByteForge Icon" aria-hidden="true">
-                <div class="neon-text-title">ByteForge</div>
-            </div>
-            <p>Empowering developers with next-generation tools.</p>
-            <div class="footer-links">
-                <a href="#features">Features</a>
-                <a href="#faq">FAQ</a>
-                <a href="/downgrader/downgrader.html">Downgrader</a>
-                <a href="/privacy">Privacy Policy</a>
-                <a href="/terms">Terms of Service</a>
-            </div>
-            <p class="copyright">© 2025 ByteForge. All rights reserved.</p>
-        </footer>
-    </div>
+    zip = new JSZip();
 
-    <script src="js/jszip.min.js" onerror="document.getElementById('consoleText')?.classList.add('visible'); document.getElementById('consoleText')?.removeAttribute('hidden'); document.getElementById('consoleText')?.innerHTML += '<p class=\"noscript-message\">[!] Error: Failed to load JSZip library. Please check your internet connection or file path.</p>';"></script>
-    <script src="js/rdd.js" onerror="document.getElementById('consoleText')?.classList.add('visible'); document.getElementById('consoleText')?.removeAttribute('hidden'); document.getElementById('consoleText')?.innerHTML += '<p class=\"noscript-message\">[!] Error: Failed to load rdd.js. Please check your internet connection or file path.</p>';"></script>
-</body>
-</html>
+    // For both WindowsPlayer and WindowsStudio64
+    zip.file("AppSettings.xml", `<?xml version="1.0" encoding="UTF-8"?>
+<Settings>
+\t<ContentFolder>content</ContentFolder>
+\t<BaseUrl>http://www.roblox.com</BaseUrl>
+</Settings>
+`);
+
+    let threadsLeft = 0;
+
+    function doneCallback() {
+        threadsLeft -= 1;
+    };
+
+    function getThreadsLeft() {
+        return threadsLeft - 1;
+    };
+
+    for (const index in pkgManifestLines) {
+        const pkgManifestLine = pkgManifestLines[index];
+        if (! pkgManifestLine.endsWith(".zip")) {
+            // Not a package in the manifest. Should I be using the checksum? Yes.. I'll do it later. Maybe.
+            continue;
+        }
+
+        threadsLeft += 1;
+        downloadPackage(pkgManifestLine, doneCallback, getThreadsLeft);
+    }
+
+    function checkIfNoThreadsLeft() {
+        if (threadsLeft > 0) {
+            setTimeout(checkIfNoThreadsLeft, 250);
+            return;
+        }
+
+        // Now, we can export and download the complete zip
+        const outputFileName = `${channel}-${binaryType}-${version}.zip`;
+        log();
+        if (compressZip) {
+            log(`[!] NOTE: Compressing final zip (with a compression level of ${compressionLevel}/9), this may take a minute`);
+        }
+
+        log(`[+] Exporting assembled zip file "${outputFileName}".. `, "");
+
+        zip.generateAsync({
+            type: "arraybuffer",
+            compression: compressZip ? "DEFLATE" : "STORE",
+            compressionOptions: {
+                level: compressionLevel
+            }
+        }).then(function(outputZipData) {
+            zip = null;
+            log("done!");
+            downloadBinaryFile(outputFileName, outputZipData);
+        });
+    };
+
+    checkIfNoThreadsLeft();
+};
+
+async function downloadPackage(packageName, doneCallback, getThreadsLeft) {
+    log(`[+] Fetching "${packageName}"..`);
+    const blobUrl = versionPath + packageName;
+
+    requestBinary(blobUrl, async function(blobData) {
+        if (packageName in binExtractRoots == false) {
+            log(`[*] Package name "${packageName}" not defined in extraction roots for BinaryType \`${binaryType}\`, skipping extraction! (THIS MAY MAKE THE ZIP OUTPUT INCOMPLETE, BE AWARE!)`);
+            zip.file(packageName, blobData);
+            log(`[+] Moved package "${packageName}" directly to the root folder`);
+            doneCallback();
+            return;
+        }
+
+        log(`[+] Extracting "${packageName}"..`);
+        const extractRootFolder = binExtractRoots[packageName];
+
+        await JSZip.loadAsync(blobData).then(async function(packageZip) {
+            blobData = null;
+            let fileGetPromises = [];
+
+            packageZip.forEach(function(path, object) {
+                if (path.endsWith("\\")) {
+                    // If it's a directory, skip
+                    return;
+                }
+
+                const fixedPath = path.replace(/\\/g, "/");
+                const fileGetPromise = object.async("arraybuffer").then(function(data) {
+                    zip.file(extractRootFolder + fixedPath, data);
+                });
+
+                fileGetPromises.push(fileGetPromise);
+            });
+
+            await Promise.all(fileGetPromises);
+            packageZip = null;
+        });
+
+        log(`[+] Extracted "${packageName}"! (Packages left: ${getThreadsLeft()})`);
+        doneCallback();
+    });
+};
