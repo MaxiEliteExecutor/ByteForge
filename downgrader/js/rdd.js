@@ -455,8 +455,7 @@ function initialize() {
             checkIfNoThreadsLeft();
         }
 
-        async function downloadPackage(packageName, doneCallback) {
-            console.log("[DEBUG] Downloading package:", packageName});
+        async function downloadPackage(packageName, doneCallback)
             log(`[+] Fetching "${packageName}"...`);
             const blobUrl = versionPath + packageName;
             requestBinary(blobUrl, async function (blobData) {
