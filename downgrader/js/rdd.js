@@ -5,27 +5,7 @@
 */
 
 const basePath = window.location.href.split("?")[0];
-const usageMsg = `[*] USAGE: ${basePath}?channel=<CHANNEL_NAME>&binaryType=<BINARY_TYPE>&version=<VERSION_HASH>
-
-    Binary Types:
-    * WindowsPlayer
-    * WindowsStudio64
-    * MacPlayer
-    * MacStudio
-
-    Extra Notes:
-    * If \`channel\` isn't provided, it will default to "LIVE" (the production channel)
-
-    You can also use an extra query argument we provide, \`blobDir\`, for specifying
-    where RDD should fetch deployment files from. This is useful for using different
-    relative directories than normal for a certain client type, such as for fetching
-    stuff from /mac/arm64/ instead of /mac/
-
-    Blob Directories (Examples):
-    * "/" (Default for WindowsPlayer/WindowsStudio64)
-    * "/mac/" (Default for MacPlayer/MacStudio)
-    * "/mac/arm64/"
-    ..
+const usageMsg = `[*] USAGE: write neede version in Version Hash box
 `;
 
 const hostPath = "https://setup-aws.rbxcdn.com"; // Only the AWS mirror has proper CORS cfg
