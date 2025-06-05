@@ -207,23 +207,40 @@
         }
         .output-console {
             margin-top: 24px;
-            padding: 16px;
+            padding: 10px;
+            border: 2px solid #333;
             border-radius: 8px;
-            background-color: rgba(0, 0, 0, 0.3);
-            color: #c0c0c0;
-            font-size: 16px;
+            background-color: #1a1a2e;
+            color: #e0e0e0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
             line-height: 1.5;
-            height: calc(100vh - 200px); /* Adjustable height to fit within viewport */
+            height: calc(100vh - 200px);
             overflow-y: auto;
-            transition: all 0.3s ease-in-out;
-            white-space: pre-wrap; /* Preserve newlines and spaces */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+        .output-console .console-title {
+            background-color: #2a2a3e;
+            padding: 5px 10px;
+            font-weight: bold;
+            border-bottom: 1px solid #333;
+            border-top-left-radius: 6px;
+            border-top-right-radius: 6px;
+            text-align: center;
+        }
+        .output-console pre {
+            margin: 0;
+            padding: 10px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
         }
         .output-console a {
-            color: #FF4081;
+            color: #00ffcc;
             text-decoration: underline;
         }
         .output-console a:hover {
-            color: #7C4DFF;
+            color: #00cccc;
         }
         .noscript-message {
             background-color: rgba(255, 64, 129, 0.2);
@@ -303,8 +320,8 @@
             }
             .output-console {
                 height: auto;
-                font-size: 18px;
-                padding: 20px;
+                font-size: 14px;
+                padding: 10px;
             }
         }
         .svg-icon { display: inline-block; vertical-align: middle; fill: currentColor; }
@@ -378,8 +395,9 @@
                         </div>
                     </div>
                     <div class="right-output">
-                        <output id="consoleText" class="output-console" aria-live="polite">
-                            <pre></pre> <!-- Added pre element to preserve formatting -->
+                        <output id="consoleText" class="output-console">
+                            <div class="console-title">ByteForge Console</div>
+                            <pre></pre>
                         </output>
                     </div>
                 </div>
