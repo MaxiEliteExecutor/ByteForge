@@ -156,6 +156,9 @@
             line-height: 1.6;
             color: #c0c0c0;
         }
+        #downloadFormDiv.hidden {
+            display: none;
+        }
         .download-form {
             max-width: 600px;
             margin: 0;
@@ -218,7 +221,7 @@
             position: fixed;
             top: 0;
             right: 0;
-            width: 40vw; /* Right side width when not full-screen */
+            width: 40vw;
             height: 100vh;
             z-index: 50;
             background-color: rgba(0, 0, 0, 0.8);
@@ -226,10 +229,6 @@
             padding: 40px;
             font-size: 24px;
             overflow-y: auto;
-        }
-        .output-console.visible.fullscreen {
-            width: 100vw; /* Full-screen when needed */
-            left: 0;
         }
         .output-console a {
             color: #FF4081;
@@ -320,10 +319,6 @@
                 font-size: 18px;
                 padding: 20px;
             }
-            .output-console.visible.fullscreen {
-                width: 100vw;
-                left: 0;
-            }
         }
         .svg-icon { display: inline-block; vertical-align: middle; fill: currentColor; }
     </style>
@@ -358,43 +353,45 @@
                         <h1 class="neon-text-title">Forge Your Power with ByteForge</h1>
                         <p>Unlock the full potential of your applications with our cutting-edge downgrader tool. Customize, compress, and conquer.</p>
                         <div class="glass-card download-form">
-                            <form id="downloadForm" target="_blank" action="">
-                                <label for="binaryType">Binary Type:</label>
-                                <select id="binaryType" name="binaryType" aria-describedby="binaryTypeHelp">
-                                    <option value="WindowsPlayer">Windows Player</option>
-                                    <option value="WindowsStudio64">Windows Studio 64</option>
-                                    <option value="MacPlayer">Mac Player</option>
-                                    <option value="MacStudio">Mac Studio</option>
-                                </select>
-                                <small id="binaryTypeHelp" class="form-text">Select the type of binary you want to download.</small>
+                            <div id="downloadFormDiv" hidden>
+                                <form id="downloadForm" target="_blank" action="">
+                                    <label for="binaryType">Binary Type:</label>
+                                    <select id="binaryType" name="binaryType" aria-describedby="binaryTypeHelp">
+                                        <option value="WindowsPlayer">Windows Player</option>
+                                        <option value="WindowsStudio64">Windows Studio 64</option>
+                                        <option value="MacPlayer">Mac Player</option>
+                                        <option value="MacStudio">Mac Studio</option>
+                                    </select>
+                                    <small id="binaryTypeHelp" class="form-text">Select the type of binary you want to download.</small>
 
-                                <label for="channel">Channel Name:</label>
-                                <input id="channel" name="channel" type="text" placeholder="LIVE" aria-describedby="channelHelp">
-                                <small id="channelHelp" class="form-text">Enter the channel name (e.g., LIVE).</small>
+                                    <label for="channel">Channel Name:</label>
+                                    <input id="channel" name="channel" type="text" placeholder="LIVE" aria-describedby="channelHelp">
+                                    <small id="channelHelp" class="form-text">Enter the channel name (e.g., LIVE).</small>
 
-                                <label for="version">Version Hash:</label>
-                                <input id="version" name="version" type="text" placeholder="Optional" aria-describedby="versionHelp">
-                                <small id="versionHelp" class="form-text">Provide a version hash if specific version is needed.</small>
+                                    <label for="version">Version Hash:</label>
+                                    <input id="version" name="version" type="text" placeholder="Optional" aria-describedby="versionHelp">
+                                    <small id="versionHelp" class="form-text">Provide a version hash if specific version is needed.</small>
 
-                                <label for="compressZip">
-                                    <input id="compressZip" name="compressZip" type="checkbox" aria-describedby="compressZipHelp">
-                                    Compress Output Zip
-                                </label>
-                                <small id="compressZipHelp" class="form-text">Check to compress the output as a ZIP file.</small>
+                                    <label for="compressZip">
+                                        <input id="compressZip" name="compressZip" type="checkbox" aria-describedby="compressZipHelp">
+                                        Compress Output Zip
+                                    </label>
+                                    <small id="compressZipHelp" class="form-text">Check to compress the output as a ZIP file.</small>
 
-                                <label for="compressionLevel">Zip Compression Level (1-9):</label>
-                                <input id="compressionLevel" name="compressionLevel" type="number" min="1" max="9" value="5" aria-describedby="compressionLevelHelp">
-                                <small id="compressionLevelHelp" class="form-text">Set compression level (1 = low, 9 = high).</small>
+                                    <label for="compressionLevel">Zip Compression Level (1-9):</label>
+                                    <input id="compressionLevel" name="compressionLevel" type="number" min="1" max="9" value="5" aria-describedby="compressionLevelHelp">
+                                    <small id="compressionLevelHelp" class="form-text">Set compression level (1 = low, 9 = high).</small>
 
-                                <div>
-                                    <button type="button" class="btn-primary" onclick="downloadFromForm()">Download</button>
-                                    <button type="button" class="btn-primary" onclick="copyPermLink()">Copy Permanent Link</button>
-                                </div>
-                            </form>
+                                    <div>
+                                        <button type="button" class="btn-primary" onclick="downloadFromForm()">Download</button>
+                                        <button type="button" class="btn-primary" onclick="copyPermLink()">Copy Permanent Link</button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                     <div class="right-output">
-                        <output id="consoleText" class="output-console" aria-live="polite"></output>
+                        <output id="consoleText" class="output-console" aria-live="polite" hidden></output>
                     </div>
                 </div>
             </div>
@@ -417,7 +414,7 @@
         </footer>
     </div>
 
-    <script src="js/jszip.min.js" onerror="document.getElementById('consoleText')?.classList.add('visible'); document.getElementById('consoleText')?.innerHTML += '<p class=\"noscript-message\">[!] Error: Failed to load JSZip library. Please check your internet connection or file path.</p>';"></script>
-    <script src="js/rdd.js" onerror="document.getElementById('consoleText')?.classList.add('visible'); document.getElementById('consoleText')?.innerHTML += '<p class=\"noscript-message\">[!] Error: Failed to load rdd.js. Please check your internet connection or file path.</p>';"></script>
+    <script src="js/jszip.min.js" onerror="document.getElementById('consoleText')?.classList.add('visible'); document.getElementById('consoleText')?.removeAttribute('hidden'); document.getElementById('consoleText')?.innerHTML += '<p class=\"noscript-message\">[!] Error: Failed to load JSZip library. Please check your internet connection or file path.</p>';"></script>
+    <script src="js/rdd.js" onerror="document.getElementById('consoleText')?.classList.add('visible'); document.getElementById('consoleText')?.removeAttribute('hidden'); document.getElementById('consoleText')?.innerHTML += '<p class=\"noscript-message\">[!] Error: Failed to load rdd.js. Please check your internet connection or file path.</p>';"></script>
 </body>
 </html>
