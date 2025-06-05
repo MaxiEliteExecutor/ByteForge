@@ -24,7 +24,7 @@ const extractRoots = {
         "content-sounds.zip": "content/sounds/",
         "content-textures2.zip": "content/textures/",
         "content-models.zip": "content/models/",
-        "content-platform-fonts.zip": "PlatformContent/pc/fontsblobs/",
+        "content-platform-fonts.zip": "PlatformContent/pc/fonts/",
         "content-platform-dictionaries.zip": "PlatformContent/pc/shared_compression_dictionaries/",
         "content-terrain.zip": "PlatformContent/pc/terrain/",
         "content-textures3.zip": "PlatformContent/pc/textures/",
@@ -135,6 +135,7 @@ function escHtml(originalText) {
 
 function log(msg = "", end = "\n", autoScroll = true) {
     if (consoleText) {
+        consoleText.classList.add("visible"); // Show output when logging
         consoleText.innerHTML += escHtml(msg) + end;
         if (autoScroll) {
             scrollToBottom();
