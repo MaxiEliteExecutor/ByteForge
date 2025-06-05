@@ -5,7 +5,6 @@
 */
 
 const basePath = window.location.href.split("?")[0];
-const usageMsg = `[*] USAGE: ${basePath}?channel=<CHANNEL_NAME>&binaryType=<BINARY_TYPE>&version=<VERSION_HASH>
 
     Binary Types:
     * WindowsPlayer
@@ -254,11 +253,7 @@ let zip;
 main();
 
 function main() {
-    if (window.location.search === "") {
-        downloadFormDiv.hidden = false;
-        log(usageMsg, "\n", false);
-        return;
-    }
+    
 
     // Query params
 
@@ -286,7 +281,6 @@ function main() {
     // We're also checking to make sure blobDir hasn't been included too for the compatibility warning later
     if (version && ! binaryType) {
         log("[!] Error: If you provide a specific `version`, you need to set the `binaryType` aswell! See the usage doc below for examples of various `binaryType` inputs:", "\n\n");
-        log(usageMsg, "\n", false);
         return;
     }
 
@@ -314,13 +308,11 @@ function main() {
             compressionLevel = parseInt(compressionLevel);
         } catch (err) {
             log(`[!] Error: Failed to parse \`compressionLevel\` query: ${err}`, "\n\n");
-            log(usageMsg, "\n", false);
             return;
         }
 
         if (compressionLevel > 9 || compressionLevel < 1) {
             log(`[!] Error: The \`compressionLevel\` query must be a value between 1 and 9, got ${compressionLevel}`, "\n\n");
-            log(usageMsg, "\n", false);
             return;
         }
     } else {
@@ -330,7 +322,6 @@ function main() {
     // At this point, we expect `binaryType` to be defined
     if (! binaryType) {
         log("[!] Error: Missing required \`binaryType\` query, are you using an old perm link for a specific version?", "\n\n");
-        log(usageMsg, "\n", false);
         return;
     }
 
@@ -343,7 +334,6 @@ function main() {
         }
     } else {
         log(`[!] Error: \`binaryType\` "${binaryType}" not supported. See below for supported \`binaryType\` inputs:`, "\n\n");
-        log(usageMsg);
         return;
     }
 
