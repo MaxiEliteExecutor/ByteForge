@@ -10,43 +10,61 @@
         <link rel="icon" href="favicon.svg">
 
         <style>
-            @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+            <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
 
-            :root {
-                color-scheme: dark light;
-            }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
 
-            body {
-                font-family: 'JetBrains Mono', monospace;
-            }
+    body {
+      background-color: #0f0f0f;
+      color: #f1f1f1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
 
-            form {
-                border-width: thin;
-                border-style: solid;
-                border-radius: 4px;
-                margin-left: 10px;
-                width: fit-content;
-                padding: 18px 18px 18px 18px;
-                line-height: 24px;
-            }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      color: #ffffff;
+    }
 
-            output {
-                white-space: pre-wrap;
-            }
+    p {
+      font-size: 1.1rem;
+      color: #b3b3b3;
+      text-align: center;
+      max-width: 700px;
+      margin-bottom: 30px;
+    }
 
-            button {
-                font-weight: normal;
-            }
+    .button {
+      padding: 12px 30px;
+      background: linear-gradient(135deg, #3b82f6, #6366f1);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.3s ease;
+      text-decoration: none;
+    }
 
-            a:link {
-                color: rgb(43, 162, 241);
-                font-weight: bolder;
-            }
+    .button:hover {
+      background: linear-gradient(135deg, #2563eb, #4f46e5);
+    }
 
-            a:visited {
-                color: rgb(43, 162, 241);
-                font-weight: bolder;
-            }
+    .footer {
+      margin-top: 60px;
+      font-size: 0.9rem;
+      color: #777;
+    }
+  </style>
         </style>
     </head>
 
