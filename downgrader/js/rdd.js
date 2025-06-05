@@ -129,7 +129,6 @@ function escHtml(originalText) {
         .replace(/&/g, "&")
         .replace(/</g, "<")
         .replace(/>/g, ">")
-        .replace(/"/g, """)
         .replace(/'/g, "'")
         .replace(/ /g, " ")
         .replace(/\n/g, "<br>");
