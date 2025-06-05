@@ -1,193 +1,258 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ByteForge - Roblox Executor</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --neon-blue: #00f2ff;
-      --neon-purple: #bb00ff;
-      --bg-dark: #0a0a0f;
-      --glass-bg: rgba(255, 255, 255, 0.05);
-      --glass-border: rgba(255, 255, 255, 0.1);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: 'Orbitron', sans-serif;
-      background: linear-gradient(135deg, #0a0a0f 0%, #0d0d15 100%);
-      color: #fff;
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
-
-    header {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 2rem;
-      background: radial-gradient(circle at center, #1b1b2f 0%, #0a0a0f 100%);
-    }
-
-    h1 {
-      font-size: 4rem;
-      background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
-      -webkit-background-clip: text;
-      color: transparent;
-      margin-bottom: 1rem;
-    }
-
-    p.description {
-      max-width: 700px;
-      color: #cfcfcf;
-      font-size: 1.25rem;
-      margin-bottom: 2rem;
-    }
-
-    .download-btn {
-      background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
-      padding: 1rem 3rem;
-      border: none;
-      border-radius: 30px;
-      font-size: 1.2rem;
-      color: white;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 0 25px var(--neon-purple);
-    }
-
-    .download-btn:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 0 30px var(--neon-blue);
-    }
-
-    section {
-      padding: 4rem 2rem;
-      max-width: 1200px;
-      margin: auto;
-    }
-
-    .glass {
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
-      border-radius: 20px;
-      padding: 2rem;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
-      margin-bottom: 3rem;
-    }
-
-    .screenshots {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .screenshots img {
-      width: 100%;
-      border-radius: 15px;
-      transition: transform 0.3s, box-shadow 0.3s;
-    }
-
-    .screenshots img:hover {
-      transform: scale(1.03);
-      box-shadow: 0 0 20px var(--neon-blue);
-    }
-
-    .testimonials {
-      display: flex;
-      overflow-x: auto;
-      gap: 1rem;
-      scroll-snap-type: x mandatory;
-    }
-
-    .testimonial {
-      min-width: 300px;
-      flex-shrink: 0;
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
-      border-radius: 20px;
-      padding: 1.5rem;
-      scroll-snap-align: start;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-    }
-
-    .faq-item summary {
-      cursor: pointer;
-      font-weight: bold;
-      color: var(--neon-blue);
-      margin-bottom: 0.5rem;
-    }
-
-    .faq-item {
-      margin-bottom: 1rem;
-    }
-
-    details[open] summary {
-      color: var(--neon-purple);
-    }
-
-    @media (max-width: 768px) {
-      h1 {
-        font-size: 2.5rem;
-      }
-
-      .download-btn {
-        padding: 0.8rem 2rem;
-        font-size: 1rem;
-      }
-    }
-  </style>
-</head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ByteForge - The Ultimate Roblox Executor</title>
+    </head>
 <body>
-  <header>
-    <h1>ByteForge</h1>
-    <p class="description">Unleash fast injection, built-in script hub, and cutting-edge anti-ban features. The ultimate Roblox executor is here.</p>
-    <button class="download-btn">Download Now</button>
-  </header>
+    <div class="min-h-screen bg-gradient-to-br from-black via-red-950/30 to-purple-950/40 text-white overflow-hidden">
 
-  <section class="glass">
-    <h2 style="margin-bottom: 1rem;">Screenshots</h2>
-    <div class="screenshots">
-      <img src="screenshot1.jpg" alt="Screenshot 1" />
-      <img src="screenshot2.jpg" alt="Screenshot 2" />
-      <img src="screenshot3.jpg" alt="Screenshot 3" />
+        <div class="fixed inset-0 overflow-hidden pointer-events-none">
+            </div>
+
+        <header class="relative z-10 p-6">
+            <nav class="flex justify-between items-center max-w-7xl mx-auto">
+                <div class="flex items-center space-x-3">
+                    <img src="/byteforge-icon.png" alt="ByteForge Icon" width="40" height="40" class="w-10 h-10">
+                    <div class="text-2xl font-bold bg-gradient-to-r from-red-400 to-purple-400 bg-clip-text text-transparent">
+                        ByteForge
+                    </div>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#features" class="hover:text-red-400 transition-colors">Features</a>
+                    <a href="#screenshots" class="hover:text-purple-400 transition-colors">Screenshots</a>
+                    <a href="#testimonials" class="hover:text-pink-400 transition-colors">Reviews</a>
+                    <a href="#faq" class="hover:text-red-300 transition-colors">FAQ</a>
+                </div>
+            </nav>
+        </header>
+
+        <section class="relative z-10 px-6 py-20 text-center">
+            <div class="max-w-4xl mx-auto">
+                <div class="flex justify-center mb-8">
+                    <img src="/byteforge-icon.png" alt="ByteForge" width="120" height="120" class="w-30 h-30 animate-pulse">
+                </div>
+                <h1 class="text-6xl md:text-8xl font-bold mb-6 bg-gradient-to-r from-red-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-pulse">
+                    BYTEFORGE
+                </h1>
+                <p class="text-xl md:text-2xl mb-8 text-gray-300 max-w-2xl mx-auto leading-relaxed">
+                    The most advanced Roblox executor forged in the depths of code. Lightning-fast injection, comprehensive
+                    script hub, and military-grade anti-ban protection. Dominate every game.
+                </p>
+
+                <div class="flex flex-wrap justify-center gap-6 mb-12">
+                    <div class="flex items-center space-x-2 bg-black/40 backdrop-blur-md rounded-full px-4 py-2 border border-red-500/30">
+                        <span class="text-sm">Fast Injection</span>
+                    </div>
+                    <div class="flex items-center space-x-2 bg-black/40 backdrop-blur-md rounded-full px-4 py-2 border border-purple-500/30">
+                        <span class="text-sm">Script Hub</span>
+                    </div>
+                    <div class="flex items-center space-x-2 bg-black/40 backdrop-blur-md rounded-full px-4 py-2 border border-pink-500/30">
+                        <span class="text-sm">Anti-Ban</span>
+                    </div>
+                </div>
+
+                <a href="https://github.com/MaxiEliteVscripts/MaxiEliteinjector/raw/refs/heads/main/MaxiElite%5BBeta%5D.zip"
+                   class="inline-flex items-center justify-center bg-gradient-to-r from-red-600 to-purple-600 hover:from-red-700 hover:to-purple-700 text-white px-12 py-6 text-xl rounded-2xl shadow-2xl hover:shadow-red-500/25 transition-all duration-300 transform hover:scale-105 border border-red-400/50">
+                    FORGE YOUR POWER
+                </a>
+                <p class="text-sm text-gray-400 mt-4">Free • Windows 10/11 • Forged Daily</p>
+            </div>
+        </section>
+
+        <section id="features" class="relative z-10 px-6 py-20">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-red-400 to-purple-400 bg-clip-text text-transparent">
+                    Forged Features
+                </h2>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="bg-black/20 backdrop-blur-md border border-red-500/20 hover:border-red-400/50 transition-all duration-300 hover:shadow-lg hover:shadow-red-500/20">
+                        <div class="p-8 text-center">
+                            <h3 class="text-xl font-bold mb-4 text-white">Lightning Fast</h3>
+                            <p class="text-gray-300">Inject scripts in under 2 seconds with our forged engine. No lag, no delays.</p>
+                        </div>
+                    </div>
+                    <div class="bg-black/20 backdrop-blur-md border border-purple-500/20 hover:border-purple-400/50 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/20">
+                        <div class="p-8 text-center">
+                            <h3 class="text-xl font-bold mb-4 text-white">Script Forge</h3>
+                            <p class="text-gray-300">Access thousands of hand-forged scripts for every popular Roblox game. Always updated.</p>
+                        </div>
+                    </div>
+                    <div class="bg-black/20 backdrop-blur-md border border-pink-500/20 hover:border-pink-400/50 transition-all duration-300 hover:shadow-lg hover:shadow-pink-500/20">
+                        <div class="p-8 text-center">
+                            <h3 class="text-xl font-bold mb-4 text-white">Forge Shield</h3>
+                            <p class="text-gray-300">Advanced protection algorithms forged to keep your account safe. 99.9% ban-free guarantee.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="screenshots" class="relative z-10 px-6 py-20">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-purple-400 to-red-400 bg-clip-text text-transparent">
+                    Forged Interface
+                </h2>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="group relative overflow-hidden rounded-2xl bg-black/20 backdrop-blur-md border border-red-500/20 hover:border-purple-400/50 transition-all duration-300 shadow-lg shadow-red-500/10">
+                        <img src="/interface-1.png" alt="ByteForge Code Editor" width="800" height="600" class="w-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                            <p class="text-white p-4 text-sm">Advanced Code Editor Interface</p>
+                        </div>
+                    </div>
+                    <div class="group relative overflow-hidden rounded-2xl bg-black/20 backdrop-blur-md border border-red-500/20 hover:border-purple-400/50 transition-all duration-300 shadow-lg shadow-red-500/10">
+                        <img src="/interface-2.png" alt="ByteForge Script Search" width="800" height="600" class="w-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                            <p class="text-white p-4 text-sm">Integrated Script Search</p>
+                        </div>
+                    </div>
+                    <div class="group relative overflow-hidden rounded-2xl bg-black/20 backdrop-blur-md border border-red-500/20 hover:border-purple-400/50 transition-all duration-300 shadow-lg shadow-red-500/10">
+                        <img src="/interface-3.png" alt="ByteForge Settings" width="800" height="600" class="w-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                            <p class="text-white p-4 text-sm">Customizable Executor Settings</p>
+                        </div>
+                    </div>
+                    <div class="group relative overflow-hidden rounded-2xl bg-black/20 backdrop-blur-md border border-red-500/20 hover:border-purple-400/50 transition-all duration-300 shadow-lg shadow-red-500/10">
+                        <img src="/interface-4.png" alt="ByteForge API Settings" width="800" height="600" class="w-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                            <p class="text-white p-4 text-sm">Advanced API Configuration</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-12 text-center">
+                    <p class="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
+                        ByteForge features a sleek, modern interface with powerful tools for script execution, customization, and
+                        API integration. Built for both beginners and power users.
+                    </p>
+                    <div class="inline-flex items-center space-x-2 bg-black/40 backdrop-blur-md rounded-full px-6 py-3 border border-red-500/30">
+                        <span class="text-sm">Powered by advanced injection technology</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="testimonials" class="relative z-10 px-6 py-20">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-red-400 to-pink-400 bg-clip-text text-transparent">
+                    Forged Reviews
+                </h2>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="bg-black/20 backdrop-blur-md border border-purple-500/20 hover:border-red-400/50 transition-all duration-300 hover:shadow-lg hover:shadow-red-500/20">
+                        <div class="p-6">
+                            <div class="flex items-center mb-4">
+                                <img src="/placeholder.svg?height=40&width=40" alt="Alex_Gamer" width="40" height="40" class="rounded-full mr-3">
+                                <div>
+                                    <h4 class="font-bold text-white">Alex_Gamer</h4>
+                                    <div class="flex">
+                                        </div>
+                                </div>
+                            </div>
+                            <p class="text-gray-300 italic">"Best executor I've ever used! Lightning fast injection and never got banned."</p>
+                        </div>
+                    </div>
+                    <div class="bg-black/20 backdrop-blur-md border border-purple-500/20 hover:border-red-400/50 transition-all duration-300 hover:shadow-lg hover:shadow-red-500/20">
+                        <div class="p-6">
+                            <div class="flex items-center mb-4">
+                                <img src="/placeholder.svg?height=40&width=40" alt="ScriptMaster99" width="40" height="40" class="rounded-full mr-3">
+                                <div>
+                                    <h4 class="font-bold text-white">ScriptMaster99</h4>
+                                    <div class="flex">
+                                        </div>
+                                </div>
+                            </div>
+                            <p class="text-gray-300 italic">"The script hub is incredible. Thousands of scripts at my fingertips!"</p>
+                        </div>
+                    </div>
+                    <div class="bg-black/20 backdrop-blur-md border border-purple-500/20 hover:border-red-400/50 transition-all duration-300 hover:shadow-lg hover:shadow-red-500/20">
+                        <div class="p-6">
+                            <div class="flex items-center mb-4">
+                                <img src="/placeholder.svg?height=40&width=40" alt="RobloxPro2024" width="40" height="40" class="rounded-full mr-3">
+                                <div>
+                                    <h4 class="font-bold text-white">RobloxPro2024</h4>
+                                    <div class="flex">
+                                        </div>
+                                </div>
+                            </div>
+                            <p class="text-gray-300 italic">"Anti-ban protection actually works. Been using for months without issues."</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-8 mt-16 text-center">
+                    <div class="bg-black/20 backdrop-blur-md rounded-2xl p-6 border border-red-500/20">
+                        <div class="text-2xl font-bold text-white">500K+</div>
+                        <div class="text-gray-400">Forged Users</div>
+                    </div>
+                    <div class="bg-black/20 backdrop-blur-md rounded-2xl p-6 border border-purple-500/20">
+                        <div class="text-2xl font-bold text-white">2M+</div>
+                        <div class="text-gray-400">Downloads</div>
+                    </div>
+                    <div class="bg-black/20 backdrop-blur-md rounded-2xl p-6 border border-pink-500/20">
+                        <div class="text-2xl font-bold text-white">99.9%</div>
+                        <div class="text-gray-400">Uptime</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="faq" class="relative z-10 px-6 py-20">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-pink-400 to-red-400 bg-clip-text text-transparent">
+                    Forge Knowledge
+                </h2>
+                <div class="space-y-4">
+                    <div class="w-full"> <div class="bg-black/20 backdrop-blur-md border border-red-500/20 hover:border-purple-400/50 transition-all duration-300 cursor-pointer">
+                            <div class="p-6">
+                                <div class="flex justify-between items-center">
+                                    <h3 class="text-lg font-semibold text-white text-left">Is this executor safe to use?</h3>
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="px-6 pb-6 text-gray-300">
+                        Yes, our executor features advanced anti-ban protection and is regularly updated to ensure maximum safety while using Roblox.
+                    </div>
+                    </div>
+            </div>
+        </section>
+
+        <section class="relative z-10 px-6 py-20 text-center">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-4xl font-bold mb-6 bg-gradient-to-r from-red-400 to-purple-400 bg-clip-text text-transparent">
+                    Ready to Forge Victory?
+                </h2>
+                <p class="text-xl text-gray-300 mb-8">
+                    Join millions of users who trust ByteForge for their Roblox scripting dominance.
+                </p>
+                <a href="https://github.com/MaxiEliteVscripts/MaxiEliteinjector/raw/refs/heads/main/MaxiElite%5BBeta%5D.zip"
+                   class="inline-flex items-center justify-center bg-gradient-to-r from-purple-600 to-red-600 hover:from-purple-700 hover:to-red-700 text-white px-12 py-6 text-xl rounded-2xl shadow-2xl hover:shadow-purple-500/25 transition-all duration-300 transform hover:scale-105 border border-purple-400/50">
+                    BEGIN FORGING
+                </a>
+            </div>
+        </section>
+
+        <footer class="relative z-10 px-6 py-12 border-t border-red-500/20">
+            <div class="max-w-6xl mx-auto text-center">
+                <div class="flex justify-center items-center space-x-3 mb-4">
+                    <img src="/byteforge-icon.png" alt="ByteForge Icon" width="32" height="32" class="w-8 h-8">
+                    <div class="text-2xl font-bold bg-gradient-to-r from-red-400 to-purple-400 bg-clip-text text-transparent">
+                        ByteForge
+                    </div>
+                </div>
+                <p class="text-gray-400 mb-6">The ultimate Roblox executor forged for power users.</p>
+                <div class="flex justify-center space-x-8 text-sm text-gray-400">
+                    <a href="#" class="hover:text-red-400 transition-colors">Privacy Policy</a>
+                    <a href="#" class="hover:text-purple-400 transition-colors">Terms of Service</a>
+                    <a href="#" class="hover:text-pink-400 transition-colors">Support</a>
+                    <a href="#" class="hover:text-red-300 transition-colors">Discord</a>
+                </div>
+                <p class="text-xs text-gray-500 mt-6">
+                    © 2024 ByteForge. All rights reserved. Not affiliated with Roblox Corporation.
+                </p>
+            </div>
+        </footer>
     </div>
-  </section>
-
-  <section class="glass">
-    <h2 style="margin-bottom: 1rem;">What Users Say</h2>
-    <div class="testimonials">
-      <div class="testimonial">"ByteForge changed the game. Fast and secure!" - Alex</div>
-      <div class="testimonial">"The script hub is a life-saver. 10/10." - Jamie</div>
-      <div class="testimonial">"Never got banned once. Super reliable." - Casey</div>
-    </div>
-  </section>
-
-  <section class="glass">
-    <h2 style="margin-bottom: 1rem;">FAQ</h2>
-    <details class="faq-item">
-      <summary>Is ByteForge safe to use?</summary>
-      <p>Yes, it includes advanced anti-ban technology to keep your account secure.</p>
-    </details>
-    <details class="faq-item">
-      <summary>How do I install ByteForge?</summary>
-      <p>Just click "Download Now" and follow the installer instructions provided.</p>
-    </details>
-    <details class="faq-item">
-      <summary>Does ByteForge come with preloaded scripts?</summary>
-      <p>Yes! Our built-in script hub features a wide variety of popular scripts.</p>
-    </details>
-  </section>
 </body>
 </html>
