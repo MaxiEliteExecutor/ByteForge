@@ -7,7 +7,6 @@
     <link rel="icon" href="/byteforge-icon.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        /* Base styles */
         body {
             margin: 0;
             font-family: 'Roboto', sans-serif;
@@ -71,23 +70,23 @@
             padding: 16px 32px;
             font-size: 18px;
             font-weight: bold;
-            border-radius: 12px;
+            border-radius: 8px;
             border: none;
             cursor: pointer;
-            text-decoration: none;
             color: #ffffff;
-            background: linear-gradient(45deg, #7C4DFF, #FF4081);
-            box-shadow: 0 8px 20px rgba(124, 77, 255, 0.4);
+            background: linear-gradient(45deg, #7C4DFF, #FF4080);
+            box-shadow: 0 8px 20px rgba(44, 77, 255, 0.4);
             transition: all 0.3s ease-in-out;
         }
         .btn-primary:hover {
             transform: scale(1.05);
-            box-shadow: 0 12px 30px rgba(124, 77, 255, 0.6);
-            background: linear-gradient(45deg, #FF4081, #7C4DFF);
+            box-shadow: 0 12px 30px rgba(44, 77, 255, 0.6);
+            background: linear-gradient(45deg, #FF4080, #7C4DFF);
         }
         header {
             padding: 24px;
-            z-index: 100; /* Ensure nav stays above full-screen output */
+            position: relative;
+            z-index: 100;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         nav {
@@ -120,7 +119,7 @@
             position: relative;
         }
         nav .nav-links a:hover {
-            color: #FF4081;
+            color: #FF4080;
             text-shadow: 0 0 8px rgba(255, 64, 129, 0.6);
         }
         nav .nav-links a::after {
@@ -142,7 +141,7 @@
             transition: opacity 0.3s ease-in-out;
         }
         .hero-section.hidden {
-            display: none; /* Hide during download */
+            display: none;
         }
         .hero-section h1 {
             font-size: 64px;
@@ -191,27 +190,27 @@
             border-radius: 8px;
             background-color: rgba(0, 0, 0, 0.3);
             color: #c0c0c0;
-            font-size: 16px; /* Default font size */
+            font-size: 16px;
             line-height: 1.5;
             display: none; /* Hidden by default */
             transition: all 0.3s ease-in-out;
         }
         .output-console.visible {
             display: block;
-            position: fixed; /* Full-screen */
+            position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            z-index: 50; /* Below nav, above blobs */
-            background-color: rgba(0, 0, 0, 0.8); /* Darker for contrast */
+            z-index: 50;
+            background-color: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(10px);
             padding: 40px;
-            font-size: 24px; /* Larger font for full-screen */
-            overflow-y: auto; /* Scrollable if content overflows */
+            font-size: 24px;
+            overflow-y: auto;
         }
         .output-console a {
-            color: #FF4081;
+            color: #FF4080;
             text-decoration: underline;
         }
         .output-console a:hover {
@@ -221,7 +220,7 @@
             background-color: rgba(255, 64, 129, 0.2);
             padding: 16px;
             border-radius: 8px;
-            color: #FF4081;
+            color: #FF4080;
             margin-bottom: 24px;
         }
         footer {
@@ -233,7 +232,7 @@
             transition: opacity 0.3s ease-in-out;
         }
         footer.hidden {
-            display: none; /* Hide during download */
+            display: none;
         }
         footer .logo {
             display: flex;
@@ -285,7 +284,7 @@
             .download-form input[type="text"],
             .download-form input[type="number"] { font-size: 14px; }
             .btn-primary { padding: 12px 24px; font-size: 16px; }
-            .output-console.visible { font-size: 18px; padding: 20px; } /* Slightly smaller on mobile */
+            .output-console.visible { font-size: 18px; padding: 20px; }
         }
         .svg-icon { display: inline-block; vertical-align: middle; fill: currentColor; }
     </style>
@@ -318,7 +317,7 @@
                 <h1 class="neon-text-title">Forge Your Power with ByteForge</h1>
                 <p>Unlock the full potential of your applications with our cutting-edge downgrader tool. Customize, compress, and conquer.</p>
                 <div class="glass-card download-form">
-                    <form id="downloadForm" target="_blank" action="">
+                    <form id="downloadForm" action="">
                         <label for="binaryType">Binary Type:</label>
                         <select id="binaryType" name="binaryType" aria-describedby="binaryTypeHelp">
                             <option value="WindowsPlayer">Windows Player</option>
@@ -342,13 +341,13 @@
                         </label>
                         <small id="compressZipHelp" class="form-text">Check to compress the output as a ZIP file.</small>
 
-                        <label for=" compressionLevel">Zip Compression Level (1-9):</label>
+                        <label for="compressionLevel">Zip Compression Level (1-9):</label>
                         <input id="compressionLevel" name="compressionLevel" type="number" min="1" max="9" value="5" aria-describedby="compressionLevelHelp">
                         <small id="compressionLevelHelp" class="form-text">Set compression level (1 = low, 9 = high).</small>
 
                         <div>
-                            <button type="button" class="btn-primary" onclick="downloadFromForm()">Download</button>
-                            <button type="button" class="btn-primary" onclick="copyPermLink()">Copy Permanent Link</button>
+                            <button type="button" id="downloadButton" class="btn-primary">Download</button>
+                            <button type="button" id="copyLinkButton" class="btn-primary">Copy Permanent Link</button>
                         </div>
                     </form>
                     <output id="consoleText" class="output-console" aria-live="polite"></output>
