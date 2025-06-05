@@ -213,8 +213,10 @@
             color: #c0c0c0;
             font-size: 16px;
             line-height: 1.5;
+            height: calc(100vh - 200px); /* Adjustable height to fit within viewport */
             overflow-y: auto;
             transition: all 0.3s ease-in-out;
+            white-space: pre-wrap; /* Preserve newlines and spaces */
         }
         .output-console a {
             color: #FF4081;
@@ -376,7 +378,9 @@
                         </div>
                     </div>
                     <div class="right-output">
-                        <output id="consoleText" class="output-console" aria-live="polite"></output>
+                        <output id="consoleText" class="output-console" aria-live="polite">
+                            <pre></pre> <!-- Added pre element to preserve formatting -->
+                        </output>
                     </div>
                 </div>
             </div>
@@ -399,7 +403,7 @@
         </footer>
     </div>
 
-    <script src="js/jszip.min.js" onerror="document.getElementById('consoleText')?.innerHTML += '<p class=\"noscript-message\">[!] Error: Failed to load JSZip library. Please check your internet connection or file path.</p>';"></script>
-    <script src="js/rdd.js" onerror="document.getElementById('consoleText')?.innerHTML += '<p class=\"noscript-message\">[!] Error: Failed to load rdd.js. Please check your internet connection or file path.</p>';"></script>
+    <script src="js/jszip.min.js" onerror="document.getElementById('consoleText')?.getElementsByTagName('pre')[0]?.innerHTML += '<p class=\"noscript-message\">[!] Error: Failed to load JSZip library. Please check your internet connection or file path.</p>';"></script>
+    <script src="js/rdd.js" onerror="document.getElementById('consoleText')?.getElementsByTagName('pre')[0]?.innerHTML += '<p class=\"noscript-message\">[!] Error: Failed to load rdd.js. Please check your internet connection or file path.</p>';"></script>
 </body>
 </html>
