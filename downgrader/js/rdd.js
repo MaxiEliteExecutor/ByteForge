@@ -456,18 +456,14 @@ function initialize() {
         }
 
         async function downloadPackage(packageName, doneCallback)
-            log(`[+] Fetching "${packageName}"...`);
             const blobUrl = versionPath + packageName;
             requestBinary(blobUrl, async function (blobData) {
                 if (!(packageName in binExtractRoots)) {
-                    log(`[*] Package "${packageName}" not found in extraction roots for \`${binaryType}\`, skipping extraction! (This may result in an incomplete zip file.)`);
                     zip.file(packageName, blobData);
-                    log(`[+] Moved "${packageName}"`);
                     doneCallback();
                     return;
                 }
 
-                log(`[+] Extracting "${packageName}"...`);
                 const extractRootFolder = binExtractRoots[packageName];
                 try {
                     const packageZip = await JSZip.loadAsync(blobData);
@@ -482,10 +478,8 @@ function initialize() {
                         }));
                     });
                     await Promise.all(fileGetPromises);
-                    log(`[+] Extracted "${packageName}"! (Packages left: ${threadsLeft - 1})`);
                     doneCallback();
                 } catch (err) {
-                    log(`[!] Error extracting "${packageName}": ${err}`);
                     doneCallback();
                     showContentAfterDownload();
                 }
