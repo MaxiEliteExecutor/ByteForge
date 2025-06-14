@@ -2,9 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Terra</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ByteForge - Roblox Deployment Downloader</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <style>
     html {
       scroll-behavior: smooth;
@@ -191,263 +193,362 @@
       margin-right: 8px;
     }
     .downgrader-form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            max-width: 600px;
-            width: 100%;
-            animation: slideUp 1s ease 0.6s forwards;
-            opacity: 0;
-        }
-        .downgrader-form select, .downgrader-form input[type="text"] {
-            padding: 12px;
-            font-size: 16px;
-            background: #333;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            font-family: 'Inter', sans-serif;
-            transition: all 0.3s ease;
-        }
-        .downgrader-form select:focus, .downgrader-form input[type="text"]:focus {
-            outline: none;
-            box-shadow: 0 0 10px #3a86ff;
-        }
-        .downgrader-form .output-area {
-            background: #333;
-            border-radius: 8px;
-            padding: 15px;
-            min-height: 100px;
-            color: #aaa;
-            font-size: 14px;
-            font-family: 'Inter', sans-serif;
-        }
-        #downgrader-form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            max-width: 600px;
-            width: 100%;
-            animation: slideUp 1s ease 0.6s forwards;
-            opacity: 0;
-        }
-        #downgrader-form label {
-            font-size: 16px;
-            color: #ccc;
-            text-align: left;
-        }
-        #downgrader-form select, #downgrader-form input[type="text"], #downgrader-form input[type="number"] {
-            padding: 12px;
-            font-size: 16px;
-            background: #333;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            font-family: 'Inter', sans-serif;
-            transition: all 0.3s ease;
-        }
-        #downgrader-form select:focus, #downgrader-form input[type="text"]:focus, #downgrader-form input[type="number"]:focus {
-            outline: none;
-            box-shadow: 0 0 10px #3a86ff;
-        }
-        #downgrader-form input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            accent-color: #3a86ff;
-            vertical-align: middle;
-            margin-right: 10px;
-        }
-        #downgrader-form .form-text {
-            font-size: 14px;
-            color: #aaa;
-            text-align: left;
-        }
-        #downgrader-form .buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-        }
-        #downgrader-form .btn {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      max-width: 600px;
+      width: 100%;
+      animation: slideUp 1s ease 0.6s forwards;
+      opacity: 0;
+    }
+    .downgrader-form select, .downgrader-form input[type="text"] {
+      padding: 12px;
+      font-size: 16px;
+      background: #333;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.3s ease;
+    }
+    .downgrader-form select:focus, .downgrader-form input[type="text"]:focus {
+      outline: none;
+      box-shadow: 0 0 10px #3a86ff;
+    }
+    .downgrader-form .output-area {
+      background: #333;
+      border-radius: 8px;
+      padding: 15px;
+      min-height: 100px;
+      color: #aaa;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+    }
+    #downgrader-form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      max-width: 600px;
+      width: 100%;
+      animation: slideUp 1s ease 0.6s forwards;
+      opacity: 0;
+    }
+    #downgrader-form label {
+      font-size: 16px;
+      color: #ccc;
+      text-align: left;
+    }
+    #downgrader-form select, #downgrader-form input[type="text"], #downgrader-form input[type="number"] {
+      padding: 12px;
+      font-size: 16px;
+      background: #333;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.3s ease;
+    }
+    #downgrader-form select:focus, #downgrader-form input[type="text"]:focus, #downgrader-form input[type="number"]:focus {
+      outline: none;
+      box-shadow: 0 0 10px #3a86ff;
+    }
+    #downgrader-form input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      accent-color: #3a86ff;
+      vertical-align: middle;
+      margin-right: 10px;
+    }
+    #downgrader-form .form-text {
+      font-size: 14px;
+      color: #aaa;
+      text-align: left;
+    }
+    #downgrader-form .buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+    }
+    #downgrader-form .btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
   </style>
 </head>
 <body>
+  <canvas id="canvas"></canvas>
 
-<canvas id="canvas"></canvas>
+  <div class="bg-layer" id="bg1"></div>
+  <div class="bg-layer" id="bg2"></div>
 
-<div class="bg-layer" id="bg1"></div>
-<div class="bg-layer" id="bg2"></div>
+  <div class="nav">
+    <a href="https://github.com/your-repo" class="nav-item">
+      <i class="fab fa-github"></i>
+      <span>GitHub</span>
+    </a>
+    <div class="divider"></div>
+    <a href="https://discord.gg/kCvc3Y65kj" class="nav-item">
+      <i class="fab fa-discord"></i>
+      <span>Discord</span>
+    </a>
+  </div>
 
-<div class="nav">
-  <a href="https://link-target.net/1335270/DWyADP4jMRS4" class="nav-item">
-    <i class="fas fa-download"></i>
-    <span>Download</span>
-  </a>
-  <div class="divider"></div>
-  <a href="/" class="nav-item">
-    <i class="fab fa-youtube"></i>
-    <span>Youtube</span>
-  </a>
-  <a href="https://discord.gg/kCvc3Y65kj" class="nav-item">
-    <i class="fab fa-discord"></i>
-    <span>Discord</span>
-  </a>
-  <a href="/downgrader/downgrader.html" class="nav-item">
-    <i class="fas fa-arrow-down"></i>
-    <span>Downgrader</span>
-  </a>
-  <a href="/port.html" class="nav-item">
-    <i class="fas fa-server"></i>
-    <span>Port</span>
-  </a>
-</div>
+  <div class="container">
+    <h1>ByteForge Downloader</h1>
+    <p>Download Roblox deployments (Windows/Mac) directly from your browser.</p>
+    <form id="downgrader-form">
+      <label for="binaryType">Binary Type:</label>
+      <select id="binaryType" name="binaryType" aria-describedby="binaryTypeHelp">
+        <option value="WindowsPlayer">Windows Player</option>
+        <option value="WindowsStudio64">Windows Studio 64</option>
+        <option value="MacPlayer">Mac Player</option>
+        <option value="MacStudio">Mac Studio</option>
+      </select>
+      <small id="binaryTypeHelp" class="form-text">Select the type of binary you want to download.</small>
 
-<div class="container">
-  <h1>ByteForge</h1>
-  <p>
-    <div class="container">
-        <h1>Downgrade Your Server</h1>
-        <p>Select a version or enter a custom version to downgrade your server.</p>
-        <form id="downgrader-form" target="_blank" action="">
-                                    <label for="binaryType">Binary Type:</label>
-                                    <select id="binaryType" name="binaryType" aria-describedby="binaryTypeHelp">
-                                        <option value="WindowsPlayer">Windows Player</option>
-                                        <option value="WindowsStudio64">Windows Studio 64</option>
-                                        <option value="MacPlayer">Mac Player</option>
-                                        <option value="MacStudio">Mac Studio</option>
-                                    </select>
-                                    <small id="binaryTypeHelp" class="form-text">Select the type of binary you want to download.</small>
+      <label for="channel">Channel Name:</label>
+      <input id="channel" name="channel" type="text" placeholder="LIVE" aria-describedby="channelHelp">
+      <small id="channelHelp" class="form-text">Enter the channel name (e.g., LIVE).</small>
 
-                                    <label for="channel">Channel Name:</label>
-                                    <input id="channel" name="channel" type="text" placeholder="LIVE" aria-describedby="channelHelp">
-                                    <small id="channelHelp" class="form-text">Enter the channel name (e.g., LIVE).</small>
+      <label for="version">Version Hash:</label>
+      <input id="version" name="version" type="text" placeholder="Optional" aria-describedby="versionHelp">
+      <small id="versionHelp" class="form-text">Provide a version hash for a specific version.</small>
 
-                                    <label for="version">Version Hash:</label>
-                                    <input id="version" name="version" type="text" placeholder="Optional" aria-describedby="versionHelp">
-                                    <small id="versionHelp" class="form-text">Provide a version hash if specific version is needed.</small>
+      <label for="compressZip">
+        <input id="compressZip" name="compressZip" type="checkbox" checked aria-describedby="compressZipHelp">
+        Compress Output Zip
+      </label>
+      <small id="compressZipHelp" class="form-text">Check to compress the output as a ZIP file.</small>
 
-                                    <label for="compressZip">
-                                        <input id="compressZip" name="compressZip" type="checkbox" aria-describedby="compressZipHelp">
-                                        Compress Output Zip
-                                    </label>
-                                    <small id="compressZipHelp" class="form-text">Check to compress the output as a ZIP file.</small>
+      <label for="compressionLevel">Zip Compression Level (1-9):</label>
+      <input id="compressionLevel" name="compressionLevel" type="number" min="1" max="9" value="5" aria-describedby="compressionLevelHelp">
+      <small id="compressionLevelHelp" class="form-text">Set compression level (1 = low, 9 = high).</small>
 
-                                    <label for="compressionLevel">Zip Compression Level (1-9):</label>
-                                    <input id="compressionLevel" name="compressionLevel" type="number" min="1" max="9" value="5" aria-describedby="compressionLevelHelp">
-                                    <small id="compressionLevelHelp" class="form-text">Set compression level (1 = low, 9 = high).</small>
-                                </form>
+      <div class="buttons">
+        <button type="button" onclick="downloadFromForm()" class="btn"><i class="fas fa-download"></i> Download</button>
+        <button type="button" onclick="copyPermLink()" class="btn"><i class="fas fa-link"></i> Copy Link</button>
+      </div>
+    </form>
+    <div id="output-area" class="output-area">Ready to download...</div>
+  </div>
+
+  <footer>
+    <div class="footer-line"></div>
+    <div class="footer-content">
+      <a href="https://discord.gg/kCvc3Y65kj" target="_blank"><i class="fab fa-discord"></i> Discord</a>
+      <a href="https://github.com/your-repo" target="_blank"><i class="fab fa-github"></i> GitHub</a>
     </div>
-  </p>
-  <div class="buttons">
-    <a onclick="downloadFromForm()" class="btn">Download</a>
-    <a onclick="copyPermLink()" class="btn">Copy Permanent Link</a>
-  </div>
-</div>
+  </footer>
 
-<footer>
-  <div class="footer-line"></div>
-  <div class="footer-content">
-    <a href="https://discord.gg/kCvc3Y65kj" target="_blank"><i class="fab fa-discord"></i> Discord</a>
-    <a href="" target="_blank"><i class="fab fa-youtube"></i> YouTube</a>
-  </div>
-</footer>
+  <script>
+    // Background and canvas logic (unchanged)
+    const backgrounds = [
+      "url('images/gory-v-chernom-tsvete-1.png.png')",
+      "url('images/pca-exercise-astrophotography-tips-astro-david_clapp-jackson_snake_point_03-16.jpg')"
+    ];
+    const bg1 = document.getElementById("bg1");
+    const bg2 = document.getElementById("bg2");
+    let activeIndex = 0;
+    bg1.style.backgroundImage = backgrounds[0];
+    bg1.classList.add('active');
 
-<script>
-  const backgrounds = [
-    "url('images/gory-v-chernom-tsvete-1.png.png')",
-    "url('images/pca-exercise-astrophotography-tips-astro-david_clapp-jackson_snake_point_03-16.jpg')"
-  ];
-  const bg1 = document.getElementById("bg1");
-  const bg2 = document.getElementById("bg2");
-  let activeIndex = 0;
-  bg1.style.backgroundImage = backgrounds[0];
-  bg1.classList.add('active');
-
-  window.addEventListener('scroll', () => {
-    const scrollPosition = window.scrollY;
-    const docHeight = document.body.scrollHeight - window.innerHeight;
-    const section = Math.floor((scrollPosition / docHeight) * (backgrounds.length));
-    if (section !== activeIndex) {
-      const nextLayer = activeIndex % 2 === 0 ? bg2 : bg1;
-      nextLayer.style.backgroundImage = backgrounds[section];
-      nextLayer.classList.add('active');
-      const prevLayer = activeIndex % 2 === 0 ? bg1 : bg2;
-      prevLayer.classList.remove('active');
-      activeIndex = section;
-    }
-  });
-
-  const canvas = document.getElementById("canvas");
-  const ctx = canvas.getContext("2d");
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-
-  window.addEventListener("resize", () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  });
-
-  const particles = [];
-  const particleCount = 550;
-  for (let i = 0; i < particleCount; i++) {
-    particles.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * 1.2,
-      vy: (Math.random() - 0.5) * 1.2
-    });
-  }
-
-  let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
-
-  document.addEventListener("mousemove", (e) => {
-    mouse.x = e.clientX;
-    mouse.y = e.clientY;
-  });
-
-  function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    particles.forEach(p => {
-      p.x += p.vx;
-      p.y += p.vy;
-      if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-      if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-    });
-
-    particles.forEach(p => {
-      const dx = p.x - mouse.x;
-      const dy = p.y - mouse.y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < 160) {
-        ctx.beginPath();
-        ctx.moveTo(p.x, p.y);
-        ctx.lineTo(mouse.x, mouse.y);
-        ctx.strokeStyle = `rgba(90,200,255,${1 - dist / 160})`;
-        ctx.lineWidth = 1.2;
-        ctx.stroke();
+    window.addEventListener('scroll', () => {
+      const scrollPosition = window.scrollY;
+      const docHeight = document.body.scrollHeight - window.innerHeight;
+      const section = Math.floor((scrollPosition / docHeight) * (backgrounds.length));
+      if (section !== activeIndex) {
+        const nextLayer = activeIndex % 2 === 0 ? bg2 : bg1;
+        nextLayer.style.backgroundImage = backgrounds[section];
+        nextLayer.classList.add('active');
+        const prevLayer = activeIndex % 2 === 0 ? bg1 : bg2;
+        prevLayer.classList.remove('active');
+        activeIndex = section;
       }
     });
 
-    particles.forEach(p => {
-      const angle = Math.atan2(p.vy, p.vx);
-      const length = 6;
-      ctx.beginPath();
-      ctx.moveTo(p.x, p.y);
-      ctx.lineTo(p.x + Math.cos(angle) * length, p.y + Math.sin(angle) * length);
-      ctx.strokeStyle = 'rgba(90,200,255,0.8)';
-      ctx.lineWidth = 2;
-      ctx.stroke();
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
     });
 
-    requestAnimationFrame(draw);
-  }
+    const particles = [];
+    const particleCount = 550;
+    for (let i = 0; i < particleCount; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 1.2,
+        vy: (Math.random() - 0.5) * 1.2
+      });
+    }
 
-  draw();
-</script>
-  <script src="js/jszip.min.js" onerror="document.getElementById('consoleText')?.getElementsByTagName('pre')[0]?.innerHTML += '<p class=\"noscript-message\">[!] Error: Failed to load JSZip library. Please check your internet connection or file path.</p>';"></script>
-    <script src="js/rdd.js" onerror="document.getElementById('consoleText')?.getElementsByTagName('pre')[0]?.innerHTML += '<p class=\"noscript-message\">[!] Error: Failed to load rdd.js. Please check your internet connection or file path.</p>';"></script>
+    let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+
+    document.addEventListener("mousemove", (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+      });
+
+      particles.forEach(p => {
+        const dx = p.x - mouse.x;
+        const dy = p.y - mouse.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 160) {
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(mouse.x, mouse.y);
+          ctx.strokeStyle = `rgba(90,200,255,${1 - dist / 160})`;
+          ctx.lineWidth = 1.2;
+          ctx.stroke();
+        }
+      });
+
+      particles.forEach(p => {
+        const angle = Math.atan2(p.vy, p.vx);
+        const length = 6;
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(p.x + Math.cos(angle) * length, p.y + Math.sin(angle) * length);
+        ctx.strokeStyle = 'rgba(90,200,255,0.8)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      });
+
+      requestAnimationFrame(draw);
+    }
+
+    draw();
+
+    // Downloader logic
+    const outputArea = document.getElementById('output-area');
+
+    function log(message) {
+      outputArea.textContent += message + '\n';
+      outputArea.scrollTop = outputArea.scrollHeight;
+    }
+
+    function validateForm() {
+      const version = document.getElementById('version').value;
+      const channel = document.getElementById('channel').value;
+      if (!channel) {
+        log('Error: Channel name cannot be empty.');
+        return false;
+      }
+      if (version && !/^[a-f0-9]{40}$/.test(version)) {
+        log('Error: Version hash must be a 40-character hexadecimal string.');
+        return false;
+      }
+      return true;
+    }
+
+    // Create Web Worker as a Blob (alternative to separate worker.js)
+    const workerCode = `
+      self.onmessage = async ({ data }) => {
+        try {
+          const { url, compressZip, compressionLevel } = data;
+          const response = await fetch(url);
+          if (!response.ok) throw new Error(\`Failed to fetch \${url}\`);
+          const text = await response.text();
+          const files = text.split('\\n').filter(line => line.trim());
+
+          const zip = new JSZip();
+          let filesDownloaded = 0;
+          for (const file of files) {
+            const fileUrl = \`https://roblox-setup.cachefly.net/\${file}\`;
+            const fileResponse = await fetch(fileUrl);
+            if (!fileResponse.ok) throw new Error(\`Failed to download \${file}\`);
+            const fileData = await fileResponse.arrayBuffer();
+            zip.file(file, fileData);
+            filesDownloaded++;
+            self.postMessage({ status: 'progress', message: \`Downloaded \${file} (\${filesDownloaded}/\${files.length})\` });
+          }
+
+          const zipOptions = compressZip ? { compression: 'DEFLATE', compressionOptions: { level: compressionLevel } } : {};
+          const zipBlob = await zip.generateAsync({ type: 'blob', ...zipOptions });
+          self.postMessage({ status: 'success', blob: zipBlob });
+        } catch (error) {
+          self.postMessage({ status: 'error', message: error.message });
+        }
+      };
+    `;
+    const workerBlob = new Blob([workerCode], { type: 'application/javascript' });
+    const workerUrl = URL.createObjectURL(workerBlob);
+
+    async function downloadFromForm() {
+      if (!validateForm()) return;
+
+      const binaryType = document.getElementById('binaryType').value;
+      const channel = document.getElementById('channel').value || 'LIVE';
+      const version = document.getElementById('version').value;
+      const compressZip = document.getElementById('compressZip').checked;
+      const compressionLevel = parseInt(document.getElementById('compressionLevel').value);
+
+      outputArea.textContent = 'Starting download...\n';
+
+      const worker = new Worker(workerUrl);
+      worker.onmessage = ({ data }) => {
+        if (data.status === 'progress') {
+          log(data.message);
+        } else if (data.status === 'success') {
+          const downloadLink = document.createElement('a');
+          downloadLink.href = URL.createObjectURL(data.blob);
+          downloadLink.download = `${binaryType}-${version || channel}.zip`;
+          downloadLink.click();
+          URL.revokeObjectURL(downloadLink.href);
+          log('Download complete!');
+          worker.terminate();
+        } else if (data.status === 'error') {
+          log(`Error: ${data.message}`);
+          worker.terminate();
+        }
+      };
+
+      const manifestUrl = version
+        ? `https://roblox-setup.cachefly.net/version-${version}-${binaryType}-manifest.txt`
+        : `https://roblox-setup.cachefly.net/channel/${channel}/${binaryType}-manifest.txt`;
+      worker.postMessage({ url: manifestUrl, compressZip, compressionLevel });
+    }
+
+    function copyPermLink() {
+      const binaryType = document.getElementById('binaryType').value;
+      const channel = document.getElementById('channel').value || 'LIVE';
+      const version = document.getElementById('version').value;
+      const compressZip = document.getElementById('compressZip').checked;
+      const compressionLevel = document.getElementById('compressionLevel').value;
+
+      const url = new URL(window.location.href);
+      url.searchParams.set('binaryType', binaryType);
+      url.searchParams.set('channel', channel);
+      if (version) url.searchParams.set('version', version);
+      url.searchParams.set('compressZip', compressZip ? 'true' : 'false');
+      url.searchParams.set('compressionLevel', compressionLevel);
+
+      navigator.clipboard.writeText(url.toString()).then(() => {
+        log('Permanent link copied to clipboard!');
+      }).catch(err => {
+        log(`Error copying link: ${err.message}`);
+      });
+    }
+
+    // Cleanup worker URL on page unload
+    window.addEventListener('unload', () => {
+      URL.revokeObjectURL(workerUrl);
+    });
+  </script>
 </body>
 </html>
