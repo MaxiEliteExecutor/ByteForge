@@ -1,366 +1,317 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ByteForge - Forge Your Power</title>
-    <link rel="icon" href="/byteforge-icon.png" type="image/png">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Roboto', sans-serif;
-            background-color: #0d0a1b;
-            color: #ffffff;
-            overflow-x: hidden;
-        }
-        .page-background {
-            background: linear-gradient(to bottom right, #000000, rgba(128, 0, 0, 0.1), rgba(64, 0, 64, 0.2));
-            min-height: 100vh;
-            position: relative;
-        }
-        .animated-blob {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.3;
-            animation: pulse 4s infinite alternate;
-            z-index: 0;
-        }
-        .blob-1 { top: -100px; right: -100px; width: 300px; height: 300px; background-color: #e04a7a; animation-delay: 0s; }
-        .blob-2 { bottom: -100px; left: -100px; width: 350px; height: 350px; background-color: #7a4ae0; animation-delay: 1.5s; }
-        .blob-3 { top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: 400px; background-color: #e04ae0; animation-delay: 3s; }
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 0.2; }
-            100% { transform: scale(1.05); opacity: 0.4; }
-        }
-        section { padding: 80px 24px; position: relative; z-index: 1; }
-        .max-w-7xl { max-width: 1280px; margin-left: auto; margin-right: auto; }
-        .text-center { text-align: center; }
-        .neon-text-title {
-            background-image: linear-gradient(to right, #e04a7a, #7a4ae0, #e04ae0);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            font-family: 'Orbitron', sans-serif;
-            animation: pulse-glow 2s infinite alternate;
-        }
-        @keyframes pulse-glow {
-            0% { text-shadow: 0 0 5px rgba(255, 64, 129, 0.4), 0 0 10px rgba(124, 77, 255, 0.4); }
-            100% { text-shadow: 0 0 10px rgba(255, 64, 129, 0.7), 0 0 20px rgba(124, 77, 255, 0.7); }
-        }
-        .glass-card {
-            background-color: rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease-in-out;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-            padding: 24px;
-        }
-        .glass-card:hover {
-            border-color: rgba(124, 77, 255, 0.4);
-            box-shadow: 0 0 20px rgba(124, 77, 255, 0.3);
-            transform: translateY(-2px);
-        }
-        .btn-primary {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 16px 32px;
-            font-size: 18px;
-            font-weight: bold;
-            border-radius: 12px;
-            border: none;
-            cursor: pointer;
-            text-decoration: none;
-            color: #ffffff;
-            background: linear-gradient(45deg, #7C4DFF, #FF4081);
-            box-shadow: 0 8px 20px rgba(124, 77, 255, 0.4);
-            transition: all 0.3s ease-in-out;
-        }
-        .btn-primary:hover {
-            transform: scale(1.05);
-            box-shadow: 0 12px 30px rgba(124, 77, 255, 0.6);
-            background: linear-gradient(45deg, #FF4081, #7C4DFF);
-        }
-        header {
-            padding: 24px;
-            position: relative;
-            z-index: 100;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        nav {
+  <meta charset="UTF-8">
+  <title>Terra</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      background: #0f0f0f;
+      font-family: 'Inter', sans-serif;
+      color: #fff;
+      overflow-x: hidden;
+      position: relative;
+    }
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -3;
+      pointer-events: none;
+    }
+    .bg-layer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      z-index: -2;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+    .bg-layer.active {
+      opacity: 1;
+    }
+    body::after {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      z-index: -1;
+    }
+    .nav {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      background: rgba(0,0,0,0.4);
+      border-radius: 50px;
+      padding: 10px 25px;
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 999;
+    }
+    .nav-item {
+      position: relative;
+      text-align: center;
+      color: #999;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .nav-item i {
+      transition: color 0.3s, transform 0.3s;
+    }
+    .nav-item:hover i {
+      color: #3a86ff;
+    }
+    .nav-item span {
+      position: absolute;
+      top: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      color: #ccc;
+      opacity: 0;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+    .nav-item:hover span {
+      opacity: 1;
+      transform: translateX(-50%) translateY(5px);
+      color: #3a86ff;
+    }
+    .divider {
+      width: 1px;
+      background: #333;
+      margin: 0 10px;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+      padding-top: 60px;
+      animation: fadeIn 1.5s ease forwards;
+      opacity: 0;
+    }
+    h1 {
+      font-size: 64px;
+      color: #ffffff;
+      margin: 0 0 20px 0;
+      animation: slideUp 1s ease forwards;
+    }
+    p {
+      font-size: 18px;
+      color: #aaa;
+      max-width: 600px;
+      margin-bottom: 30px;
+      animation: slideUp 1s ease 0.3s forwards;
+      opacity: 0;
+    }
+    .buttons {
+      display: flex;
+      gap: 15px;
+      animation: slideUp 1s ease 0.6s forwards;
+      opacity: 0;
+    }
+    .btn {
+      padding: 14px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      text-decoration: none;
+      background: #333;
+      color: #fff;
+      transition: all 0.3s ease, background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .btn:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 20px #3a86ff, 0 8px 20px rgba(0, 0, 0, 0.6);
+      background: #3a86ff;
+      color: #fff;
+    }
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+    @keyframes slideUp {
+      from {
+        transform: translateY(30px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    footer {
+      padding: 20px 0;
+      text-align: center;
+      color: #777;
+      font-size: 14px;
+    }
+    .footer-line {
+      width: 80%;
+      height: 1px;
+      background: #333;
+      margin: 50px auto 20px auto;
+    }
+    .footer-content {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      flex-wrap: wrap;
+    }
+    .footer-content a {
+      color: #777;
+      text-decoration: none;
+      font-size: 16px;
+      transition: color 0.3s;
+    }
+    .footer-content a:hover {
+      color: #3a86ff;
+    }
+    .footer-content i {
+      margin-right: 8px;
+    }
+    .downgrader-form {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1280px;
-            margin: auto;
-        }
-        nav .logo {
-            display: flex;
-            align-items: center;
-            font-size: 28px;
-            font-weight: bold;
-            font-family: 'Orbitron', sans-serif;
-            color: #ffffff;
-        }
-        nav .logo img {
-            width: 48px;
-            height: 48px;
-            margin-right: 12px;
-            filter: drop-shadow(0 0 5px #7C4DFF);
-        }
-        nav .nav-links a {
-            color: #b0b0b0;
-            text-decoration: none;
-            font-weight: 500;
-            margin-left: 32px;
-            transition: color 0.3s ease;
-            position: relative;
-        }
-        nav .nav-links a:hover {
-            color: #FF4081;
-            text-shadow: 0 0 8px rgba(255, 64, 129, 0.6);
-        }
-        nav .nav-links a::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -5px;
-            left: 0;
-            background-color: #7C4DFF;
-            transition: width 0.3s ease;
-        }
-        nav .nav-links a:hover::after {
-            width: 100%;
-        }
-        .hero-section {
-            padding-top: 100px;
-            padding-bottom: 100px;
-            transition: opacity 0.3s ease-in-out;
-        }
-        .hero-section.hidden {
-            display: none;
-        }
-        .hero-section h1 {
-            font-size: 64px;
-            margin-bottom: 24px;
-            line-height: 1.1;
-            text-transform: uppercase;
-        }
-        .hero-section p {
-            font-size: 20px;
-            margin-bottom: 32px;
-            line-height: 1.6;
-            color: #c0c0c0;
-        }
-        #downloadFormDiv.hidden {
-            display: none;
-        }
-        .download-form {
+            flex-direction: column;
+            gap: 15px;
             max-width: 600px;
-            margin: 0;
-        }
-        .download-form label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: #e0e0e0;
-        }
-        .download-form select,
-        .download-form input[type="text"],
-        .download-form input[type="number"] {
             width: 100%;
-            padding: 12px;
-            margin-bottom: 16px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            background-color: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-            font-size: 16px;
+            animation: slideUp 1s ease 0.6s forwards;
+            opacity: 0;
         }
-        .download-form input[type="checkbox"] {
-            margin-left: 2px;
+        .downgrader-form select, .downgrader-form input[type="text"] {
+            padding: 12px;
+            font-size: 16px;
+            background: #333;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+        }
+        .downgrader-form select:focus, .downgrader-form input[type="text"]:focus {
+            outline: none;
+            box-shadow: 0 0 10px #3a86ff;
+        }
+        .downgrader-form .output-area {
+            background: #333;
+            border-radius: 8px;
+            padding: 15px;
+            min-height: 100px;
+            color: #aaa;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+        }
+        #downgrader-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 600px;
+            width: 100%;
+            animation: slideUp 1s ease 0.6s forwards;
+            opacity: 0;
+        }
+        #downgrader-form label {
+            font-size: 16px;
+            color: #ccc;
+            text-align: left;
+        }
+        #downgrader-form select, #downgrader-form input[type="text"], #downgrader-form input[type="number"] {
+            padding: 12px;
+            font-size: 16px;
+            background: #333;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+        }
+        #downgrader-form select:focus, #downgrader-form input[type="text"]:focus, #downgrader-form input[type="number"]:focus {
+            outline: none;
+            box-shadow: 0 0 10px #3a86ff;
+        }
+        #downgrader-form input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #3a86ff;
+            vertical-align: middle;
             margin-right: 10px;
         }
-        .download-form .btn-primary {
-            margin: 8px 8px 0 0;
-        }
-        .layout-container {
-            display: flex;
-            justify-content: space-between;
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
-        .left-content {
-            flex: 1;
-            max-width: 60%;
-            padding-right: 24px;
-        }
-        .right-output {
-            flex: 1;
-            max-width: 40%;
-            position: relative;
-        }
-        .output-console {
-            margin-top: 24px;
-            padding: 10px;
-            border: 2px solid #333;
-            border-radius: 8px;
-            background-color: #1a1a2e;
-            color: #e0e0e0;
-            font-family: 'Courier New', Courier, monospace;
+        #downgrader-form .form-text {
             font-size: 14px;
-            line-height: 1.5;
-            height: calc(100vh - 200px);
-            overflow-y: auto;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-            position: relative;
+            color: #aaa;
+            text-align: left;
         }
-        .output-console .console-title {
-            background-color: #2a2a3e;
-            padding: 5px 10px;
-            font-weight: bold;
-            border-bottom: 1px solid #333;
-            border-top-left-radius: 6px;
-            border-top-right-radius: 6px;
-            text-align: center;
-        }
-        .output-console pre {
-            margin: 0;
-            padding: 10px;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-        .output-console a {
-            color: #00ffcc;
-            text-decoration: underline;
-        }
-        .output-console a:hover {
-            color: #00cccc;
-        }
-        .noscript-message {
-            background-color: rgba(255, 64, 129, 0.2);
-            padding: 16px;
-            border-radius: 8px;
-            color: #FF4081;
-            margin-bottom: 24px;
-        }
-        footer {
-            padding: 48px 24px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            text-align: center;
-            position: relative;
-            z-index: 1;
-            transition: opacity 0.3s ease-in-out;
-        }
-        footer.hidden {
-            display: none;
-        }
-        footer .logo {
+        #downgrader-form .buttons {
             display: flex;
+            gap: 15px;
             justify-content: center;
+        }
+        #downgrader-form .btn {
+            display: flex;
             align-items: center;
-            margin-bottom: 24px;
-            font-size: 24px;
-            font-weight: bold;
-            font-family: 'Orbitron', sans-serif;
+            gap: 8px;
         }
-        footer .logo img {
-            width: 40px;
-            height: 40px;
-            margin-right: 12px;
-            filter: drop-shadow(0 0 3px #e04a7a);
-        }
-        footer p {
-            color: #a0a0a0;
-            margin-bottom: 32px;
-            font-size: 15px;
-        }
-        footer .footer-links {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 24px;
-            font-size: 14px;
-        }
-        footer .footer-links a {
-            color: #b0b0b0;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-        footer .footer-links a:hover {
-            color: #7C4DFF;
-            text-shadow: 0 0 5px rgba(124, 77, 255, 0.5);
-        }
-        footer .copyright {
-            margin-top: 40px;
-            font-size: 12px;
-            color: #808080;
-        }
-        @media (max-width: 768px) {
-            .hero-section h1 { font-size: 48px; }
-            .hero-section p { font-size: 16px; }
-            nav .nav-links { display: none; }
-            nav { flex-direction: column; gap: 20px; }
-            .download-form select,
-            .download-form input[type="text"],
-            .download-form input[type="number"] { font-size: 14px; }
-            .btn-primary { padding: 12px 24px; font-size: 16px; }
-            .layout-container {
-                flex-direction: column;
-                padding: 0;
-            }
-            .left-content, .right-output {
-                max-width: 100%;
-                padding: 0;
-            }
-            .output-console {
-                height: auto;
-                font-size: 14px;
-                padding: 10px;
-            }
-        }
-        .svg-icon { display: inline-block; vertical-align: middle; fill: currentColor; }
-    </style>
+  </style>
 </head>
 <body>
-    <div class="page-background">
-        <div class="animated-blob blob-1"></div>
-        <div class="animated-blob blob-2"></div>
-        <div class="animated-blob blob-3"></div>
 
-        <header>
-            <nav>
-                <div class="logo">
-                    <img src="/byteforge-icon.png" alt="ByteForge Icon" aria-hidden="true">
-                    <div class="neon-text-title">ByteForge</div>
-                </div>
-                <div class="nav-links">
-                    <a href="https://discord.gg/SQm3Q3ErnK">Discord</a>
-                    <a href="/index.html#features">Features</a>
-                    <a href="/index.html#faq">FAQ</a>
-                    <a href="/port.html">Port</a>
-                    <a href="/downgrader/downgrader.html">Downgrader</a>
-                </div>
-            </nav>
-        </header>
+<canvas id="canvas"></canvas>
 
-        <section class="hero-section text-center">
-            <div class="max-w-7xl">
-                <noscript>
-                    <p class="noscript-message">This site requires JavaScript to function properly. Please enable JavaScript in your browser.</p>
-                </noscript>
-                <div class="layout-container">
-                    <div class="left-content">
-                        <h1 class="neon-text-title">Forge Your Power with ByteForge</h1>
-                        <p>Unlock the full potential of your applications with our cutting-edge downgrader tool. Customize, compress, and conquer.</p>
-                        <div class="glass-card download-form">
-                            <div id="downloadFormDiv" hidden>
-                                <form id="downloadForm" target="_blank" action="">
+<div class="bg-layer" id="bg1"></div>
+<div class="bg-layer" id="bg2"></div>
+
+<div class="nav">
+  <a href="https://link-target.net/1335270/DWyADP4jMRS4" class="nav-item">
+    <i class="fas fa-download"></i>
+    <span>Download</span>
+  </a>
+  <div class="divider"></div>
+  <a href="/" class="nav-item">
+    <i class="fab fa-youtube"></i>
+    <span>Youtube</span>
+  </a>
+  <a href="https://discord.gg/kCvc3Y65kj" class="nav-item">
+    <i class="fab fa-discord"></i>
+    <span>Discord</span>
+  </a>
+  <a href="/downgrader/downgrader.html" class="nav-item">
+    <i class="fas fa-arrow-down"></i>
+    <span>Downgrader</span>
+  </a>
+  <a href="/port.html" class="nav-item">
+    <i class="fas fa-server"></i>
+    <span>Port</span>
+  </a>
+</div>
+
+<div class="container">
+  <h1>ByteForge</h1>
+  <p>
+    <div class="container">
+        <h1>Downgrade Your Server</h1>
+        <p>Select a version or enter a custom version to downgrade your server.</p>
+        <form id="downgrader-form" target="_blank" action="">
                                     <label for="binaryType">Binary Type:</label>
                                     <select id="binaryType" name="binaryType" aria-describedby="binaryTypeHelp">
                                         <option value="WindowsPlayer">Windows Player</option>
@@ -387,44 +338,116 @@
                                     <label for="compressionLevel">Zip Compression Level (1-9):</label>
                                     <input id="compressionLevel" name="compressionLevel" type="number" min="1" max="9" value="5" aria-describedby="compressionLevelHelp">
                                     <small id="compressionLevelHelp" class="form-text">Set compression level (1 = low, 9 = high).</small>
-
-                                    <div>
-                                        <button type="button" class="btn-primary" onclick="downloadFromForm()">Download</button>
-                                        <button type="button" class="btn-primary" onclick="copyPermLink()">Copy Permanent Link</button>
-                                    </div>
                                 </form>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="right-output">
-                        <output id="consoleText" class="output-console">
-                            <div class="console-title">ByteForge Console</div>
-                            <pre></pre>
-                        </output>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <footer>
-            <div class="logo">
-                <img src="/byteforge-icon.png" alt="ByteForge Icon" aria-hidden="true">
-                <div class="neon-text-title">ByteForge</div>
-            </div>
-            <p>Empowering developers with next-generation tools.</p>
-            <div class="footer-links">
-                <a href="#features">Features</a>
-                <a href="#faq">FAQ</a>
-                <a href="/port.html">Port</a>
-                <a href="/downgrader/downgrader.html">Downgrader</a>
-                <a href="/privacy">Privacy Policy</a>
-                <a href="/terms">Terms of Service</a>
-            </div>
-            <p class="copyright">© 2025 ByteForge. All rights reserved.</p>
-        </footer>
     </div>
+  </p>
+  <div class="buttons">
+    <a onclick="downloadFromForm()" class="btn">Download</a>
+    <a onclick="copyPermLink()" class="btn">Copy Permanent Link</a>
+  </div>
+</div>
 
-    <script src="js/jszip.min.js" onerror="document.getElementById('consoleText')?.getElementsByTagName('pre')[0]?.innerHTML += '<p class=\"noscript-message\">[!] Error: Failed to load JSZip library. Please check your internet connection or file path.</p>';"></script>
+<footer>
+  <div class="footer-line"></div>
+  <div class="footer-content">
+    <a href="https://discord.gg/kCvc3Y65kj" target="_blank"><i class="fab fa-discord"></i> Discord</a>
+    <a href="" target="_blank"><i class="fab fa-youtube"></i> YouTube</a>
+  </div>
+</footer>
+
+<script>
+  const backgrounds = [
+    "url('images/gory-v-chernom-tsvete-1.png.png')",
+    "url('images/pca-exercise-astrophotography-tips-astro-david_clapp-jackson_snake_point_03-16.jpg')"
+  ];
+  const bg1 = document.getElementById("bg1");
+  const bg2 = document.getElementById("bg2");
+  let activeIndex = 0;
+  bg1.style.backgroundImage = backgrounds[0];
+  bg1.classList.add('active');
+
+  window.addEventListener('scroll', () => {
+    const scrollPosition = window.scrollY;
+    const docHeight = document.body.scrollHeight - window.innerHeight;
+    const section = Math.floor((scrollPosition / docHeight) * (backgrounds.length));
+    if (section !== activeIndex) {
+      const nextLayer = activeIndex % 2 === 0 ? bg2 : bg1;
+      nextLayer.style.backgroundImage = backgrounds[section];
+      nextLayer.classList.add('active');
+      const prevLayer = activeIndex % 2 === 0 ? bg1 : bg2;
+      prevLayer.classList.remove('active');
+      activeIndex = section;
+    }
+  });
+
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  window.addEventListener("resize", () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+
+  const particles = [];
+  const particleCount = 550;
+  for (let i = 0; i < particleCount; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 1.2,
+      vy: (Math.random() - 0.5) * 1.2
+    });
+  }
+
+  let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+
+  document.addEventListener("mousemove", (e) => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+  });
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+      if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+    });
+
+    particles.forEach(p => {
+      const dx = p.x - mouse.x;
+      const dy = p.y - mouse.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 160) {
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(mouse.x, mouse.y);
+        ctx.strokeStyle = `rgba(90,200,255,${1 - dist / 160})`;
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+      }
+    });
+
+    particles.forEach(p => {
+      const angle = Math.atan2(p.vy, p.vx);
+      const length = 6;
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      ctx.lineTo(p.x + Math.cos(angle) * length, p.y + Math.sin(angle) * length);
+      ctx.strokeStyle = 'rgba(90,200,255,0.8)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    });
+
+    requestAnimationFrame(draw);
+  }
+
+  draw();
+</script>
+  <script src="js/jszip.min.js" onerror="document.getElementById('consoleText')?.getElementsByTagName('pre')[0]?.innerHTML += '<p class=\"noscript-message\">[!] Error: Failed to load JSZip library. Please check your internet connection or file path.</p>';"></script>
     <script src="js/rdd.js" onerror="document.getElementById('consoleText')?.getElementsByTagName('pre')[0]?.innerHTML += '<p class=\"noscript-message\">[!] Error: Failed to load rdd.js. Please check your internet connection or file path.</p>';"></script>
 </body>
 </html>
