@@ -322,7 +322,7 @@
       <small id="binaryTypeHelp" class="form-text">Select the type of binary you want to download.</small>
 
       <label for="channel">Channel Name:</label>
-      <input id="channel" name="channel" type="text" placeholder="LIVE" list="channel-suggestions" aria-describedby="channelHelp">
+      <input id="channel" name="channel" type="text" value="LIVE" list="channel-suggestions" aria-describedby="channelHelp">
       <datalist id="channel-suggestions"></datalist>
       <small id="channelHelp" class="form-text">Enter the channel name (e.g., LIVE).</small>
 
@@ -343,9 +343,10 @@
       <div class="buttons">
         <button type="button" onclick="downloadFromForm()" class="btn"><i class="fas fa-download"></i> Download</button>
         <button type="button" onclick="copyPermLink()" class="btn"><i class="fas fa-link"></i> Copy Link</button>
+        <button type="button" onclick="cancelDownload()" class="btn" id="cancel-btn" style="display: none;"><i class="fas fa-stop"></i> Cancel</button>
       </div>
     </form>
-    <div id="output-area" class="output-area">Ready to download...</div>
+    <div id="output-area" class="output-area">Awaiting your selection...</div>
     <div id="progress-bar">
       <div id="progress"></div>
     </div>
@@ -455,6 +456,7 @@
     // Downloader logic
     const outputArea = document.getElementById('output-area');
     const progressBar = document.getElementById('progress');
+    let currentWorker = null;
 
     function log(message) {
       outputArea.textContent += message + '\n';
@@ -465,16 +467,16 @@
       const version = document.getElementById('version').value;
       const channel = document.getElementById('channel').value;
       if (!channel) {
-        log('Error: Channel name cannot be empty.');
+        log('Please enter a channel name.');
         return false;
       }
       if (version && !/^[a-f0-9]{40}$/.test(version)) {
-        log('Error: Version hash must be a 40-character hexadecimal string.');
+        log('Version hash must be a 40-character hex string.');
         return false;
       }
       const compressionLevel = parseInt(document.getElementById('compressionLevel').value);
       if (compressionLevel < 1 || compressionLevel > 9) {
-        log('Error: Compression level must be between 1 and 9.');
+        log('Compression level must be between 1 and 9.');
         return false;
       }
       return true;
@@ -483,7 +485,10 @@
     async function loadChannels() {
       try {
         const response = await fetch('https://roblox-setup.cachefly.net/channels.json');
-        if (!response.ok) throw new Error('Failed to fetch channels');
+        if (!response.ok) {
+          log('Unable to load channel suggestions at this time.');
+          return;
+        }
         const channels = await response.json();
         const datalist = document.getElementById('channel-suggestions');
         channels.forEach(channel => {
@@ -491,9 +496,9 @@
           option.value = channel;
           datalist.appendChild(option);
         });
-        log('Loaded channel suggestions.');
+        log('Channel suggestions loaded successfully.');
       } catch (error) {
-        log('Error loading channels: ' + error.message);
+        log('Unable to load channel suggestions.');
       }
     }
 
@@ -504,7 +509,7 @@
         try {
           const { url, compressZip, compressionLevel } = data;
           const response = await fetch(url);
-          if (!response.ok) throw new Error(\`Failed to fetch \${url}\`);
+          if (!response.ok) throw new Error(\`Unable to access manifest file\`);
           const text = await response.text();
           const files = text.split('\\n').filter(line => line.trim());
 
@@ -513,7 +518,7 @@
           for (const file of files) {
             const fileUrl = \`https://roblox-setup.cachefly.net/\${file}\`;
             const fileResponse = await fetch(fileUrl);
-            if (!fileResponse.ok) throw new Error(\`Failed to download \${file}\`);
+            if (!fileResponse.ok) throw new Error(\`Unable to download \${file}\`);
             const fileData = await fileResponse.arrayBuffer();
             zip.file(file, fileData);
             filesDownloaded++;
@@ -540,22 +545,23 @@
       const compressZip = document.getElementById('compressZip').checked;
       const compressionLevel = parseInt(document.getElementById('compressionLevel').value);
 
-      outputArea.textContent = 'Starting download...\n';
+      outputArea.textContent = '';
       progressBar.style.width = '0%';
+      document.getElementById('cancel-btn').style.display = 'block';
 
       try {
         const manifestUrl = version
           ? `https://roblox-setup.cachefly.net/version-${version}-${binaryType}-manifest.txt`
           : `https://roblox-setup.cachefly.net/channel/${channel}/${binaryType}-manifest.txt`;
 
-        log(`Fetching manifest from ${manifestUrl}...`);
+        log(`Accessing manifest from ${manifestUrl}...`);
         const response = await fetch(manifestUrl);
-        if (!response.ok) throw new Error(`Failed to fetch manifest: ${response.statusText}`);
+        if (!response.ok) throw new Error('Unable to access manifest file.');
 
         const manifest = await response.text();
         const files = manifest.split('\n').filter(line => line.trim());
 
-        log(`Found ${files.length} files in manifest.`);
+        log(`Found ${files.length} files to download.`);
 
         let totalSize = 0;
         for (const file of files) {
@@ -564,10 +570,10 @@
           const size = headResponse.headers.get('content-length');
           if (size) totalSize += parseInt(size);
         }
-        log(`Estimated download size: ${(totalSize / 1024 / 1024).toFixed(2)} MB`);
+        log(`Estimated size: ${(totalSize / 1024 / 1024).toFixed(2)} MB`);
 
-        const worker = new Worker(workerUrl);
-        worker.onmessage = ({ data }) => {
+        currentWorker = new Worker(workerUrl);
+        currentWorker.onmessage = ({ data }) => {
           if (data.status === 'progress') {
             log(data.message);
             progressBar.style.width = `${data.progress * 100}%`;
@@ -577,17 +583,32 @@
             downloadLink.download = `${binaryType}-${version || channel}.zip`;
             downloadLink.click();
             URL.revokeObjectURL(downloadLink.href);
-            log('Download complete!');
-            worker.terminate();
+            log('Download finished successfully!');
+            currentWorker.terminate();
+            currentWorker = null;
+            document.getElementById('cancel-btn').style.display = 'none';
           } else if (data.status === 'error') {
-            log(`Error: ${data.message}`);
-            worker.terminate();
+            log(`Issue encountered: ${data.message}`);
+            currentWorker.terminate();
+            currentWorker = null;
+            document.getElementById('cancel-btn').style.display = 'none';
           }
         };
 
-        worker.postMessage({ url: manifestUrl, compressZip, compressionLevel });
+        currentWorker.postMessage({ url: manifestUrl, compressZip, compressionLevel });
       } catch (error) {
-        log(`Error: ${error.message}`);
+        log(`Issue encountered: ${error.message}`);
+        document.getElementById('cancel-btn').style.display = 'none';
+      }
+    }
+
+    function cancelDownload() {
+      if (currentWorker) {
+        currentWorker.terminate();
+        log('Download stopped by user.');
+        progressBar.style.width = '0%';
+        currentWorker = null;
+        document.getElementById('cancel-btn').style.display = 'none';
       }
     }
 
@@ -606,9 +627,9 @@
       url.searchParams.set('compressionLevel', compressionLevel);
 
       navigator.clipboard.writeText(url.toString()).then(() => {
-        log('Permanent link copied to clipboard!');
+        log('Link copied to clipboard!');
       }).catch(err => {
-        log(`Error copying link: ${err.message}`);
+        log(`Unable to copy link: ${err.message}`);
       });
     }
 
