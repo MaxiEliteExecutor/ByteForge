@@ -1,640 +1,339 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ByteForge - Forge Your Power</title>
-    <link rel="icon" href="/byteforge-icon.png" type="image/png">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-    <style>
-        /* Base styles */
-        body {
-            margin: 0;
-            font-family: 'Roboto', sans-serif;
-            background-color: #0d0a1b; /* Dark base */
-            color: #ffffff;
-            overflow-x: hidden;
-        }
-
-        /* Gradient background mimicking the React component's `bg-gradient-to-br from-black via-red-950/30 to-purple-950/40` */
-        .page-background {
-            background: linear-gradient(to bottom right, #000000, rgba(128, 0, 0, 0.1), rgba(64, 0, 64, 0.2));
-            min-height: 100vh;
-        }
-
-        /* Animated background elements */
-        .animated-blob {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(80px); /* Simulates Tailwind's blur-3xl */
-            opacity: 0.3;
-            animation: pulse 4s infinite alternate;
-            z-index: 0;
-        }
-
-        .blob-1 {
-            top: -100px;
-            right: -100px;
-            width: 300px;
-            height: 300px;
-            background-color: #e04a7a; /* Reddish pink */
-            animation-delay: 0s;
-        }
-        .blob-2 {
-            bottom: -100px;
-            left: -100px;
-            width: 350px;
-            height: 350px;
-            background-color: #7a4ae0; /* Purplish blue */
-            animation-delay: 1.5s;
-        }
-        .blob-3 {
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 400px;
-            height: 400px;
-            background-color: #e04ae0; /* Pinkish purple */
-            animation-delay: 3s;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 0.2; }
-            100% { transform: scale(1.05); opacity: 0.4; }
-        }
-
-        /* General sections */
-        section {
-            padding: 80px 24px;
-            position: relative;
-            z-index: 1; /* Ensure content is above animated background */
-        }
-        .max-w-7xl { max-width: 1280px; margin-left: auto; margin-right: auto; }
-        .max-w-6xl { max-width: 1152px; margin-left: auto; margin-right: auto; }
-        .max-w-4xl { max-width: 896px; margin-left: auto; margin-right: auto; }
-        .max-w-2xl { max-width: 672px; margin-left: auto; margin-right: auto; }
-        .text-center { text-align: center; }
-
-        /* Neon gradient text (using webkit for clip-text) */
-        .neon-text {
-            background-image: linear-gradient(to right, #FF4081, #7C4DFF, #FFC107); /* Pink, Purple, Amber for vibrant neon */
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            font-family: 'Orbitron', sans-serif;
-        }
-
-        .neon-text-title {
-            background-image: linear-gradient(to right, #e04a7a, #7a4ae0, #e04ae0); /* Custom neon gradient */
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            font-family: 'Orbitron', sans-serif;
-            animation: pulse-glow 2s infinite alternate;
-        }
-        @keyframes pulse-glow {
-            0% { text-shadow: 0 0 5px rgba(255, 64, 129, 0.4), 0 0 10px rgba(124, 77, 255, 0.4); }
-            100% { text-shadow: 0 0 10px rgba(255, 64, 129, 0.7), 0 0 20px rgba(124, 77, 255, 0.7); }
-        }
-
-        /* Glassmorphism card/element styles */
-        .glass-card {
-            background-color: rgba(0, 0, 0, 0.2); /* Slightly darker background */
-            backdrop-filter: blur(10px); /* Blur effect */
-            border-radius: 16px; /* Rounded corners */
-            border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle white border */
-            transition: all 0.3s ease-in-out; /* Smooth transitions */
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-        }
-        .glass-card:hover {
-            border-color: rgba(124, 77, 255, 0.4); /* Glow on hover */
-            box-shadow: 0 0 20px rgba(124, 77, 255, 0.3); /* Enhanced shadow/glow */
-            transform: translateY(-2px);
-        }
-
-        /* Buttons */
-        .btn-primary {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 24px 48px;
-            font-size: 20px;
-            font-weight: bold;
-            border-radius: 16px; /* More rounded */
-            border: none;
-            cursor: pointer;
-            text-decoration: none;
-            color: #ffffff;
-            background: linear-gradient(45deg, #7C4DFF, #FF4081); /* Blue-purple to pink gradient */
-            box-shadow: 0 8px 20px rgba(124, 77, 255, 0.4);
-            transition: all 0.3s ease-in-out;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        .btn-primary:hover {
-            transform: scale(1.05);
-            box-shadow: 0 12px 30px rgba(124, 77, 255, 0.6);
-            background: linear-gradient(45deg, #FF4081, #7C4DFF); /* Reverse gradient or intensify */
-        }
-
-        /* Icons (Lucide-react placeholders) */
-        .icon {
-            width: 24px;
-            height: 24px;
-            margin-right: 12px;
-            color: #FF4081; /* Pink accent */
-        }
-        .icon-lg {
-            width: 48px;
-            height: 48px;
-            margin-bottom: 16px;
-            color: #7C4DFF; /* Purple accent */
-        }
-        .icon-small {
-            width: 20px;
-            height: 20px;
-            margin-right: 8px;
-            color: #FFC107; /* Amber accent */
-        }
-
-        /* Layout grids */
-        .grid-3-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 32px; }
-        .grid-2-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px; }
-
-        /* Header Navigation */
-        header {
-            padding: 24px;
-            position: relative;
-            z-index: 10;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05); /* Subtle border */
-        }
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1280px;
-            margin: auto;
-        }
-        nav .logo {
-            display: flex;
-            align-items: center;
-            font-size: 28px;
-            font-weight: bold;
-            font-family: 'Orbitron', sans-serif;
-            color: #ffffff;
-            letter-spacing: 1px;
-        }
-        nav .logo img {
-            width: 48px;
-            height: 48px;
-            margin-right: 12px;
-            filter: drop-shadow(0 0 5px #7C4DFF); /* Icon glow */
-        }
-        nav .nav-links a {
-            color: #b0b0b0;
-            text-decoration: none;
-            font-weight: 500;
-            margin-left: 32px;
-            transition: color 0.3s ease;
-            position: relative;
-        }
-        nav .nav-links a:hover {
-            color: #FF4081; /* Pink hover */
-            text-shadow: 0 0 8px rgba(255, 64, 129, 0.6);
-        }
-        nav .nav-links a::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -5px;
-            left: 0;
-            background-color: #7C4DFF; /* Purple underline */
-            transition: width 0.3s ease;
-        }
-        nav .nav-links a:hover::after {
-            width: 100%;
-        }
-
-        /* Hero Section */
-        .hero-section {
-            padding-top: 100px;
-            padding-bottom: 100px;
-        }
-        .hero-section h1 {
-            font-size: 80px;
-            margin-bottom: 24px;
-            line-height: 1;
-            text-transform: uppercase;
-        }
-        .hero-section p {
-            font-size: 24px;
-            margin-bottom: 40px;
-            line-height: 1.6;
-            color: #c0c0c0;
-        }
-        .feature-highlights {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 24px;
-            margin-bottom: 48px;
-        }
-        .highlight-item {
-            display: flex;
-            align-items: center;
-            background-color: rgba(0, 0, 0, 0.4);
-            border-radius: 9999px; /* Fully rounded */
-            padding: 8px 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            font-size: 14px;
-            color: #e0e0e0;
-            backdrop-filter: blur(5px);
-        }
-        .highlight-item .icon-small { margin-right: 8px; }
-        .highlight-item:nth-child(1) .icon-small { color: #FF4081; } /* Pink */
-        .highlight-item:nth-child(2) .icon-small { color: #7C4DFF; } /* Purple */
-        .highlight-item:nth-child(3) .icon-small { color: #FFC107; } /* Amber */
-
-        /* Feature Cards */
-        .feature-card {
-            padding: 32px;
-            text-align: center;
-        }
-        .feature-card h3 {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 16px;
-            color: #ffffff;
-            font-family: 'Orbitron', sans-serif;
-        }
-        .feature-card p {
-            color: #b0b0b0;
-            line-height: 1.7;
-        }
-        .feature-card .icon-lg {
-            margin-bottom: 24px;
-        }
-
-        /* Stats */
-        .stat-item {
-            background-color: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(5px);
-            border-radius: 16px;
-            padding: 32px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        .stat-item .icon {
-            margin-bottom: 8px;
-            color: #FF4081; /* Pink icon */
-        }
-        .stat-item h3 {
-            font-size: 32px;
-            font-weight: bold;
-            color: #ffffff;
-            margin-bottom: 4px;
-            font-family: 'Orbitron', sans-serif;
-        }
-        .stat-item p {
-            color: #a0a0a0;
-        }
-
-        /* FAQ Section */
-        .faq-item {
-            margin-bottom: 16px;
-            border-radius: 16px;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background-color: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(8px);
-            transition: all 0.3s ease-in-out;
-        }
-        .faq-item:hover {
-            border-color: rgba(124, 77, 255, 0.4);
-            box-shadow: 0 0 15px rgba(124, 77, 255, 0.3);
-        }
-        .faq-question {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 24px;
-            cursor: pointer;
-            user-select: none;
-            font-weight: 600;
-            color: #ffffff;
-        }
-        .faq-question h3 { margin: 0; font-size: 18px; }
-        .faq-question .arrow {
-            width: 20px;
-            height: 20px;
-            color: #b0b0b0;
-            transition: transform 0.3s ease;
-        }
-        .faq-question.active .arrow {
-            transform: rotate(180deg);
-            color: #FF4081; /* Active color */
-        }
-        .faq-answer {
-            padding: 0 24px 24px;
-            color: #c0c0c0;
-            line-height: 1.7;
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s ease-out, padding 0.4s ease-out;
-        }
-        .faq-answer.open {
-            max-height: 200px; /* Or a value large enough for all answers */
-            padding-top: 16px;
-        }
-
-        /* Footer */
-        footer {
-            padding: 48px 24px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            text-align: center;
-            position: relative;
-            z-index: 1;
-        }
-        footer .logo {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 24px;
-            font-size: 24px;
-            font-weight: bold;
-            font-family: 'Orbitron', sans-serif;
-        }
-        footer .logo img {
-            width: 40px;
-            height: 40px;
-            margin-right: 12px;
-            filter: drop-shadow(0 0 3px #e04a7a);
-        }
-        footer p {
-            color: #a0a0a0;
-            margin-bottom: 32px;
-            font-size: 15px;
-        }
-        footer .footer-links {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 24px;
-            font-size: 14px;
-        }
-        footer .footer-links a {
-            color: #b0b0b0;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-        footer .footer-links a:hover {
-            color: #7C4DFF; /* Purple hover */
-            text-shadow: 0 0 5px rgba(124, 77, 255, 0.5);
-        }
-        footer .copyright {
-            margin-top: 40px;
-            font-size: 12px;
-            color: #808080;
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .hero-section h1 {
-                font-size: 56px;
-            }
-            .hero-section p {
-                font-size: 18px;
-            }
-            nav .nav-links {
-                display: none; /* Hide for mobile for simplicity, could be a hamburger menu */
-            }
-            .grid-3-cols, .grid-2-cols {
-                grid-template-columns: 1fr; /* Stack columns on smaller screens */
-            }
-            .feature-card, .testimonial-card, .stat-item {
-                margin-left: 16px;
-                margin-right: 16px;
-            }
-            .screenshot-item {
-                margin: 0 16px;
-            }
-            .faq-item {
-                 margin: 0 16px;
-            }
-            .btn-primary {
-                padding: 18px 32px;
-                font-size: 16px;
-            }
-            .header nav {
-                flex-direction: column;
-                gap: 20px;
-            }
-        }
-
-        /* Basic SVG Icon styles (replacing Lucide-react) */
-        .svg-icon {
-            display: inline-block;
-            vertical-align: middle;
-            fill: currentColor; /* Use current text color for icons */
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Terra</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      background: #0f0f0f;
+      font-family: 'Inter', sans-serif;
+      color: #fff;
+      overflow-x: hidden;
+      position: relative;
+    }
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -3;
+      pointer-events: none;
+    }
+    .bg-layer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      z-index: -2;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+    .bg-layer.active {
+      opacity: 1;
+    }
+    body::after {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      z-index: -1;
+    }
+    .nav {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      background: rgba(0,0,0,0.4);
+      border-radius: 50px;
+      padding: 10px 25px;
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 999;
+    }
+    .nav-item {
+      position: relative;
+      text-align: center;
+      color: #999;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .nav-item i {
+      transition: color 0.3s, transform 0.3s;
+    }
+    .nav-item:hover i {
+      color: #3a86ff;
+    }
+    .nav-item span {
+      position: absolute;
+      top: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      color: #ccc;
+      opacity: 0;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+    .nav-item:hover span {
+      opacity: 1;
+      transform: translateX(-50%) translateY(5px);
+      color: #3a86ff;
+    }
+    .divider {
+      width: 1px;
+      background: #333;
+      margin: 0 10px;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+      padding-top: 60px;
+      animation: fadeIn 1.5s ease forwards;
+      opacity: 0;
+    }
+    h1 {
+      font-size: 64px;
+      color: #ffffff;
+      margin: 0 0 20px 0;
+      animation: slideUp 1s ease forwards;
+    }
+    p {
+      font-size: 18px;
+      color: #aaa;
+      max-width: 600px;
+      margin-bottom: 30px;
+      animation: slideUp 1s ease 0.3s forwards;
+      opacity: 0;
+    }
+    .buttons {
+      display: flex;
+      gap: 15px;
+      animation: slideUp 1s ease 0.6s forwards;
+      opacity: 0;
+    }
+    .btn {
+      padding: 14px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      text-decoration: none;
+      background: #333;
+      color: #fff;
+      transition: all 0.3s ease, background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .btn:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 20px #3a86ff, 0 8px 20px rgba(0, 0, 0, 0.6);
+      background: #3a86ff;
+      color: #fff;
+    }
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+    @keyframes slideUp {
+      from {
+        transform: translateY(30px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    footer {
+      padding: 20px 0;
+      text-align: center;
+      color: #777;
+      font-size: 14px;
+    }
+    .footer-line {
+      width: 80%;
+      height: 1px;
+      background: #333;
+      margin: 50px auto 20px auto;
+    }
+    .footer-content {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      flex-wrap: wrap;
+    }
+    .footer-content a {
+      color: #777;
+      text-decoration: none;
+      font-size: 16px;
+      transition: color 0.3s;
+    }
+    .footer-content a:hover {
+      color: #3a86ff;
+    }
+    .footer-content i {
+      margin-right: 8px;
+    }
+  </style>
 </head>
 <body>
-        <div class="page-background">
-        <div class="animated-blob blob-1"></div>
-        <div class="animated-blob blob-2"></div>
-        <div class="animated-blob blob-3"></div>
-        <header>
-            <nav>
-                <div class="logo">
-                    <img src="/byteforge-icon.png" alt="ByteForge Icon">
-                    <div class="neon-text-title">ByteForge</div>
-                </div>
-                <div class="nav-links">
-                    <a href="https://discord.gg/SQm3Q3ErnK">Discord</a>
-                    <a href="#features">Features</a>
-                    <a href="#faq">FAQ</a>
-                    <a href="/port.html">Port</a>
-                    <a href="/downgrader/downgrader.html">Downgrader</a>
-                </div>
-            </nav>
-        </header>
 
-        <section class="hero-section text-center">
-            <div class="max-w-4xl mx-auto">
-                <div style="margin-bottom: 32px;">
-                    <img src="/byteforge-icon.png" alt="ByteForge" width="120" height="120" style="animation: pulse-icon 2s infinite alternate; width: 120px; height: 120px;">
-                </div>
-                <h1 class="neon-text-title">BYTEFORGE</h1>
-                <p>
-                    The most advanced Roblox executor forged in the depths of code. Lightning-fast injection, comprehensive
-                    script hub, and military-grade anti-ban protection. Dominate every game.
-                </p>
+<canvas id="canvas"></canvas>
 
-                <div class="feature-highlights">
-                    <div class="highlight-item">
-                        <svg class="svg-icon icon-small" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14H12L11 22L21 10H12L13 2Z"/></svg>
-                        <span>Fast Injection</span>
-                    </div>
-                    <div class="highlight-item">
-                        <svg class="svg-icon icon-small" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-                        <span>Script Hub</span>
-                    </div>
-                    <div class="highlight-item">
-                        <svg class="svg-icon icon-small" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                        <span>Anti-Ban</span>
-                    </div>
-                </div>
+<div class="bg-layer" id="bg1"></div>
+<div class="bg-layer" id="bg2"></div>
 
-                <a href="https://link-target.net/1335270/DWyADP4jMRS4" class="btn-primary">
-                    <svg class="svg-icon icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                    FORGE YOUR POWER
-                </a>
-                <p style="font-size: 14px; color: #a0a0a0; margin-top: 16px;">Free • Windows 10/11 • Forged Daily</p>
-            </div>
-        </section>
+<div class="nav">
+  <a href="https://link-target.net/1335270/DWyADP4jMRS4" class="nav-item">
+    <i class="fas fa-download"></i>
+    <span>Download</span>
+  </a>
+  <div class="divider"></div>
+  <a href="/" class="nav-item">
+    <i class="fab fa-youtube"></i>
+    <span>Youtube</span>
+  </a>
+  <a href="https://discord.gg/kCvc3Y65kj" class="nav-item">
+    <i class="fab fa-discord"></i>
+    <span>Discord</span>
+  </a>
+  <a href="/downgrader/downgrader.html" class="nav-item">
+    <i class="fas fa-arrow-down"></i>
+    <span>Downgrader</span>
+  </a>
+  <a href="/port.html" class="nav-item">
+    <i class="fas fa-server"></i>
+    <span>Port</span>
+  </a>
+</div>
 
-        <section id="features">
-            <div class="max-w-6xl mx-auto">
-                <h2 class="neon-text text-center" style="font-size: 40px; font-weight: bold; margin-bottom: 64px;">
-                    Forged Features
-                </h2>
-                <div class="grid-3-cols">
-                    <div class="glass-card feature-card">
-                        <svg class="svg-icon icon-lg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14H12L11 22L21 10H12L13 2Z"/></svg>
-                        <h3>Lightning Fast</h3>
-                        <p>Inject scripts in under 2 seconds with our forged engine. No lag, no delays.</p>
-                    </div>
-                    <div class="glass-card feature-card">
-                        <svg class="svg-icon icon-lg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-                        <h3>Script Forge</h3>
-                        <p>Access thousands of hand-forged scripts for every popular Roblox game. Always updated.</p>
-                    </div>
-                    <div class="glass-card feature-card">
-                        <svg class="svg-icon icon-lg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                        <h3>Forge Shield</h3>
-                        <p>Advanced protection algorithms forged to keep your account safe. 99.9% ban-free guarantee.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
+<div class="container">
+  <h1>ByteForge</h1>
+  <p>
+    free Roblox internel executor — Fast inject and run all your script a good and fast-updating injector, just two clicks and you can already fly without rules and turn on the aim bot.
+  </p>
+  <div class="buttons">
+    <a href="https://link-target.net/1335270/DWyADP4jMRS4" class="btn">Download Terra</a>
+    <a href="https://discord.gg/kCvc3Y65kj" class=btn>Join Discord</a>
+  </div>
+</div>
 
-        <section>
-            <div class="max-w-4xl mx-auto">
-                <div class="grid-3-cols" style="margin-top: 64px;">
-                    <div class="stat-item text-center">
-                        <svg class="svg-icon icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                        <h3>3s</h3>
-                        <p>Injection time</p>
-                    </div>
-                </div>
-            </div>
-        </section>
+<footer>
+  <div class="footer-line"></div>
+  <div class="footer-content">
+    <a href="https://discord.gg/kCvc3Y65kj" target="_blank"><i class="fab fa-discord"></i> Discord</a>
+    <a href="https://www.youtube.com/@SuperZaza2" target="_blank"><i class="fab fa-youtube"></i> YouTube</a>
+  </div>
+</footer>
 
-        <section id="faq">
-            <div class="max-w-4xl mx-auto">
-                <h2 class="neon-text text-center" style="font-size: 40px; font-weight: bold; margin-bottom: 64px;">
-                    Forge Knowledge
-                </h2>
-                <div class="faq-container">
-                    <div class="faq-item">
-                        <div class="faq-question" onclick="toggleFaq(this)">
-                            <h3>Is this executor safe to use?</h3>
-                            <svg class="svg-icon arrow" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-                        </div>
-                        <div class="faq-answer">
-                            Yes, our executor features advanced anti-ban protection and is regularly updated to ensure maximum safety while using Roblox.
-                        </div>
-                    </div>
-                    <div class="faq-item">
-                        <div class="faq-question" onclick="toggleFaq(this)">
-                            <h3>How fast is the script injection?</h3>
-                            <svg class="svg-icon arrow" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-                        </div>
-                        <div class="faq-answer">
-                            Our executor provides lightning-fast injection speeds, typically under 2 seconds for most scripts.
-                        </div>
-                    </div>
-                    <div class="faq-item">
-                        <div class="faq-question" onclick="toggleFaq(this)">
-                            <h3>Does it work on all Roblox games?</h3>
-                            <svg class="svg-icon arrow" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-                        </div>
-                        <div class="faq-answer">
-                            Our executor is compatible with 99% of Roblox games and is constantly updated to maintain compatibility.
-                        </div>
-                    </div>
-                    <div class="faq-item">
-                        <div class="faq-question" onclick="toggleFaq(this)">
-                            <h3>Is there a script hub included?</h3>
-                            <svg class="svg-icon arrow" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-                        </div>
-                        <div class="faq-answer">
-                            Yes! We include access to our premium script hub with thousands of verified scripts for various games.
-                        </div>
-                    </div>
-                    <div class="faq-item">
-                        <div class="faq-question" onclick="toggleFaq(this)">
-                            <h3>What operating systems are supported?</h3>
-                            <svg class="svg-icon arrow" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-                        </div>
-                        <div class="faq-answer">
-                            Currently supports Windows 10/11. Mac and mobile versions are in development.
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+<script>
+  const backgrounds = [
+    "url('images/gory-v-chernom-tsvete-1.png.png')",
+    "url('images/pca-exercise-astrophotography-tips-astro-david_clapp-jackson_snake_point_03-16.jpg')"
+  ];
+  const bg1 = document.getElementById("bg1");
+  const bg2 = document.getElementById("bg2");
+  let activeIndex = 0;
+  bg1.style.backgroundImage = backgrounds[0];
+  bg1.classList.add('active');
 
-        <section class="text-center">
-            <div class="max-w-4xl mx-auto">
-                <h2 class="neon-text-title" style="font-size: 40px; font-weight: bold; margin-bottom: 24px;">
-                    Ready to Forge Victory?
-                </h2>
-                <p style="font-size: 20px; color: #c0c0c0; margin-bottom: 32px;">
-                    Join millions of users who trust ByteForge for their Roblox scripting dominance.
-                </p>
-                <a href="https://link-target.net/1335270/DWyADP4jMRS4" class="btn-primary" style="background: linear-gradient(45deg, #7C4DFF, #FF4081);">
-                    <svg class="svg-icon icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                    BEGIN FORGING
-                </a>
-            </div>
-        </section>
+  window.addEventListener('scroll', () => {
+    const scrollPosition = window.scrollY;
+    const docHeight = document.body.scrollHeight - window.innerHeight;
+    const section = Math.floor((scrollPosition / docHeight) * (backgrounds.length));
+    if (section !== activeIndex) {
+      const nextLayer = activeIndex % 2 === 0 ? bg2 : bg1;
+      nextLayer.style.backgroundImage = backgrounds[section];
+      nextLayer.classList.add('active');
+      const prevLayer = activeIndex % 2 === 0 ? bg1 : bg2;
+      prevLayer.classList.remove('active');
+      activeIndex = section;
+    }
+  });
 
-        <footer>
-            <div class="max-w-6xl mx-auto text-center">
-                <div class="logo">
-                    <img src="/byteforge-icon.png" alt="ByteForge Icon">
-                    <div class="neon-text-title">ByteForge</div>
-                </div>
-                <p>The ultimate Roblox executor forged for power users.</p>
-                <p class="copyright">
-                    © 2025 ByteForge. All rights reserved. Not affiliated with Roblox Corporation.
-                </p>
-            </div>
-        </footer>
-    </div>
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
 
-    <script>
-        function toggleFaq(element) {
-            const faqItem = element.closest('.faq-item');
-            const answer = faqItem.querySelector('.faq-answer');
-            const arrow = element.querySelector('.arrow');
+  window.addEventListener("resize", () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
 
-            if (answer.classList.contains('open')) {
-                answer.classList.remove('open');
-                element.classList.remove('active');
-            } else {
-                // Close all other open FAQ items (optional, but good UX)
-                document.querySelectorAll('.faq-answer.open').forEach(item => {
-                    item.classList.remove('open');
-                    item.closest('.faq-item').querySelector('.faq-question').classList.remove('active');
-                });
+  const particles = [];
+  const particleCount = 550;
+  for (let i = 0; i < particleCount; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 1.2,
+      vy: (Math.random() - 0.5) * 1.2
+    });
+  }
 
-                answer.classList.add('open');
-                element.classList.add('active');
-            }
-        }
-    </script>
+  let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+
+  document.addEventListener("mousemove", (e) => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+  });
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+      if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+    });
+
+    particles.forEach(p => {
+      const dx = p.x - mouse.x;
+      const dy = p.y - mouse.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 160) {
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(mouse.x, mouse.y);
+        ctx.strokeStyle = `rgba(90,200,255,${1 - dist / 160})`;
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+      }
+    });
+
+    particles.forEach(p => {
+      const angle = Math.atan2(p.vy, p.vx);
+      const length = 6;
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      ctx.lineTo(p.x + Math.cos(angle) * length, p.y + Math.sin(angle) * length);
+      ctx.strokeStyle = 'rgba(90,200,255,0.8)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    });
+
+    requestAnimationFrame(draw);
+  }
+
+  draw();
+</script>
+
 </body>
 </html>
