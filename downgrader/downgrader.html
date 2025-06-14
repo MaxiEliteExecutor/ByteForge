@@ -7,6 +7,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="/js/zip.js"></script>
+  <script src="/js/index.js"></script>
   <style>
     html {
       scroll-behavior: smooth;
@@ -453,7 +455,7 @@
 
     draw();
 
-    // Downloader logic
+    // Custom logic to integrate RDD scripts
     const outputArea = document.getElementById('output-area');
     const progressBar = document.getElementById('progress');
     let currentWorker = null;
@@ -504,38 +506,6 @@
 
     loadChannels();
 
-    const workerCode = `
-      self.onmessage = async ({ data }) => {
-        try {
-          const { url, compressZip, compressionLevel } = data;
-          const response = await fetch(url);
-          if (!response.ok) throw new Error(\`Unable to access manifest file\`);
-          const text = await response.text();
-          const files = text.split('\\n').filter(line => line.trim());
-
-          const zip = new JSZip();
-          let filesDownloaded = 0;
-          for (const file of files) {
-            const fileUrl = \`https://roblox-setup.cachefly.net/\${file}\`;
-            const fileResponse = await fetch(fileUrl);
-            if (!fileResponse.ok) throw new Error(\`Unable to download \${file}\`);
-            const fileData = await fileResponse.arrayBuffer();
-            zip.file(file, fileData);
-            filesDownloaded++;
-            self.postMessage({ status: 'progress', message: \`Downloaded \${file} (\${filesDownloaded}/\${files.length})\`, progress: filesDownloaded / files.length });
-          }
-
-          const zipOptions = compressZip ? { compression: 'DEFLATE', compressionOptions: { level: compressionLevel } } : {};
-          const zipBlob = await zip.generateAsync({ type: 'blob', ...zipOptions });
-          self.postMessage({ status: 'success', blob: zipBlob });
-        } catch (error) {
-          self.postMessage({ status: 'error', message: error.message });
-        }
-      };
-    `;
-    const workerBlob = new Blob([workerCode], { type: 'application/javascript' });
-    const workerUrl = URL.createObjectURL(workerBlob);
-
     async function downloadFromForm() {
       if (!validateForm()) return;
 
@@ -572,11 +542,14 @@
         }
         log(`Estimated size: ${(totalSize / 1024 / 1024).toFixed(2)} MB`);
 
-        currentWorker = new Worker(workerUrl);
+        // Use RDD's worker logic (assuming index.js sets up worker)
+        currentWorker = new Worker('/js/worker.js');
         currentWorker.onmessage = ({ data }) => {
           if (data.status === 'progress') {
             log(data.message);
-            progressBar.style.width = `${data.progress * 100}%`;
+            if (data.progress) {
+              progressBar.style.width = `${data.progress * 100}%`;
+            }
           } else if (data.status === 'success') {
             const downloadLink = document.createElement('a');
             downloadLink.href = URL.createObjectURL(data.blob);
@@ -632,10 +605,6 @@
         log(`Unable to copy link: ${err.message}`);
       });
     }
-
-    window.addEventListener('unload', () => {
-      URL.revokeObjectURL(workerUrl);
-    });
   </script>
 </body>
 </html>
