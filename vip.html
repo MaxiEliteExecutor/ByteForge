@@ -2,15 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>ByteForge VIP Executor - Buy Now</title>
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-  />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap"
-    rel="stylesheet"
-  />
+  <title>ByteForge VIP Purchase</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet" />
   <style>
     html {
       scroll-behavior: smooth;
@@ -48,20 +42,20 @@
       opacity: 1;
     }
     body::after {
-      content: '';
+      content: "";
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.6);
+      background: rgba(0,0,0,0.6);
       z-index: -1;
     }
     .nav {
       display: flex;
       justify-content: center;
       gap: 25px;
-      background: rgba(0, 0, 0, 0.4);
+      background: rgba(0,0,0,0.4);
       border-radius: 50px;
       padding: 10px 25px;
       position: fixed;
@@ -115,9 +109,6 @@
       padding-top: 60px;
       animation: fadeIn 1.5s ease forwards;
       opacity: 0;
-      padding: 0 20px;
-      max-width: 800px;
-      margin: 0 auto;
     }
     h1 {
       font-size: 64px;
@@ -132,46 +123,15 @@
       margin-bottom: 30px;
       animation: slideUp 1s ease 0.3s forwards;
       opacity: 0;
-      line-height: 1.5;
-    }
-    .features {
-      text-align: left;
-      max-width: 600px;
-      margin-bottom: 40px;
-      animation: slideUp 1s ease 0.5s forwards;
-      opacity: 0;
-      color: #ccc;
-    }
-    .features ul {
-      list-style: none;
-      padding-left: 20px;
-    }
-    .features ul li {
-      margin-bottom: 12px;
-      position: relative;
-      padding-left: 24px;
-      font-size: 16px;
-    }
-    .features ul li::before {
-      content: '\f00c'; /* FontAwesome check */
-      font-family: "Font Awesome 6 Free";
-      font-weight: 900;
-      position: absolute;
-      left: 0;
-      top: 2px;
-      color: #3a86ff;
-      font-size: 16px;
     }
     .buttons {
       display: flex;
       gap: 15px;
       animation: slideUp 1s ease 0.6s forwards;
       opacity: 0;
-      flex-wrap: wrap;
-      justify-content: center;
     }
     .btn {
-      padding: 14px 28px;
+      padding: 14px 24px;
       border: none;
       border-radius: 8px;
       font-size: 16px;
@@ -179,9 +139,7 @@
       text-decoration: none;
       background: #333;
       color: #fff;
-      transition: all 0.3s ease, background 0.3s ease, color 0.3s ease,
-        box-shadow 0.3s ease;
-      white-space: nowrap;
+      transition: all 0.3s ease, background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
     }
     .btn:hover {
       transform: translateY(-5px);
@@ -190,9 +148,7 @@
       color: #fff;
     }
     @keyframes fadeIn {
-      to {
-        opacity: 1;
-      }
+      to { opacity: 1; }
     }
     @keyframes slideUp {
       from {
@@ -237,157 +193,136 @@
   </style>
 </head>
 <body>
-  <canvas id="canvas"></canvas>
 
-  <div class="bg-layer" id="bg1"></div>
-  <div class="bg-layer" id="bg2"></div>
+<canvas id="canvas"></canvas>
 
-  <div class="nav">
-    <a href="https://link-target.net/1335270/DWyADP4jMRS4" class="nav-item">
-      <i class="fas fa-download"></i>
-      <span>Download</span>
-    </a>
-    <div class="divider"></div>
-    <a href="/" class="nav-item">
-      <i class="fab fa-youtube"></i>
-      <span>YouTube</span>
-    </a>
-    <a href="https://discord.gg/kCvc3Y65kj" class="nav-item">
-      <i class="fab fa-discord"></i>
-      <span>Discord</span>
-    </a>
-    <a href="/port.html" class="nav-item">
-      <i class="fas fa-server"></i>
-      <span>Port</span>
+<div class="bg-layer" id="bg1"></div>
+<div class="bg-layer" id="bg2"></div>
+
+<div class="nav">
+  <a href="/" class="nav-item">
+    <i class="fab fa-youtube"></i>
+    <span>Youtube</span>
+  </a>
+  <a href="/port.html" class="nav-item">
+    <i class="fas fa-server"></i>
+    <span>Port</span>
+  </a>
+</div>
+
+<div class="container">
+  <h1>ByteForge VIP</h1>
+  <p>
+    Get exclusive access to the VIP Roblox executor — fast, secure, and continuously updated.
+  </p>
+  <div class="buttons">
+    <a href="https://mainnet.demo.btcpayserver.org/payment-requests/4d41caff-53cb-4c96-8667-cae2d92566f1" 
+       class="btn" target="_blank" rel="noopener noreferrer" 
+       title="Pay securely with Bitcoin via BTCPay Server">
+       Pay with Bitcoin (BTCPay)
     </a>
   </div>
+</div>
 
-  <div class="container">
-    <h1>ByteForge VIP Executor</h1>
-    <p>
-      Unlock the full power of ByteForge with our VIP Executor. Enjoy priority updates, exclusive features, and enhanced performance — perfect for serious users who demand the best Roblox injection experience.
-    </p>
-    <div class="features">
-      <ul>
-        <li>Fast and reliable injection with no lag</li>
-        <li>Exclusive VIP scripts and features</li>
-        <li>Priority updates and support</li>
-        <li>Stealth mode to avoid detection</li>
-        <li>Access to private Discord VIP channels</li>
-        <li>One-click easy activation</li>
-      </ul>
-    </div>
-    <div class="buttons">
-      <a href="https://mainnet.demo.btcpayserver.org/payment-requests/4d41caff-53cb-4c96-8667-cae2d92566f1" class="btn" target="_blank" rel="noopener noreferrer">Buy VIP Now</a>
-      <a href="https://discord.gg/kCvc3Y65kj" class="btn" target="_blank" rel="noopener noreferrer">Join Discord</a>
-    </div>
+<footer>
+  <div class="footer-line"></div>
+  <div class="footer-content">
+    <a href="/" target="_blank"><i class="fab fa-youtube"></i> YouTube</a>
   </div>
+</footer>
 
-  <footer>
-    <div class="footer-line"></div>
-    <div class="footer-content">
-      <a href="https://discord.gg/kCvc3Y65kj" target="_blank"
-        ><i class="fab fa-discord"></i> Discord</a
-      >
-      <a href="/" target="_blank"
-        ><i class="fab fa-youtube"></i> YouTube</a
-      >
-    </div>
-  </footer>
+<script>
+  const backgrounds = [
+    "url('images/gory-v-chernom-tsvete-1.png.png')",
+    "url('images/pca-exercise-astrophotography-tips-astro-david_clapp-jackson_snake_point_03-16.jpg')"
+  ];
+  const bg1 = document.getElementById("bg1");
+  const bg2 = document.getElementById("bg2");
+  let activeIndex = 0;
+  bg1.style.backgroundImage = backgrounds[0];
+  bg1.classList.add('active');
 
-  <script>
-    const backgrounds = [
-      "url('images/gory-v-chernom-tsvete-1.png.png')",
-      "url('images/pca-exercise-astrophotography-tips-astro-david_clapp-jackson_snake_point_03-16.jpg')",
-    ];
-    const bg1 = document.getElementById("bg1");
-    const bg2 = document.getElementById("bg2");
-    let activeIndex = 0;
-    bg1.style.backgroundImage = backgrounds[0];
-    bg1.classList.add("active");
+  window.addEventListener('scroll', () => {
+    const scrollPosition = window.scrollY;
+    const docHeight = document.body.scrollHeight - window.innerHeight;
+    const section = Math.floor((scrollPosition / docHeight) * (backgrounds.length));
+    if (section !== activeIndex) {
+      const nextLayer = activeIndex % 2 === 0 ? bg2 : bg1;
+      nextLayer.style.backgroundImage = backgrounds[section];
+      nextLayer.classList.add('active');
+      const prevLayer = activeIndex % 2 === 0 ? bg1 : bg2;
+      prevLayer.classList.remove('active');
+      activeIndex = section;
+    }
+  });
 
-    window.addEventListener("scroll", () => {
-      const scrollPosition = window.scrollY;
-      const docHeight = document.body.scrollHeight - window.innerHeight;
-      const section = Math.floor(
-        (scrollPosition / docHeight) * backgrounds.length
-      );
-      if (section !== activeIndex) {
-        const nextLayer = activeIndex % 2 === 0 ? bg2 : bg1;
-        nextLayer.style.backgroundImage = backgrounds[section];
-        nextLayer.classList.add("active");
-        const prevLayer = activeIndex % 2 === 0 ? bg1 : bg2;
-        prevLayer.classList.remove("active");
-        activeIndex = section;
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  window.addEventListener("resize", () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+
+  const particles = [];
+  const particleCount = 550;
+  for (let i = 0; i < particleCount; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 1.2,
+      vy: (Math.random() - 0.5) * 1.2
+    });
+  }
+
+  let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+
+  document.addEventListener("mousemove", (e) => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+  });
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+      if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+    });
+
+    particles.forEach(p => {
+      const dx = p.x - mouse.x;
+      const dy = p.y - mouse.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 160) {
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(mouse.x, mouse.y);
+        ctx.strokeStyle = `rgba(90,200,255,${1 - dist / 160})`;
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
       }
     });
 
-    const canvas = document.getElementById("canvas");
-    const ctx = canvas.getContext("2d");
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    window.addEventListener("resize", () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+    particles.forEach(p => {
+      const angle = Math.atan2(p.vy, p.vx);
+      const length = 6;
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      ctx.lineTo(p.x + Math.cos(angle) * length, p.y + Math.sin(angle) * length);
+      ctx.strokeStyle = 'rgba(90,200,255,0.8)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
     });
 
-    const particles = [];
-    const particleCount = 550;
-    for (let i = 0; i < particleCount; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 1.2,
-        vy: (Math.random() - 0.5) * 1.2,
-      });
-    }
+    requestAnimationFrame(draw);
+  }
 
-    let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+  draw();
+</script>
 
-    document.addEventListener("mousemove", (e) => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
-    });
-
-    function draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach((p) => {
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-      });
-
-      particles.forEach((p) => {
-        const dx = p.x - mouse.x;
-        const dy = p.y - mouse.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 160) {
-          ctx.beginPath();
-          ctx.moveTo(p.x, p.y);
-          ctx.lineTo(mouse.x, mouse.y);
-          ctx.strokeStyle = `rgba(90,200,255,${1 - dist / 160})`;
-          ctx.lineWidth = 1.2;
-          ctx.stroke();
-        }
-      });
-
-      particles.forEach((p) => {
-        const angle = Math.atan2(p.vy, p.vx);
-        const length = 6;
-        ctx.beginPath();
-        ctx.moveTo(p.x, p.y);
-        ctx.lineTo(p.x + Math.cos(angle) * length, p.y + Math.sin(angle) * length);
-        ctx.strokeStyle = "rgba(90,200,255,0.8)";
-        ctx.lineWidth = 2;
-        ctx.stroke();
-      });
-
-      requestAnimationFrame(draw);
-    }
-
-    draw();
-  </script>
 </body>
 </html>
