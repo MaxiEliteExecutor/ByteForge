@@ -6,7 +6,9 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    html { scroll-behavior: smooth; }
+    html {
+      scroll-behavior: smooth;
+    }
     body {
       margin: 0;
       padding: 0;
@@ -16,73 +18,112 @@
       overflow-x: hidden;
       position: relative;
     }
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -3;
+      pointer-events: none;
+    }
+    .bg-layer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      z-index: -2;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+    .bg-layer.active {
+      opacity: 1;
+    }
+    body::after {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      z-index: -1;
+    }
+    .nav {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      background: rgba(0,0,0,0.4);
+      border-radius: 50px;
+      padding: 10px 25px;
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 999;
+    }
+    .nav-item {
+      position: relative;
+      text-align: center;
+      color: #999;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .nav-item i {
+      transition: color 0.3s, transform 0.3s;
+    }
+    .nav-item:hover i {
+      color: #3a86ff;
+    }
+    .nav-item span {
+      position: absolute;
+      top: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      color: #ccc;
+      opacity: 0;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+    .nav-item:hover span {
+      opacity: 1;
+      transform: translateX(-50%) translateY(5px);
+      color: #3a86ff;
+    }
     .container {
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
+      height: 100vh;
       text-align: center;
-      padding: 60px 20px;
+      padding-top: 60px;
+      animation: fadeIn 1.5s ease forwards;
+      opacity: 0;
     }
     h1 {
       font-size: 64px;
+      color: #ffffff;
       margin: 0 0 20px 0;
+      animation: slideUp 1s ease forwards;
     }
     p {
       font-size: 18px;
       color: #aaa;
       max-width: 600px;
       margin-bottom: 30px;
-    }
-    .vip-card {
-      background: linear-gradient(135deg, rgba(58,134,255,0.15), rgba(0,0,0,0.6));
-      border: 2px solid #3a86ff;
-      border-radius: 18px;
-      padding: 30px;
-      max-width: 700px;
-      margin: 40px auto;
-      text-align: left;
-      box-shadow: 0 0 20px rgba(58,134,255,0.2);
-    }
-    .vip-card h2 {
-      font-size: 28px;
-      color: #3a86ff;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .vip-card ul {
-      list-style: none;
-      padding-left: 0;
-      margin: 0;
-    }
-    .vip-card ul li {
-      font-size: 18px;
-      margin: 12px 0;
-      color: #eee;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .vip-price {
-      text-align: center;
-      margin-top: 25px;
-      font-size: 22px;
-      color: #3a86ff;
-      font-weight: bold;
-    }
-    .vip-price strong {
-      font-size: 26px;
-      color: #fff;
+      animation: slideUp 1s ease 0.3s forwards;
+      opacity: 0;
     }
     .buttons {
       display: flex;
       gap: 15px;
-      margin-top: 30px;
-      flex-wrap: wrap;
-      justify-content: center;
+      animation: slideUp 1s ease 0.6s forwards;
+      opacity: 0;
     }
     .btn {
       padding: 14px 24px;
@@ -93,7 +134,7 @@
       text-decoration: none;
       background: #333;
       color: #fff;
-      transition: all 0.3s ease;
+      transition: all 0.3s ease, background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
     }
     .btn:hover {
       transform: translateY(-5px);
@@ -101,73 +142,165 @@
       background: #3a86ff;
       color: #fff;
     }
-    .btn i {
-      margin-right: 10px;
+    .features {
+      margin-top: 40px;
+      max-width: 800px;
+      text-align: left;
     }
-    footer {
-      padding: 20px 0;
-      text-align: center;
-      color: #777;
-      font-size: 14px;
-    }
-    .footer-line {
-      width: 80%;
-      height: 1px;
-      background: #333;
-      margin: 50px auto 20px auto;
-    }
-    .footer-content {
-      display: flex;
-      justify-content: center;
-      gap: 25px;
-      flex-wrap: wrap;
-    }
-    .footer-content a {
-      color: #777;
-      text-decoration: none;
-      font-size: 16px;
-      transition: color 0.3s;
-    }
-    .footer-content a:hover {
+    .features h2 {
       color: #3a86ff;
+      margin-bottom: 10px;
+    }
+    .features ul {
+      list-style: none;
+      padding: 0;
+      font-size: 16px;
+      color: #ccc;
+    }
+    .features ul li::before {
+      content: "✔ ";
+      color: #3a86ff;
+    }
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+    @keyframes slideUp {
+      from {
+        transform: translateY(30px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Unlock ByteForge VIP</h1>
-    <p>
-      Instantly level up your Roblox experience with the most advanced executor on the market.
-      Get access to powerful tools, faster scripts, and premium support.
-    </p>
-    <div class="vip-card">
-      <h2><i class="fas fa-gem"></i> VIP Benefits</h2>
-      <ul>
-        <li><i class="fas fa-rocket"></i> Ultra-fast Script Execution</li>
-        <li><i class="fas fa-user-shield"></i> Anti-Cheat Bypass (Safe & Stealthy)</li>
-        <li><i class="fas fa-sync-alt"></i> Daily Updates for New Roblox Patches</li>
-        <li><i class="fas fa-headset"></i> Priority Discord Support Access</li>
-        <li><i class="fas fa-folder-open"></i> Exclusive Premium Script Library</li>
-      </ul>
-      <div class="vip-price">
-        <span>Only <strong>$9.99</strong> – One-time Access</span>
-      </div>
-    </div>
-    <div class="buttons">
-      <a href="https://mainnet.demo.btcpayserver.org/payment-requests/4d41caff-53cb-4c96-8667-cae2d92566f1" class="btn" target="_blank">
-        <i class="fas fa-btc"></i> Pay with Bitcoin (BTCPay)
-      </a>
-      <a href="https://your-debit-card-link.com" class="btn" target="_blank">
-        <i class="fas fa-credit-card"></i> Pay with Debit Card
-      </a>
-    </div>
+<canvas id="canvas"></canvas>
+<div class="bg-layer" id="bg1"></div>
+<div class="bg-layer" id="bg2"></div>
+
+<div class="nav">
+  <a href="/" class="nav-item">
+    <i class="fas fa-home"></i>
+    <span>Home</span>
+  </a>
+  <a href="https://discord.gg/kCvc3Y65kj" class="nav-item">
+    <i class="fab fa-discord"></i>
+    <span>Discord</span>
+  </a>
+</div>
+
+<div class="container">
+  <h1>ByteForge VIP</h1>
+  <p>Unlock the full power of our Roblox internal executor with VIP access. Faster injection, exclusive scripts, undetectable updates, and more.</p>
+  <div class="buttons">
+    <a href="https://mainnet.demo.btcpayserver.org/payment-requests/4d41caff-53cb-4c96-8667-cae2d92566f1" class="btn">Pay with BTC</a>
+    <a href="https://buy.stripe.com/4gw5nk2Fd9C88ME8wy" class="btn">Pay with Card</a>
   </div>
-  <footer>
-    <div class="footer-line"></div>
-    <div class="footer-content">
-      <a href="https://discord.gg/kCvc3Y65kj" target="_blank"><i class="fab fa-discord"></i> Discord</a>
-      <a href="/" target="_blank"><i class="fab fa-youtube"></i> YouTube</a>
-    </div>
-  </footer>
+  <div class="features">
+    <h2>VIP Features</h2>
+    <ul>
+      <li>Instant injection speed</li>
+      <li>Access to private script library</li>
+      <li>Bypass advanced anti-cheat systems</li>
+      <li>Frequent updates & zero downtime</li>
+      <li>Lifetime access</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+  const backgrounds = [
+    "url('images/gory-v-chernom-tsvete-1.png.png')",
+    "url('images/pca-exercise-astrophotography-tips-astro-david_clapp-jackson_snake_point_03-16.jpg')"
+  ];
+  const bg1 = document.getElementById("bg1");
+  const bg2 = document.getElementById("bg2");
+  let activeIndex = 0;
+  bg1.style.backgroundImage = backgrounds[0];
+  bg1.classList.add('active');
+
+  window.addEventListener('scroll', () => {
+    const scrollPosition = window.scrollY;
+    const docHeight = document.body.scrollHeight - window.innerHeight;
+    const section = Math.floor((scrollPosition / docHeight) * (backgrounds.length));
+    if (section !== activeIndex) {
+      const nextLayer = activeIndex % 2 === 0 ? bg2 : bg1;
+      nextLayer.style.backgroundImage = backgrounds[section];
+      nextLayer.classList.add('active');
+      const prevLayer = activeIndex % 2 === 0 ? bg1 : bg2;
+      prevLayer.classList.remove('active');
+      activeIndex = section;
+    }
+  });
+
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  window.addEventListener("resize", () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+
+  const particles = [];
+  const particleCount = 550;
+  for (let i = 0; i < particleCount; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 1.2,
+      vy: (Math.random() - 0.5) * 1.2
+    });
+  }
+
+  let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+
+  document.addEventListener("mousemove", (e) => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+  });
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+      if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+    });
+
+    particles.forEach(p => {
+      const dx = p.x - mouse.x;
+      const dy = p.y - mouse.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 160) {
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(mouse.x, mouse.y);
+        ctx.strokeStyle = `rgba(90,200,255,${1 - dist / 160})`;
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+      }
+    });
+
+    particles.forEach(p => {
+      const angle = Math.atan2(p.vy, p.vx);
+      const length = 6;
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      ctx.lineTo(p.x + Math.cos(angle) * length, p.y + Math.sin(angle) * length);
+      ctx.strokeStyle = 'rgba(90,200,255,0.8)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    });
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+</script>
 </body>
 </html>
