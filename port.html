@@ -1,199 +1,223 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ByteForge - Forge Your Power</title>
-  <link rel="icon" href="/byteforge-icon.png" type="image/png">
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>ByteForge</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
   <style>
+    html {
+      scroll-behavior: smooth;
+    }
     body {
       margin: 0;
-      font-family: 'Roboto', sans-serif;
-      background-color: #0d0a1b;
-      color: #ffffff;
+      padding: 0;
+      background: #0f0f0f;
+      font-family: 'Inter', sans-serif;
+      color: #fff;
       overflow-x: hidden;
-    }
-    .page-background {
-      background: linear-gradient(to bottom right, #000000, rgba(128, 0, 0, 0.1), rgba(64, 0, 64, 0.2));
-      min-height: 100vh;
       position: relative;
     }
-    .animated-blob {
+    canvas {
       position: fixed;
-      border-radius: 50%;
-      filter: blur(80px);
-      opacity: 0.3;
-      animation: pulse 4s infinite alternate;
-      z-index: 0;
-    }
-    .blob-1 { top: -100px; right: -100px; width: 300px; height: 300px; background-color: #e04a7a; animation-delay: 0s; }
-    .blob-2 { bottom: -100px; left: -100px; width: 350px; height: 350px; background-color: #7a4ae0; animation-delay: 1.5s; }
-    .blob-3 { top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: 400px; background-color: #e04ae0; animation-delay: 3s; }
-    @keyframes pulse {
-      0% { transform: scale(1); opacity: 0.2; }
-      100% { transform: scale(1.05); opacity: 0.4; }
-    }
-    .neon-text-title {
-      background-image: linear-gradient(to right, #e04a7a, #7a4ae0, #e04ae0);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      font-family: 'Orbitron', sans-serif;
-      animation: pulse-glow 2s infinite alternate;
-    }
-    @keyframes pulse-glow {
-      0% { text-shadow: 0 0 5px rgba(255, 64, 129, 0.4), 0 0 10px rgba(124, 77, 255, 0.4); }
-      100% { text-shadow: 0 0 10px rgba(255, 64, 129, 0.7), 0 0 20px rgba(124, 77, 255, 0.7); }
-    }
-    .glass-card {
-      background-color: rgba(0, 0, 0, 0.2);
-      backdrop-filter: blur(10px);
-      border-radius: 16px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      transition: all 0.3s ease-in-out;
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-      padding: 24px;
-    }
-    .glass-card:hover {
-      border-color: rgba(124, 77, 255, 0.4);
-      box-shadow: 0 0 20px rgba(124, 77, 255, 0.3);
-      transform: translateY(-2px);
-    }
-    header {
-      padding: 24px;
-      position: relative;
-      z-index: 100;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    }
-    nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      max-width: 1280px;
-      margin: auto;
-    }
-    nav .logo {
-      display: flex;
-      align-items: center;
-      font-size: 28px;
-      font-weight: bold;
-      font-family: 'Orbitron', sans-serif;
-      color: #ffffff;
-    }
-    nav .logo img {
-      width: 48px;
-      height: 48px;
-      margin-right: 12px;
-      filter: drop-shadow(0 0 5px #7C4DFF);
-    }
-    nav .nav-links a {
-      color: #b0b0b0;
-      text-decoration: none;
-      font-weight: 500;
-      margin-left: 32px;
-      transition: color 0.3s ease;
-      position: relative;
-    }
-    nav .nav-links a:hover {
-      color: #FF4081;
-      text-shadow: 0 0 8px rgba(255, 64, 129, 0.6);
-    }
-    nav .nav-links a::after {
-      content: '';
-      position: absolute;
-      width: 0;
-      height: 2px;
-      bottom: -5px;
+      top: 0;
       left: 0;
-      background-color: #7C4DFF;
-      transition: width 0.3s ease;
+      z-index: -3;
+      pointer-events: none;
     }
-    nav .nav-links a:hover::after {
+    .bg-layer {
+      position: fixed;
+      top: 0;
+      left: 0;
       width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      z-index: -2;
+      opacity: 0;
+      transition: opacity 1s ease;
     }
-    section {
-      padding: 80px 24px;
-      position: relative;
-      z-index: 1;
+    .bg-layer.active {
+      opacity: 1;
     }
-    .max-w-7xl { max-width: 1280px; margin: auto; }
-    footer {
-      padding: 48px 24px;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
-      text-align: center;
-      position: relative;
-      z-index: 1;
-      transition: opacity 0.3s ease-in-out;
+    body::after {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      z-index: -1;
     }
-    footer .logo {
+    .nav {
       display: flex;
+      justify-content: center;
+      gap: 25px;
+      background: rgba(0,0,0,0.4);
+      border-radius: 50px;
+      padding: 10px 25px;
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 999;
+    }
+    .nav-item {
+      position: relative;
+      text-align: center;
+      color: #999;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .nav-item i {
+      transition: color 0.3s, transform 0.3s;
+    }
+    .nav-item:hover i {
+      color: #3a86ff;
+    }
+    .nav-item span {
+      position: absolute;
+      top: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      color: #ccc;
+      opacity: 0;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+    .nav-item:hover span {
+      opacity: 1;
+      transform: translateX(-50%) translateY(5px);
+      color: #3a86ff;
+    }
+    .divider {
+      width: 1px;
+      background: #333;
+      margin: 0 10px;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
-      margin-bottom: 24px;
-      font-size: 24px;
-      font-weight: bold;
-      font-family: 'Orbitron', sans-serif;
+      height: 100vh;
+      text-align: center;
+      padding-top: 60px;
+      animation: fadeIn 1.5s ease forwards;
+      opacity: 0;
     }
-    footer .logo img {
-      width: 40px;
-      height: 40px;
-      margin-right: 12px;
-      filter: drop-shadow(0 0 3px #e04a7a);
+    h1 {
+      font-size: 64px;
+      color: #ffffff;
+      margin: 0 0 20px 0;
+      animation: slideUp 1s ease forwards;
     }
-    footer p {
-      color: #a0a0a0;
-      margin-bottom: 32px;
-      font-size: 15px;
+    p {
+      font-size: 18px;
+      color: #aaa;
+      max-width: 600px;
+      margin-bottom: 30px;
+      animation: slideUp 1s ease 0.3s forwards;
+      opacity: 0;
     }
-    footer .footer-links {
+    .buttons {
       display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 24px;
+      gap: 15px;
+      animation: slideUp 1s ease 0.6s forwards;
+      opacity: 0;
+    }
+    .btn {
+      padding: 14px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      text-decoration: none;
+      background: #333;
+      color: #fff;
+      transition: all 0.3s ease, background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .btn:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 20px #3a86ff, 0 8px 20px rgba(0, 0, 0, 0.6);
+      background: #3a86ff;
+      color: #fff;
+    }
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+    @keyframes slideUp {
+      from {
+        transform: translateY(30px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    footer {
+      padding: 20px 0;
+      text-align: center;
+      color: #777;
       font-size: 14px;
     }
-    footer .footer-links a {
-      color: #b0b0b0;
+    .footer-line {
+      width: 80%;
+      height: 1px;
+      background: #333;
+      margin: 50px auto 20px auto;
+    }
+    .footer-content {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      flex-wrap: wrap;
+    }
+    .footer-content a {
+      color: #777;
       text-decoration: none;
-      transition: color 0.3s ease;
+      font-size: 16px;
+      transition: color 0.3s;
     }
-    footer .footer-links a:hover {
-      color: #7C4DFF;
-      text-shadow: 0 0 5px rgba(124, 77, 255, 0.5);
+    .footer-content a:hover {
+      color: #3a86ff;
     }
-    footer .copyright {
-      margin-top: 40px;
-      font-size: 12px;
-      color: #808080;
-    }
-    @media (max-width: 768px) {
-      nav .nav-links { display: none; }
-      nav { flex-direction: column; gap: 20px; }
+    .footer-content i {
+      margin-right: 8px;
     }
   </style>
 </head>
 <body>
-  <div class="page-background">
-    <div class="animated-blob blob-1"></div>
-    <div class="animated-blob blob-2"></div>
-    <div class="animated-blob blob-3"></div>
 
-    <header>
-      <nav>
-        <div class="logo">
-          <img src="/byteforge-icon.png" alt="ByteForge Icon" aria-hidden="true">
-          <div class="neon-text-title">ByteForge</div>
-        </div>
-        <div class="nav-links">
-          <a href="https://discord.gg/SQm3Q3ErnK">Discord</a>
-          <a href="/index.html#features">Features</a>
-          <a href="/index.html#faq">FAQ</a>
-          <a href="/port.html">Port</a>
-          <a href="/downgrader/downgrader.html">Downgrader</a>
-        </div>
-      </nav>
-    </header>
+<canvas id="canvas"></canvas>
+
+<div class="bg-layer" id="bg1"></div>
+<div class="bg-layer" id="bg2"></div>
+
+<div class="nav">
+  <a href="https://link-target.net/1335270/DWyADP4jMRS4" class="nav-item">
+    <i class="fas fa-download"></i>
+    <span>Download</span>
+  </a>
+  <div class="divider"></div>
+  <a href="/" class="nav-item">
+    <i class="fab fa-youtube"></i>
+    <span>Youtube</span>
+  </a>
+  <a href="https://discord.gg/kCvc3Y65kj" class="nav-item">
+    <i class="fab fa-discord"></i>
+    <span>Discord</span>
+  </a>
+  <a href="/port.html" class="nav-item">
+    <i class="fas fa-server"></i>
+    <span>Port</span>
+  </a>
+</div>
 
     <!-- PORT.TXT DISPLAY BOX -->
     <section>
@@ -205,38 +229,106 @@
   </div>
 </section>
 
-
-    <footer>
-      <div class="logo">
-        <img src="/byteforge-icon.png" alt="ByteForge Icon" aria-hidden="true">
-        <div class="neon-text-title">ByteForge</div>
-      </div>
-      <p>Empowering developers with next-generation tools.</p>
-      <div class="footer-links">
-        <a href="#features">Features</a>
-        <a href="#faq">FAQ</a>
-        <a href="/downgrader/downgrader.html">Downgrader</a>
-        <a href="/privacy">Privacy Policy</a>
-        <a href="/terms">Terms of Service</a>
-      </div>
-      <p class="copyright">© 2025 ByteForge. All rights reserved.</p>
-    </footer>
+<footer>
+  <div class="footer-line"></div>
+  <div class="footer-content">
+    <a href="https://discord.gg/kCvc3Y65kj" target="_blank"><i class="fab fa-discord"></i> Discord</a>
+    <a href="/" target="_blank"><i class="fab fa-youtube"></i> YouTube</a>
   </div>
+</footer>
 
-  <!-- SCRIPT TO LOAD port.txt -->
-  <script>
-    fetch('/port.txt')
-      .then(response => {
-        if (!response.ok) throw new Error("Network response was not ok");
-        return response.text();
-      })
-      .then(data => {
-        document.getElementById('portContent').textContent = data;
-      })
-      .catch(error => {
-        document.getElementById('portContent').textContent = 'Failed to load port information.';
-        console.error('Error fetching port.txt:', error);
-      });
-  </script>
+<script>
+  const backgrounds = [
+    "url('images/gory-v-chernom-tsvete-1.png.png')",
+    "url('images/pca-exercise-astrophotography-tips-astro-david_clapp-jackson_snake_point_03-16.jpg')"
+  ];
+  const bg1 = document.getElementById("bg1");
+  const bg2 = document.getElementById("bg2");
+  let activeIndex = 0;
+  bg1.style.backgroundImage = backgrounds[0];
+  bg1.classList.add('active');
+
+  window.addEventListener('scroll', () => {
+    const scrollPosition = window.scrollY;
+    const docHeight = document.body.scrollHeight - window.innerHeight;
+    const section = Math.floor((scrollPosition / docHeight) * (backgrounds.length));
+    if (section !== activeIndex) {
+      const nextLayer = activeIndex % 2 === 0 ? bg2 : bg1;
+      nextLayer.style.backgroundImage = backgrounds[section];
+      nextLayer.classList.add('active');
+      const prevLayer = activeIndex % 2 === 0 ? bg1 : bg2;
+      prevLayer.classList.remove('active');
+      activeIndex = section;
+    }
+  });
+
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  window.addEventListener("resize", () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+
+  const particles = [];
+  const particleCount = 550;
+  for (let i = 0; i < particleCount; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 1.2,
+      vy: (Math.random() - 0.5) * 1.2
+    });
+  }
+
+  let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+
+  document.addEventListener("mousemove", (e) => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+  });
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+      if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+    });
+
+    particles.forEach(p => {
+      const dx = p.x - mouse.x;
+      const dy = p.y - mouse.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 160) {
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(mouse.x, mouse.y);
+        ctx.strokeStyle = `rgba(90,200,255,${1 - dist / 160})`;
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+      }
+    });
+
+    particles.forEach(p => {
+      const angle = Math.atan2(p.vy, p.vx);
+      const length = 6;
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      ctx.lineTo(p.x + Math.cos(angle) * length, p.y + Math.sin(angle) * length);
+      ctx.strokeStyle = 'rgba(90,200,255,0.8)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    });
+
+    requestAnimationFrame(draw);
+  }
+
+  draw();
+</script>
+
 </body>
 </html>
