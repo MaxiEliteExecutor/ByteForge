@@ -53,7 +53,6 @@
       background: rgba(0,0,0,0.6);
       z-index: -1;
     }
-
     .nav {
       display: flex;
       justify-content: center;
@@ -102,7 +101,6 @@
       background: #333;
       margin: 0 10px;
     }
-
     .container {
       display: flex;
       flex-direction: column;
@@ -130,7 +128,6 @@
       opacity: 0;
       max-width: 600px;
     }
-
     textarea#scriptBox {
       width: 100%;
       height: 250px;
@@ -152,9 +149,32 @@
       border-color: #2a66cc;
       box-shadow: 0 0 15px #3a86ff99;
     }
-
-    button#executeBtn {
-      margin-top: 25px;
+    .control-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 10px 0;
+      animation: slideUp 1s ease 0.8s forwards;
+      opacity: 0;
+    }
+    input#portInput {
+      width: 100px;
+      padding: 10px;
+      background: #222;
+      color: #0f0;
+      font-family: 'Courier New', monospace;
+      font-size: 16px;
+      border: 2px solid #3a86ff;
+      border-radius: 8px;
+      text-align: center;
+      transition: border-color 0.3s ease;
+    }
+    input#portInput:focus {
+      outline: none;
+      border-color: #2a66cc;
+      box-shadow: 0 0 15px #3a86ff99;
+    }
+    button {
       padding: 14px 30px;
       background: #3a86ff;
       color: #fff;
@@ -168,12 +188,11 @@
       animation: slideUp 1s ease 0.8s forwards;
       opacity: 0;
     }
-    button#executeBtn:hover {
+    button:hover {
       background: #2a66cc;
       transform: translateY(-5px);
       box-shadow: 0 10px 30px #2a66cccc;
     }
-
     pre#output {
       margin-top: 30px;
       width: 100%;
@@ -191,13 +210,11 @@
       opacity: 0;
       box-sizing: border-box;
     }
-
     @keyframes fadeIn { to { opacity: 1; } }
     @keyframes slideUp {
       from { transform: translateY(30px); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
     }
-
     footer {
       padding: 20px 0;
       text-align: center;
@@ -263,10 +280,16 @@
 
 <div class="container">
   <h1>ByteForge</h1>
-  <p>Free Roblox internal executor — Fast inject and run all your scripts with a good and fast-updating injector. Just two clicks and you can already fly without rules and turn on the aim bot.</p>
+  <p>Free Roblox internal executor — Fast inject and run all your scripts with a good and fast-updating injector.</p>
 
   <textarea id="scriptBox" placeholder="Enter your Lua script here...">print("Hello from web!")</textarea>
-  <button id="executeBtn">Execute</button>
+  
+  <div class="control-group">
+    <input id="portInput" type="number" value="4267" min="1" max="4444" placeholder="TCP Port" />
+    <button id="injectBtn">Inject</button>
+    <button id="executeBtn">Execute</button>
+  </div>
+
   <pre id="output" aria-live="polite" aria-label="Execution output"></pre>
 </div>
 
@@ -292,13 +315,20 @@
 
   // Lua executor
   const executeBtn = document.getElementById('executeBtn');
+  const injectBtn = document.getElementById('injectBtn');
   const output = document.getElementById('output');
   const scriptBox = document.getElementById('scriptBox');
+  const portInput = document.getElementById('portInput');
 
   executeBtn.addEventListener('click', async () => {
     const code = scriptBox.value.trim();
+    const port = portInput.value.trim();
     if (!code) {
       alert("Please enter a Lua script.");
+      return;
+    }
+    if (!port || port < 1 || port > 4444) {
+      alert("Please enter a valid TCP port between 1 and 4444.");
       return;
     }
     output.textContent = "Running script...";
@@ -306,13 +336,28 @@
       const res = await fetch('http://localhost:9325/execute/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code })
+        body: JSON.stringify({ code, port })
       });
       if (!res.ok) throw new Error(`Server error: ${res.status}`);
       const text = await res.text();
       output.textContent = text || '(No output)';
     } catch (e) {
       output.textContent = `Error: ${e.message}`;
+      console.error(e);
+    }
+  });
+
+  injectBtn.addEventListener('click', async () => {
+    output.textContent = "Injecting...";
+    try {
+      const res = await fetch('http://localhost:9325/inject/', {
+        method: 'POST'
+      });
+      if (!res.ok) throw new Error(`Server error: ${res.status}`);
+      const text = await res.text();
+      output.textContent = text || '[✓] Injector launched.';
+    } catch (e) {
+      output.textContent = `Injection error: ${e.message}`;
       console.error(e);
     }
   });
