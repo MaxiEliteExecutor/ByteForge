@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ByteForge Lua Executor</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      background: #0f0f0f;
+      font-family: 'Inter', sans-serif;
+      color: #fff;
+      overflow-x: hidden;
+      position: relative;
+    }
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -3;
+      pointer-events: none;
+    }
+    .bg-layer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      z-index: -2;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+    .bg-layer.active {
+      opacity: 1;
+    }
+    body::after {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      z-index: -1;
+    }
+    .nav {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      background: rgba(0,0,0,0.4);
+      border-radius: 50px;
+      padding: 10px 25px;
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 999;
+    }
+    .nav-item {
+      position: relative;
+      text-align: center;
+      color: #999;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .nav-item i {
+      transition: color 0.3s, transform 0.3s;
+    }
+    .nav-item:hover i {
+      color: #3a86ff;
+    }
+    .nav-item span {
+      position: absolute;
+      top: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      color: #ccc;
+      opacity: 0;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+    .nav-item:hover span {
+      opacity: 1;
+      transform: translateX(-50%) translateY(5px);
+      color: #3a86ff;
+    }
+    .divider {
+      width: 1px;
+      background: #333;
+      margin: 0 10px;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      min-height: 100vh;
+      padding: 120px 20px 60px;
+      text-align: center;
+      animation: fadeIn 1.5s ease forwards;
+      opacity: 0;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 64px;
+      color: #ffffff;
+      margin: 0 0 10px 0;
+      animation: slideUp 1s ease forwards;
+    }
+    p {
+      font-size: 18px;
+      color: #aaa;
+      margin: 0 0 40px 0;
+      animation: slideUp 1s ease 0.3s forwards;
+      opacity: 0;
+      max-width: 600px;
+    }
+
+    textarea#scriptBox {
+      width: 100%;
+      height: 250px;
+      background: #222;
+      color: #0f0;
+      font-family: 'Courier New', monospace;
+      font-size: 16px;
+      padding: 15px;
+      border: 2px solid #3a86ff;
+      border-radius: 8px;
+      resize: vertical;
+      box-sizing: border-box;
+      animation: slideUp 1s ease 0.6s forwards;
+      opacity: 0;
+      transition: border-color 0.3s ease;
+    }
+    textarea#scriptBox:focus {
+      outline: none;
+      border-color: #2a66cc;
+      box-shadow: 0 0 15px #3a86ff99;
+    }
+    button#executeBtn {
+      margin-top: 25px;
+      padding: 14px 30px;
+      background: #3a86ff;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 700;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(58, 134, 255, 0.4);
+      transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+      animation: slideUp 1s ease 0.8s forwards;
+      opacity: 0;
+    }
+    button#executeBtn:hover {
+      background: #2a66cc;
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px #2a66cccc;
+    }
+    pre#output {
+      margin-top: 30px;
+      width: 100%;
+      background: #111;
+      color: #0f0;
+      padding: 20px;
+      font-family: 'Courier New', monospace;
+      font-size: 15px;
+      border-radius: 8px;
+      min-height: 120px;
+      white-space: pre-wrap;
+      text-align: left;
+      overflow-y: auto;
+      animation: slideUp 1s ease 1s forwards;
+      opacity: 0;
+      box-sizing: border-box;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+    @keyframes slideUp {
+      from {
+        transform: translateY(30px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    footer {
+      padding: 20px 0;
+      text-align: center;
+      color: #777;
+      font-size: 14px;
+      margin-top: 60px;
+    }
+    .footer-line {
+      width: 80%;
+      height: 1px;
+      background: #333;
+      margin: 50px auto 20px auto;
+    }
+    .footer-content {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      flex-wrap: wrap;
+    }
+    .footer-content a {
+      color: #777;
+      text-decoration: none;
+      font-size: 16px;
+      transition: color 0.3s;
+    }
+    .footer-content a:hover {
+      color: #3a86ff;
+    }
+    .footer-content i {
+      margin-right: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+
+<div class="bg-layer" id="bg1"></div>
+<div class="bg-layer" id="bg2"></div>
+
+<div class="nav">
+  <a href="https://link-target.net/1335270/DWyADP4jMRS4" class="nav-item" target="_blank" rel="noopener">
+    <i class="fas fa-download"></i>
+    <span>Download</span>
+  </a>
+  <div class="divider"></div>
+  <a href="/" class="nav-item">
+    <i class="fab fa-youtube"></i>
+    <span>Youtube</span>
+  </a>
+  <a href="https://discord.gg/kCvc3Y65kj" class="nav-item" target="_blank" rel="noopener">
+    <i class="fab fa-discord"></i>
+    <span>Discord</span>
+  </a>
+  <a href="/port.html" class="nav-item">
+    <i class="fas fa-server"></i>
+    <span>Port</span>
+  </a>
+  <a href="/vip.html" class="nav-item">
+    <i class="fas fa-vip"></i>
+    <span>VIP</span>
+  </a>
+</div>
+
+<div class="container">
+  <h1>ByteForge</h1>
+  <p>
+    Free Roblox internal executor — Fast inject and run all your scripts with a good and fast-updating injector. Just two clicks and you can already fly without rules and turn on the aim bot.
+  </p>
+
+  <textarea id="scriptBox" placeholder="Enter your Lua script here...">print("Hello from web!")</textarea>
+  <button id="executeBtn">Execute</button>
+  <pre id="output" aria-live="polite" aria-label="Execution output"></pre>
+</div>
+
+<footer>
+  <div class="footer-line"></div>
+  <div class="footer-content">
+    <a href="https://discord.gg/kCvc3Y65kj" target="_blank" rel="noopener">
+      <i class="fab fa-discord"></i> Discord
+    </a>
+    <a href="https://t.me/byteforge" target="_blank" rel="noopener">
+      <i class="fab fa-telegram"></i> Telegram
+    </a>
+    <a href="https://www.reddit.com/r/ByteForge/" target="_blank" rel="noopener">
+      <i class="fab fa-reddit"></i> Reddit
+    </a>
+  </div>
+</footer>
+
+<script>
+  // background layers fade-in
+  window.addEventListener('load', () => {
+    document.getElementById('bg1').style.backgroundImage = "url('https://cdn.byteforge.me/bg1.jpg')";
+    document.getElementById('bg2').style.backgroundImage = "url('https://cdn.byteforge.me/bg2.jpg')";
+    setTimeout(() => {
+      document.getElementById('bg1').classList.add('active');
+      document.getElementById('bg2').classList.add('active');
+    }, 100);
+  });
+
+  // canvas background effect (optional, can remove if no canvas effect desired)
+  // Example: subtle noise or particle effect here if you want
+
+  // Lua executor logic
+  const executeBtn = document.getElementById('executeBtn');
+  const output = document.getElementById('output');
+  const scriptBox = document.getElementById('scriptBox');
+
+  executeBtn.addEventListener('click', async () => {
+    const code = scriptBox.value.trim();
+    if (!code) {
+      alert("Please enter a Lua script.");
+      return;
+    }
+    output.textContent = "Running script...";
+    try {
+      const res = await fetch('http://localhost:9325/execute/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code })
+      });
+      if (!res.ok) {
+        throw new Error(`Server error: ${res.status}`);
+      }
+      const text = await res.text();
+      output.textContent = text || '(No output)';
+    } catch (e) {
+      output.textContent = `Error: ${e.message}`;
+      console.error(e);
+    }
+  });
+</script>
+
+</body>
+</html>
