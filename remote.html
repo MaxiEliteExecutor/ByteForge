@@ -22,6 +22,8 @@
       position: fixed;
       top: 0;
       left: 0;
+      width: 100vw;
+      height: 100vh;
       z-index: -3;
       pointer-events: none;
     }
@@ -51,6 +53,7 @@
       background: rgba(0,0,0,0.6);
       z-index: -1;
     }
+
     .nav {
       display: flex;
       justify-content: center;
@@ -99,6 +102,7 @@
       background: #333;
       margin: 0 10px;
     }
+
     .container {
       display: flex;
       flex-direction: column;
@@ -148,6 +152,7 @@
       border-color: #2a66cc;
       box-shadow: 0 0 15px #3a86ff99;
     }
+
     button#executeBtn {
       margin-top: 25px;
       padding: 14px 30px;
@@ -168,6 +173,7 @@
       transform: translateY(-5px);
       box-shadow: 0 10px 30px #2a66cccc;
     }
+
     pre#output {
       margin-top: 30px;
       width: 100%;
@@ -186,18 +192,10 @@
       box-sizing: border-box;
     }
 
-    @keyframes fadeIn {
-      to { opacity: 1; }
-    }
+    @keyframes fadeIn { to { opacity: 1; } }
     @keyframes slideUp {
-      from {
-        transform: translateY(30px);
-        opacity: 0;
-      }
-      to {
-        transform: translateY(0);
-        opacity: 1;
-      }
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
     }
 
     footer {
@@ -236,7 +234,6 @@
 <body>
 
 <canvas id="canvas"></canvas>
-
 <div class="bg-layer" id="bg1"></div>
 <div class="bg-layer" id="bg2"></div>
 
@@ -266,9 +263,7 @@
 
 <div class="container">
   <h1>ByteForge</h1>
-  <p>
-    Free Roblox internal executor — Fast inject and run all your scripts with a good and fast-updating injector. Just two clicks and you can already fly without rules and turn on the aim bot.
-  </p>
+  <p>Free Roblox internal executor — Fast inject and run all your scripts with a good and fast-updating injector. Just two clicks and you can already fly without rules and turn on the aim bot.</p>
 
   <textarea id="scriptBox" placeholder="Enter your Lua script here...">print("Hello from web!")</textarea>
   <button id="executeBtn">Execute</button>
@@ -278,20 +273,14 @@
 <footer>
   <div class="footer-line"></div>
   <div class="footer-content">
-    <a href="https://discord.gg/kCvc3Y65kj" target="_blank" rel="noopener">
-      <i class="fab fa-discord"></i> Discord
-    </a>
-    <a href="https://t.me/byteforge" target="_blank" rel="noopener">
-      <i class="fab fa-telegram"></i> Telegram
-    </a>
-    <a href="https://www.reddit.com/r/ByteForge/" target="_blank" rel="noopener">
-      <i class="fab fa-reddit"></i> Reddit
-    </a>
+    <a href="https://discord.gg/kCvc3Y65kj" target="_blank"><i class="fab fa-discord"></i> Discord</a>
+    <a href="https://t.me/byteforge" target="_blank"><i class="fab fa-telegram"></i> Telegram</a>
+    <a href="https://www.reddit.com/r/ByteForge/" target="_blank"><i class="fab fa-reddit"></i> Reddit</a>
   </div>
 </footer>
 
 <script>
-  // background layers fade-in
+  // Background image fade-in
   window.addEventListener('load', () => {
     document.getElementById('bg1').style.backgroundImage = "url('https://cdn.byteforge.me/bg1.jpg')";
     document.getElementById('bg2').style.backgroundImage = "url('https://cdn.byteforge.me/bg2.jpg')";
@@ -301,10 +290,7 @@
     }, 100);
   });
 
-  // canvas background effect (optional, can remove if no canvas effect desired)
-  // Example: subtle noise or particle effect here if you want
-
-  // Lua executor logic
+  // Lua executor
   const executeBtn = document.getElementById('executeBtn');
   const output = document.getElementById('output');
   const scriptBox = document.getElementById('scriptBox');
@@ -322,9 +308,7 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code })
       });
-      if (!res.ok) {
-        throw new Error(`Server error: ${res.status}`);
-      }
+      if (!res.ok) throw new Error(`Server error: ${res.status}`);
       const text = await res.text();
       output.textContent = text || '(No output)';
     } catch (e) {
@@ -332,6 +316,61 @@
       console.error(e);
     }
   });
+
+  // Particle animation
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  class Particle {
+    constructor() {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.radius = Math.random() * 2 + 1;
+      this.dx = (Math.random() - 0.5) * 0.5;
+      this.dy = (Math.random() - 0.5) * 0.5;
+    }
+
+    update() {
+      this.x += this.dx;
+      this.y += this.dy;
+      if (this.x < 0 || this.x > canvas.width) this.dx *= -1;
+      if (this.y < 0 || this.y > canvas.height) this.dy *= -1;
+    }
+
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255,255,255,0.3)';
+      ctx.fill();
+    }
+  }
+
+  function initParticles(count = 100) {
+    particles = [];
+    for (let i = 0; i < count; i++) {
+      particles.push(new Particle());
+    }
+  }
+
+  function animateParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.update();
+      p.draw();
+    });
+    requestAnimationFrame(animateParticles);
+  }
+
+  initParticles(150);
+  animateParticles();
 </script>
 
 </body>
