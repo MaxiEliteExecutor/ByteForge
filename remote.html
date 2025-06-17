@@ -288,6 +288,7 @@
     <input id="portInput" type="number" value="4267" min="1" max="4444" placeholder="TCP Port" />
     <button id="injectBtn">Inject</button>
     <button id="executeBtn">Execute</button>
+    <button id="killRobloxBtn">Kill Roblox</button>
   </div>
 
   <pre id="output" aria-live="polite" aria-label="Execution output"></pre>
@@ -316,6 +317,7 @@
   // Lua executor
   const executeBtn = document.getElementById('executeBtn');
   const injectBtn = document.getElementById('injectBtn');
+  const killRobloxBtn = document.getElementById('killRobloxBtn');
   const output = document.getElementById('output');
   const scriptBox = document.getElementById('scriptBox');
   const portInput = document.getElementById('portInput');
@@ -358,6 +360,21 @@
       output.textContent = text || '[✓] Injector launched.';
     } catch (e) {
       output.textContent = `Injection error: ${e.message}`;
+      console.error(e);
+    }
+  });
+
+  killRobloxBtn.addEventListener('click', async () => {
+    output.textContent = "Killing Roblox...";
+    try {
+      const res = await fetch('http://localhost:9325/killroblox/', {
+        method: 'POST'
+      });
+      if (!res.ok) throw new Error(`Server error: ${res.status}`);
+      const text = await res.text();
+      output.textContent = text || '[✓] Roblox terminated.';
+    } catch (e) {
+      output.textContent = `Kill Roblox error: ${e.message}`;
       console.error(e);
     }
   });
