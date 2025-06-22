@@ -128,24 +128,18 @@
       opacity: 0;
       max-width: 600px;
     }
-    textarea#scriptBox {
+    #editor {
       width: 100%;
       height: 250px;
-      background: #222;
-      color: #0f0;
-      font-family: 'Courier New', monospace;
-      font-size: 16px;
-      padding: 15px;
       border: 2px solid #3a86ff;
       border-radius: 8px;
-      resize: vertical;
-      box-sizing: border-box;
       animation: slideUp 1s ease 0.6s forwards;
       opacity: 0;
       transition: border-color 0.3s ease;
+      box-sizing: border-box;
+      text-align: left; /* Ensure editor content is left-aligned */
     }
-    textarea#scriptBox:focus {
-      outline: none;
+    #editor:focus-within {
       border-color: #2a66cc;
       box-shadow: 0 0 15px #3a86ff99;
     }
@@ -282,7 +276,8 @@
   <h1>ByteForge</h1>
   <p>Free Roblox internal executor — Fast inject and run all your scripts with a good and fast-updating injector.</p>
 
-  <textarea id="scriptBox" placeholder="Enter your Lua script here...">print("Hello from web!")</textarea>
+  <!-- Monaco Editor Container -->
+  <div id="editor"></div>
   
   <div class="control-group">
     <input id="portInput" type="number" value="4267" min="1" max="4444" placeholder="TCP Port" />
@@ -303,7 +298,75 @@
   </div>
 </footer>
 
+<!-- Load Monaco Editor -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
 <script>
+  // Configure Monaco Editor
+  require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' } });
+  let monacoEditor;
+  require(['vs/editor/editor.main'], function () {
+    // Define Lua language if not already available
+    monaco.languages.register({ id: 'lua' });
+    monaco.languages.setMonarchTokensProvider('lua', {
+      tokenizer: {
+        root: [
+          [/\b(function|if|then|else|elseif|while|do|end|for|in|repeat|until|return|break|local|true|false|nil)\b/, 'keyword'],
+          [/\b(and|or|not)\b/, 'keyword.operator'],
+          [/--\[\[[\s\S]*?\]\]/, 'comment'], // Multiline comment
+          [/--.*$/, 'comment'], // Single-line comment
+          [/"(?:\\.|.)*?"/, 'string'], // Double-quoted string
+          [/'(?:\\.|.)*?'/, 'string'], // Single-quoted string
+          [/[0-9]+(\.[0-9]+)?/, 'number'], // Numbers
+          [/[\[\]\(\)\{\}]/, 'delimiter.bracket'],
+          [/[=+\-*/%<>!&|]/, 'operator'],
+          [/\b[a-zA-Z_][a-zA-Z0-9_]*\b/, 'identifier']
+        ]
+      }
+    });
+    monaco.languages.setLanguageConfiguration('lua', {
+      comments: {
+        lineComment: '--',
+        blockComment: ['--[[', ']]']
+      },
+      brackets: [
+        ['{', '}'],
+        ['[', ']'],
+        ['(', ')']
+      ],
+      autoClosingPairs: [
+        { open: '{', close: '}' },
+        { open: '[', close: ']' },
+        { open: '(', close: ')' },
+        { open: '"', close: '"' },
+        { open: "'", close: "'" }
+      ],
+      surroundingPairs: [
+        { open: '{', close: '}' },
+        { open: '[', close: ']' },
+        { open: '(', close: ')' },
+        { open: '"', close: '"' },
+        { open: "'", close: "'" }
+      ]
+    });
+
+    // Create the editor with default text
+    monacoEditor = monaco.editor.create(document.getElementById('editor'), {
+      value: `-- Welcome to ByteForge Lua Executor!\nlocal message = "Hello, Roblox world!"\nprint(message)\ngame.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 50`,
+      language: 'lua',
+      theme: 'vs-dark',
+      fontSize: 16,
+      automaticLayout: true,
+      minimap: { enabled: false },
+      scrollbar: { vertical: 'visible', horizontal: 'visible' },
+      padding: { top: 15, bottom: 15 },
+      lineNumbers: 'on',
+      wordWrap: 'off',
+      renderWhitespace: 'none',
+      tabSize: 2,
+      insertSpaces: true
+    });
+  });
+
   // Background image fade-in
   window.addEventListener('load', () => {
     document.getElementById('bg1').style.backgroundImage = "url('https://cdn.byteforge.me/bg1.jpg')";
@@ -319,11 +382,10 @@
   const injectBtn = document.getElementById('injectBtn');
   const killRobloxBtn = document.getElementById('killRobloxBtn');
   const output = document.getElementById('output');
-  const scriptBox = document.getElementById('scriptBox');
   const portInput = document.getElementById('portInput');
 
   executeBtn.addEventListener('click', async () => {
-    const code = scriptBox.value.trim();
+    const code = monacoEditor ? monacoEditor.getValue().trim() : '';
     const port = portInput.value.trim();
     if (!code) {
       alert("Please enter a Lua script.");
