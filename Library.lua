@@ -943,50 +943,6 @@ getgenv().Drawing = {
         end
     end
 }
-
-getgenv().isrenderobj = function(drawingObj)
-    local success, isrenderobj = pcall(function()
-		return drawingObj.Parent == drawingUI
-	end)
-	if not success then return false end
-	return isrenderobj
-end
-getgenv().base64_encode = function(data)
-	return CryptByteForge.base64encode(data)
-end
-getgenv().base64_decode = function(data)
-	return CryptByteForge.base64decode(data)
-end
-getgenv().crypt = {
-  base64encode = function(data)
-	  return CryptByteForge.base64encode(data)
-  end
-  base64_decode = function(data)
-	  return CryptByteForge.base64decode(data)
-  end
-  encode = function(data)
-	  return CryptByteForge.encode(data)
-  end
-  decode = function(data)
-	  return CryptByteForge.decode(data)
-  end
-  generatebytes = function(data)
-	  return CryptByteForge.generatebytes(data)
-  end
-  generatekey = function(data)
-	  return CryptByteForge.generatekey(data)
-  end
-  encrypt = function(data)
-	  return CryptByteForge.encrypt(data)
-  end
-  decrypt = function(data)
-	  return CryptByteForge.decrypt(data)
-  end
-  hash = function(data)
-	  return CryptByteForge.hash(data)
-  end
-}
-
 getgenv().saveinstance = function(options)
 	if type(options) ~= "table" then
 		print("invalid argument #1 to 'saveinstance' (table expected, got %s) ")
