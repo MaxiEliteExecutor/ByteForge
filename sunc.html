@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ByteForge</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      background: #0f0f0f;
+      font-family: 'Inter', sans-serif;
+      color: #fff;
+      overflow-x: hidden;
+      position: relative;
+    }
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -3;
+      pointer-events: none;
+    }
+    .bg-layer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      z-index: -2;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+    .bg-layer.active {
+      opacity: 1;
+    }
+    body::after {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      z-index: -1;
+    }
+    .nav {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      background: rgba(0,0,0,0.4);
+      border-radius: 50px;
+      padding: 10px 25px;
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 999;
+    }
+    .nav-item {
+      position: relative;
+      text-align: center;
+      color: #999;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .nav-item i {
+      transition: color 0.3s, transform 0.3s;
+    }
+    .nav-item:hover i {
+      color: #3a86ff;
+    }
+    .nav-item span {
+      position: absolute;
+      top: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      color: #ccc;
+      opacity: 0;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+    .nav-item:hover span {
+      opacity: 1;
+      transform: translateX(-50%) translateY(5px);
+      color: #3a86ff;
+    }
+    .divider {
+      width: 1px;
+      background: #333;
+      margin: 0 10px;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+      padding-top: 60px;
+      animation: fadeIn 1.5s ease forwards;
+      opacity: 0;
+    }
+    h1 {
+      font-size: 64px;
+      color: #ffffff;
+      margin: 0 0 20px 0;
+      animation: slideUp 1s ease forwards;
+    }
+    p {
+      font-size: 18px;
+      color: #aaa;
+      max-width: 600px;
+      margin-bottom: 30px;
+      animation: slideUp 1s ease 0.3s forwards;
+      opacity: 0;
+    }
+    .buttons {
+      display: flex;
+      gap: 15px;
+      animation: slideUp 1s ease 0.6s forwards;
+      opacity: 0;
+    }
+    .btn {
+      padding: 14px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      text-decoration: none;
+      background: #333;
+      color: #fff;
+      transition: all 0.3s ease, background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .btn:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 20px #3a86ff, 0 8px 20px rgba(0, 0, 0, 0.6);
+      background: #3a86ff;
+      color: #fff;
+    }
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+    @keyframes slideUp {
+      from {
+        transform: translateY(30px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    footer {
+      padding: 20px 0;
+      text-align: center;
+      color: #777;
+      font-size: 14px;
+    }
+    .footer-line {
+      width: 80%;
+      height: 1px;
+      background: #333;
+      margin: 50px auto 20px auto;
+    }
+    .footer-content {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      flex-wrap: wrap;
+    }
+    .footer-content a {
+      color: #777;
+      text-decoration: none;
+      font-size: 16px;
+      transition: color 0.3s;
+    }
+    .footer-content a:hover {
+      color: #3a86ff;
+    }
+    .footer-content i {
+      margin-right: 8px;
+    }
+    .status-section {
+      padding: 40px 20px;
+      text-align: center;
+      background: rgba(0,0,0,0.8);
+      border-radius: 10px;
+      margin: 20px auto;
+      max-width: 800px;
+    }
+    .status-section h2 {
+      font-size: 32px;
+      margin-bottom: 20px;
+      color: #fff;
+    }
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+    .status-item {
+      background: #222;
+      padding: 15px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+    }
+    .status-item.working {
+      border: 2px solid #28a745;
+    }
+    .status-item.failing {
+      border: 2px solid #dc3545;
+    }
+    .status-item i {
+      font-size: 24px;
+    }
+    .status-item.working i {
+      color: #28a745;
+    }
+    .status-item.failing i {
+      color: #dc3545;
+    }
+    .status-item span {
+      font-size: 16px;
+      color: #fff;
+    }
+    .status-item.failing:hover::after {
+      content: attr(data-reason);
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #333;
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      white-space: nowrap;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+
+<div class="bg-layer" id="bg1"></div>
+<div class="bg-layer" id="bg2"></div>
+
+<div class="nav">
+  <a href="https://link-target.net/1335270/DWyADP4jMRS4" class="nav-item">
+    <i class="fas fa-download"></i>
+    <span>Download</span>
+  </a>
+  <div class="divider"></div>
+  <a href="/" class="nav-item">
+    <i class="fab fa-youtube"></i>
+    <span>Youtube</span>
+  </a>
+  <a href="https://discord.gg/kCvc3Y65kj" class="nav-item">
+    <i class="fab fa-discord"></i>
+    <span>Discord</span>
+  </a>
+  <a href="/remote.html" class="nav-item">
+    <i class="fas fa-server"></i>
+    <span>Remote Exec</span>
+  </a>
+  <a href="/vip.html" class="nav-item">
+    <i class="fas fa-vip"></i>
+    <span>Vip</span>
+  </a>
+</div>
+
+<div class="container">
+  <h1>ByteForge</h1>
+  <p>
+    free Roblox internel executor — Fast inject and run all your script a good and fast-updating injector, just two clicks and you can already fly without rules and turn on the aim bot.
+  </p>
+  <div class="buttons">
+    <a href="https://link-target.net/1335270/DWyADP4jMRS4" class="btn">Download</a>
+    <a href="https://discord.gg/kCvc3Y65kj" class="btn">Join Discord</a>
+  </div>
+</div>
+
+<div class="status-section">
+  <h2>Function Status</h2>
+  <div class="status-grid" id="statusGrid"></div>
+</div>
+
+<footer>
+  <div class="footer-line"></div>
+  <div class="footer-content">
+    <a href="https://discord.gg/kCvc3Y65kj" target="_blank"><i class="fab fa-discord"></i> Discord</a>
+    <a href="/" target="_blank"><i class="fab fa-youtube"></i> YouTube</a>
+  </div>
+</footer>
+
+<script>
+  const backgrounds = [
+    "url('images/gory-v-chernom-tsvete-1.png.png')",
+    "url('images/pca-exercise-astrophotography-tips-astro-david_clapp-jackson_snake_point_03-16.jpg')"
+  ];
+  const bg1 = document.getElementById("bg1");
+  const bg2 = document.getElementById("bg2");
+  let activeIndex = 0;
+  bg1.style.backgroundImage = backgrounds[0];
+  bg1.classList.add('active');
+
+  window.addEventListener('scroll', () => {
+    const scrollPosition = window.scrollY;
+    const docHeight = document.body.scrollHeight - window.innerHeight;
+    const section = Math.floor((scrollPosition / docHeight) * (backgrounds.length));
+    if (section !== activeIndex) {
+      const nextLayer = activeIndex % 2 === 0 ? bg2 : bg1;
+      nextLayer.style.backgroundImage = backgrounds[section];
+      nextLayer.classList.add('active');
+      const prevLayer = activeIndex % 2 === 0 ? bg1 : bg2;
+      prevLayer.classList.remove('active');
+      activeIndex = section;
+    }
+  });
+
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  window.addEventListener("resize", () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+
+  const particles = [];
+  const particleCount = 550;
+  for (let i = 0; i < particleCount; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 1.2,
+      vy: (Math.random() - 0.5) * 1.2
+    });
+  }
+
+  let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+
+  document.addEventListener("mousemove", (e) => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+  });
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+      if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+    });
+
+    particles.forEach(p => {
+      const dx = p.x - mouse.x;
+      const dy = p.y - mouse.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 160) {
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(mouse.x, mouse.y);
+        ctx.strokeStyle = `rgba(90,200,255,${1 - dist / 160})`;
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+      }
+    });
+
+    particles.forEach(p => {
+      const angle = Math.atan2(p.vy, p.vx);
+      const length = 6;
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      ctx.lineTo(p.x + Math.cos(angle) * length, p.y + Math.sin(angle) * length);
+      ctx.strokeStyle = 'rgba(90,200,255,0.8)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    });
+
+    requestAnimationFrame(draw);
+  }
+
+  draw();
+
+  // Fetch and display status for all functions from API
+  async function fetchStatus() {
+    try {
+      const response = await fetch('https://api.rubis.app/v2/scrap/HDNgxDXPvCr0Y4bh/raw?accessKey=22g6n11xi4dNffpudOSraw4g7gQlVO0D');
+      const data = await response.json();
+      const statusGrid = document.getElementById('statusGrid');
+      statusGrid.innerHTML = ''; // Clear previous content
+
+      // Process passed functions
+      data.tests.passed.forEach(functionName => {
+        const statusItem = document.createElement('div');
+        statusItem.classList.add('status-item', 'working');
+        statusItem.innerHTML = `
+          <i class="fas fa-check-circle"></i>
+          <span>${functionName}: Working</span>
+        `;
+        statusGrid.appendChild(statusItem);
+      });
+
+      // Process failed functions with reasons
+      Object.entries(data.tests.failed).forEach(([functionName, reason]) => {
+        const statusItem = document.createElement('div');
+        statusItem.classList.add('status-item', 'failing');
+        statusItem.setAttribute('data-reason', reason);
+        statusItem.innerHTML = `
+          <i class="fas fa-times-circle"></i>
+          <span>${functionName}: Failing</span>
+        `;
+        statusGrid.appendChild(statusItem);
+      });
+
+      // If no functions are returned, show a message
+      if (data.tests.passed.length === 0 && Object.keys(data.tests.failed).length === 0) {
+        statusGrid.innerHTML = '<p style="color: #aaa;">No function status available</p>';
+      }
+    } catch (error) {
+      console.error('Error fetching status:', error);
+      const statusGrid = document.getElementById('statusGrid');
+      statusGrid.innerHTML = '<p style="color: #dc3545;">Failed to load function status</p>';
+    }
+  }
+
+  fetchStatus();
+</script>
+
+</body>
+</html>
