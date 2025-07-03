@@ -472,10 +472,6 @@
         log('Please enter a channel name.');
         return false;
       }
-      if (version && !/^[a-f0-9]{40}$/.test(version)) {
-        log('Version hash must be a 40-character hex string.');
-        return false;
-      }
       const compressionLevel = parseInt(document.getElementById('compressionLevel').value);
       if (compressionLevel < 1 || compressionLevel > 9) {
         log('Compression level must be between 1 and 9.');
