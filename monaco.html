@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,22 +9,23 @@
       padding: 0;
       width: 100%;
       height: 100%;
+      background-color: #0F0F10;
     }
   </style>
 </head>
 <body>
   <div id="container"></div>
 
-  <!-- Load Monaco via CDN -->
+  <!-- Monaco Editor Loader -->
   <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.43.0/min/vs/loader.js"></script>
   <script>
-    require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@0.43.0/min/vs' }});
+    require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@0.43.0/min/vs' } });
 
     require(['vs/editor/editor.main'], function () {
-      // Register a custom language
+      // Register Lua language
       monaco.languages.register({ id: 'lua' });
 
-      // Define basic syntax highlighting for Lua
+      // Simple Lua syntax highlighting
       monaco.languages.setMonarchTokensProvider('lua', {
         tokenizer: {
           root: [
@@ -47,11 +47,26 @@
         }
       });
 
-      // Optional: set Lua as default language
+      // Define a custom dark theme with background #0F0F10
+      monaco.editor.defineTheme('dark-lua-theme', {
+        base: 'vs-dark',
+        inherit: true,
+        rules: [
+          { token: 'keyword', foreground: 'C586C0' },
+          { token: 'number', foreground: 'B5CEA8' },
+          { token: 'string', foreground: 'CE9178' },
+          { token: 'comment', foreground: '6A9955' },
+        ],
+        colors: {
+          'editor.background': '#0F0F10'
+        }
+      });
+
+      // Create editor
       monaco.editor.create(document.getElementById('container'), {
-        value: '-- Write your Lua code here\nfunction hello()\n  print("Hello, Lua!")\nend',
+        value: '-- Lua sample\nfunction hello()\n  print("Hello, Lua!")\nend',
         language: 'lua',
-        theme: 'vs-dark'
+        theme: 'dark-lua-theme'
       });
     });
   </script>
