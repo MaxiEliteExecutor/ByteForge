@@ -1,1 +1,59 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Monaco Editor with Lua</title>
+  <style>
+    html, body, #container {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div id="container"></div>
+
+  <!-- Load Monaco via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.43.0/min/vs/loader.js"></script>
+  <script>
+    require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@0.43.0/min/vs' }});
+
+    require(['vs/editor/editor.main'], function () {
+      // Register a custom language
+      monaco.languages.register({ id: 'lua' });
+
+      // Define basic syntax highlighting for Lua
+      monaco.languages.setMonarchTokensProvider('lua', {
+        tokenizer: {
+          root: [
+            [/[a-zA-Z_]\w*/, {
+              cases: {
+                'function|end|if|then|else|elseif|for|in|do|while|repeat|until|return|local|and|or|not': 'keyword',
+                '@default': 'identifier'
+              }
+            }],
+            { include: '@whitespace' },
+            [/\d+(\.\d+)?/, 'number'],
+            [/".*?"/, 'string'],
+            [/'[^']*'/, 'string'],
+            [/--.*/, 'comment'],
+          ],
+          whitespace: [
+            [/[ \t\r\n]+/, 'white'],
+          ]
+        }
+      });
+
+      // Optional: set Lua as default language
+      monaco.editor.create(document.getElementById('container'), {
+        value: '-- Write your Lua code here\nfunction hello()\n  print("Hello, Lua!")\nend',
+        language: 'lua',
+        theme: 'vs-dark'
+      });
+    });
+  </script>
+</body>
+</html>
