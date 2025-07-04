@@ -94,11 +94,6 @@
       transform: translateX(-50%) translateY(5px);
       color: #3a86ff;
     }
-    .divider {
-      width: 1px;
-      background: #333;
-      margin: 0 10px;
-    }
     .container {
       display: flex;
       flex-direction: column;
@@ -155,6 +150,12 @@
       box-shadow: 0 0 20px #3a86ff, 0 8px 20px rgba(0, 0, 0, 0.6);
       background: #3a86ff;
       color: #fff;
+    }
+    .api-button-wrapper {
+      margin-top: 30px;
+      text-align: center;
+      animation: slideUp 1s ease 0.9s forwards;
+      opacity: 0;
     }
     @keyframes fadeIn {
       to { opacity: 1; }
@@ -229,6 +230,13 @@
   <div class="buttons">
     <a href="https://link-target.net/1335270/DWyADP4jMRS4" class="btn full"><i class="fas fa-rocket"></i> Full Edition</a>
     <a href="https://link-hub.net/1335270/KS5HE0w46AZN" class="btn lite"><i class="fas fa-bolt"></i> Lite Edition</a>
+  </div>
+
+  <!-- API Button -->
+  <div class="api-button-wrapper">
+    <a href="https://your-api-link.com" class="btn" style="border-color: #3a86ff;">
+      <i class="fas fa-code"></i> API
+    </a>
   </div>
 </div>
 
