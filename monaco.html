@@ -49,18 +49,21 @@
 
       // Define a custom dark theme with background #0F0F10
       monaco.editor.defineTheme('dark-lua-theme', {
-        base: 'vs-dark',
-        inherit: true,
-        rules: [
-          { token: 'keyword', foreground: 'C586C0' },
-          { token: 'number', foreground: 'B5CEA8' },
-          { token: 'string', foreground: 'CE9178' },
-          { token: 'comment', foreground: '6A9955' },
-        ],
-        colors: {
-          'editor.background': '#0F0F10'
-        }
-      });
+  base: 'vs-dark',
+  inherit: true,
+  rules: [
+    { token: '', foreground: '6B7280' }, // default text color
+    { token: 'keyword', foreground: 'C586C0' },
+    { token: 'number', foreground: 'B5CEA8' },
+    { token: 'string', foreground: 'CE9178' },
+    { token: 'comment', foreground: '6A9955' }
+  ],
+  colors: {
+    'editor.background': '#0F0F10',
+    'editor.foreground': '#6B7280' // ensure fallback is also set
+  }
+});
+
 
       // Create editor
 monaco.editor.create(document.getElementById('container'), {
