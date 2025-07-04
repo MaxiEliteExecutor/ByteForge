@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Monaco Editor with Lua</title>
+  <title>Monaco Editor - Lua Custom Theme</title>
   <style>
     html, body, #container {
       margin: 0;
@@ -16,16 +16,16 @@
 <body>
   <div id="container"></div>
 
-  <!-- Monaco Editor Loader -->
+  <!-- Load Monaco Editor via CDN -->
   <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.43.0/min/vs/loader.js"></script>
   <script>
     require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@0.43.0/min/vs' } });
 
     require(['vs/editor/editor.main'], function () {
-      // Register Lua language
+      // Register basic Lua language
       monaco.languages.register({ id: 'lua' });
 
-      // Simple Lua syntax highlighting
+      // Define Lua syntax (simple)
       monaco.languages.setMonarchTokensProvider('lua', {
         tokenizer: {
           root: [
@@ -47,30 +47,32 @@
         }
       });
 
-      // Define a custom dark theme with background #0F0F10
+      // Define custom dark theme with specified colors
       monaco.editor.defineTheme('dark-lua-theme', {
-  base: 'vs-dark',
-  inherit: true,
-  rules: [
-    { token: '', foreground: '6B7280' }, // default text color
-    { token: 'keyword', foreground: 'C586C0' },
-    { token: 'number', foreground: 'B5CEA8' },
-    { token: 'string', foreground: 'CE9178' },
-    { token: 'comment', foreground: '6A9955' }
-  ],
-  colors: {
-    'editor.background': '#0F0F10',
-    'editor.foreground': '#6B7280' // ensure fallback is also set
-  }
-});
+        base: 'vs-dark',
+        inherit: true,
+        rules: [
+          { token: '', foreground: '6B7280' },          // default text
+          { token: 'keyword', foreground: 'C586C0' },   // purple
+          { token: 'number', foreground: 'B5CEA8' },    // light green
+          { token: 'string', foreground: 'CE9178' },    // orange
+          { token: 'comment', foreground: '6A9955' }    // green
+        ],
+        colors: {
+          'editor.background': '#0F0F10',
+          'editor.foreground': '#6B7280'
+        }
+      });
 
-
-      // Create editor
-monaco.editor.create(document.getElementById('container'), {
-  value: '--- ByteForge Exec---',
-  language: 'lua',
-  theme: 'dark-lua-theme'
-});
+      // Create the editor instance
+      monaco.editor.create(document.getElementById('container'), {
+        value: '--- ByteForge Exec---',
+        language: 'lua',
+        theme: 'dark-lua-theme',
+        fontSize: 14,
+        fontFamily: 'Fira Code, monospace',
+        automaticLayout: true
+      });
     });
   </script>
 </body>
