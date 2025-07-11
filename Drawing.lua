@@ -566,7 +566,6 @@ function DrawingLib.createFrame()
 		Visible = true,
 		ZIndex = 1
 	} + baseDrawingObj)
-	)" R"(
 	local frame = Instance.new("Frame")
 	frame.Name = drawingIndex
 	frame.Size = frameObj.Size
