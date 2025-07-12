@@ -1,4 +1,4 @@
-local coreGui = game:GetService("CoreGui")
+local coreGui = game.CoreGui
 
 local camera = workspace.CurrentCamera
 local drawingUI = Instance.new("ScreenGui")
