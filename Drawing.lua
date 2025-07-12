@@ -1,3 +1,4 @@
+
 local coreGui = game.CoreGui
 
 local camera = workspace.CurrentCamera
