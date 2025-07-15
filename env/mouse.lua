@@ -1,5 +1,7 @@
 local env = getfenv(0)
 local VirtualInputManager = Instance.new("VirtualInputManager")
+local oworkspace = game:FindFirstChild("Workspace")
+local ogame = game
 
 env.mouse1click = function(x, y)
 	x = x or 0
