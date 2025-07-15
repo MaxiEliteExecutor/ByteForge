@@ -4,12 +4,12 @@ export default function handler(req, res) {
   }
   const { data } = req.body;
   if (!data || typeof data !== 'string') {
-    return res.status(400).json({ error: 'Data is required and must be a string' });
+    return res.status(400).json({ error: 'Data must be a non-empty string' });
   }
   try {
-    const encoded = Buffer.from(data).toString('base64');
-    return res.status(200).json({ result: encoded });
+    const encoded = Buffer.from(data, 'utf-8').toString('base64');
+    res.status(200).json({ result: encoded });
   } catch (error) {
-    return res.status(500).json({ error: 'Internal Server Error', details: error.message });
+    res.status(500).json({ error: 'Encoding failed', details: error.message });
   }
 }
