@@ -1,13 +1,6 @@
 -- Wait for game to load with a timeout
 local maxWaitTime = 30 -- 30 seconds timeout
 local startTime = tick()
-while not game:IsLoaded() do
-	task.wait(0.5)
-	if tick() - startTime > maxWaitTime then
-		warn("Game failed to load within ", maxWaitTime, " seconds")
-		return
-	end
-end
 warn('Loaded ByteForge, made by Black Loaf: [https://discord.gg/kCvc3Y65kj]')
 local proxiedServices = {
 	LinkingService = {{
