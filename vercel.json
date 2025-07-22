@@ -1,16 +1,27 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "api/create-page.js",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/create-page.js",
-      "dest": "api/create-page.js",
-      "methods": ["POST", "OPTIONS"]
-    }
-  ]
-}
+       "version": 2,
+       "builds": [
+         {
+           "src": "api/create-page.js",
+           "use": "@vercel/node"
+         },
+         {
+           "src": "public/**",
+           "use": "@vercel/static"
+         }
+       ],
+       "routes": [
+         {
+           "src": "/api/create-page.js",
+           "dest": "api/create-page.js",
+           "methods": ["GET", "POST", "OPTIONS"]
+         },
+         {
+           "src": "/(.*)",
+           "dest": "index.html"
+         }
+       ],
+       "engines": {
+         "node": "18.x"
+       }
+     }
