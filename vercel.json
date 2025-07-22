@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/create-page.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/create-page.js",
+      "dest": "api/create-page.js",
+      "methods": ["POST", "OPTIONS"]
+    }
+  ]
+}
