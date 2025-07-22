@@ -53,7 +53,7 @@ export default function handler(req, res) {
 </head>
 <body>
   <h1>ByteForge Public Page</h1>
-  <p>Generated on: ${new Date((Date.now() / 1000) * 1000).toLocaleString()}</p>
+  <p>Generated on: ${new Date().toLocaleString()}</p>
   <p>Access this page at: <a href="${publicUrl}">${publicUrl}</a></p>
 </body>
 </html>
