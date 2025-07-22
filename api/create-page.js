@@ -1,27 +1,26 @@
+let pageName = null; // Store the random page name for the session
+
 export default function handler(req, res) {
-  // Set CORS headers
   res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
   if (req.method === "OPTIONS") {
     return res.status(200).end();
   }
 
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method Not Allowed" });
-  }
-
   try {
-    const { playerName, requestTime } = req.body;
-
-    // Validate input
-    if (!playerName) {
-      return res.status(400).json({ error: "Player name required" });
+    let requestTime = Date.now() / 1000;
+    if (req.method === "POST") {
+      requestTime = req.body.requestTime || requestTime;
     }
 
-    // Generate unique URL with query parameter to simulate .html page
-    const uniqueUrl = `https://www.byteforge-getnow.space/api/create-page.js?player=${encodeURIComponent(playerName)}`;
+    // Generate random page name if not already set
+    if (!pageName) {
+      const randomId = Math.random().toString(36).substring(2, 8);
+      pageName = `${randomId}.html`;
+    }
+    const publicUrl = `https://www.byteforge-getnow.space/${pageName}`;
 
     // Generate HTML content
     const htmlContent = `
@@ -30,7 +29,7 @@ export default function handler(req, res) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Page for ${playerName}</title>
+  <title>ByteForge Public Page</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -56,18 +55,24 @@ export default function handler(req, res) {
   </style>
 </head>
 <body>
-  <h1>Hello, ${playerName}!</h1>
+  <h1>ByteForge Public Page</h1>
   <p>Generated on: ${new Date(requestTime * 1000).toLocaleString()}</p>
-  <p>Access this at: <a href="${uniqueUrl}">${uniqueUrl}</a></p>
+  <p>Access this page at: <a href="${publicUrl}">${publicUrl}</a></p>
 </body>
 </html>
 `;
 
-    // Return JSON response
-    res.status(200).json({
-      html: htmlContent,
-      url: uniqueUrl
-    });
+    if (req.method === "GET" && req.url === `/${pageName}`) {
+      res.setHeader("Content-Type", "text/html");
+      res.status(200).send(htmlContent);
+    } else if (req.method === "POST") {
+      res.status(200).json({
+        html: htmlContent,
+        url: publicUrl
+      });
+    } else {
+      res.status(405).json({ error: "Method Not Allowed" });
+    }
   } catch (error) {
     console.error("Server error:", error.message);
     res.status(500).json({ error: "Server error", details: error.message });
