@@ -1,4 +1,4 @@
-let pageName = null; // Store the random page name for the session
+let pageName = null; // Persist random page name for the session
 
 export default function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -15,10 +15,9 @@ export default function handler(req, res) {
       requestTime = req.body.requestTime || requestTime;
     }
 
-    // Generate random page name if not already set
+    // Generate random page name if not set
     if (!pageName) {
-      const randomId = Math.random().toString(36).substring(2, 8);
-      pageName = `${randomId}.html`;
+      pageName = Math.random().toString(36).substring(2, 8) + ".html";
     }
     const publicUrl = `https://www.byteforge-getnow.space/${pageName}`;
 
