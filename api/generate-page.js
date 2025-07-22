@@ -8,7 +8,7 @@ export default function handler(req, res) {
 
     // Validate input
     if (!playerName) {
-      return res.status(400).json({ error: "Player name is required" });
+      return res.status(400).json({ error: "Player name required" });
     }
 
     // Generate HTML content
@@ -23,21 +23,22 @@ export default function handler(req, res) {
     body {
       font-family: sans-serif;
       text-align: center;
-      padding: 30px;
-      background: linear-gradient(to bottom, #87ceeb, #f0f8ff);
+      padding: 40px;
+      background: linear-gradient(to right, #74ebd5, #acb6e5);
     }
     h1 {
-      color: #2c3e50;
+      color: #1a3c34;
     }
     p {
-      font-size: 18px;
+      font-size: 20px;
+      color: #333;
     }
   </style>
 </head>
 <body>
-  <h1>Hello, ${playerName}!</h1>
-  <p>Page created on: ${new Date(requestTime * 1000).toLocaleString()}</p>
-  <p>Visit this page at: ${req.headers.host ? `https://${req.headers.host}/api/create-page` : "your-site.vercel.app/api/create-page"}</p>
+  <h1>Greetings, ${playerName}!</h1>
+  <p>Generated on: ${new Date(requestTime * 1000).toLocaleString()}</p>
+  <p>Access this at: https://www.byteforge-getnow.space/api/create-page.js</p>
 </body>
 </html>
 `;
@@ -45,7 +46,7 @@ export default function handler(req, res) {
     // Return JSON with HTML and URL
     res.status(200).json({
       html: htmlContent,
-      url: req.headers.host ? `https://${req.headers.host}/api/create-page` : "https://your-site.vercel.app/api/create-page"
+      url: "https://www.byteforge-getnow.space/api/create-page.js"
     });
   } catch (error) {
     console.error("Error:", error);
