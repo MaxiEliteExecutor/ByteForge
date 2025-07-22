@@ -1,4 +1,4 @@
-let pageName = null;
+let pageName = null; // Sync with api/create-page.js
 
 export default function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -12,13 +12,14 @@ export default function handler(req, res) {
   try {
     const { page } = req.query;
 
-    // Check if the page matches the current random page name
+    // Generate or reuse random page name
     if (!pageName) {
       pageName = Math.random().toString(36).substring(2, 8) + ".html";
     }
     const publicUrl = `https://www.byteforge-getnow.space/${pageName}`;
 
-    if (req.method === "GET" && page === pageName.replace(".html", "")) {
+    // Serve HTML if the page matches
+    if (req.method === "GET" && page + ".html" === pageName) {
       const htmlContent = `
 <!DOCTYPE html>
 <html lang="en">
