@@ -1,4 +1,4 @@
-let pageName = null; // Persist random page name for the session
+let pageName = null; // Persist random page name
 
 export default function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -11,9 +11,14 @@ export default function handler(req, res) {
 
   try {
     let requestTime = Date.now() / 1000;
+    let timezoneOffset = 0;
     if (req.method === "POST") {
       requestTime = req.body.requestTime || requestTime;
+      timezoneOffset = req.body.timezoneOffset || 0;
     }
+
+    // Adjust time to local timezone
+    const localTime = new Date((requestTime + timezoneOffset * 3600) * 1000).toLocaleString();
 
     // Generate random page name if not set
     if (!pageName) {
@@ -55,7 +60,7 @@ export default function handler(req, res) {
 </head>
 <body>
   <h1>ByteForge Public Page</h1>
-  <p>Generated on: ${new Date(requestTime * 1000).toLocaleString()}</p>
+  <p>Generated on: ${localTime}</p>
   <p>Access this page at: <a href="${publicUrl}">${publicUrl}</a></p>
 </body>
 </html>
