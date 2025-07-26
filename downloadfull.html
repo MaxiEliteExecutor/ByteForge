@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой сайт с защитой Linkvertise</title>
+    <style>
+        /* Стили для скрытия контента */
+        #content {
+            display: none; /* Скрываем контент по умолчанию */
+        }
+        #block-message {
+            text-align: center;
+            padding: 50px;
+            font-size: 24px;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="block-message">
+        Пожалуйста, пройдите по ссылке Linkvertise, чтобы получить доступ к контенту.
+        <a href="ВАША_ССЫЛКА_LINKVERTIZE" target="_blank">Перейти к Linkvertise</a>
+    </div>
+
+    <div id="content">
+        <h1>Добро пожаловать на защищенный контент!</h1>
+        <p>Это содержимое станет доступным только после прохождения рекламы на Linkvertise.</p>
+        </div>
+
+    <script>
+        // Функция для получения уникального идентификатора пользователя
+        function getUserId() {
+            let userId = localStorage.getItem('user_id');
+            if (!userId) {
+                userId = 'user_' + Math.random().toString(36).substr(2, 9); // Генерируем случайный ID
+                localStorage.setItem('user_id', userId);
+            }
+            return userId;
+        }
+
+        // Элементы DOM
+        const contentDiv = document.getElementById('content');
+        const blockMessageDiv = document.getElementById('block-message');
+
+        // Функция для блокировки доступа к контенту
+        function blockContent() {
+            contentDiv.style.display = 'none';
+            blockMessageDiv.style.display = 'block';
+        }
+
+        // Функция для открытия доступа к контенту
+        function unblockContent() {
+            blockMessageDiv.style.display = 'none';
+            contentDiv.style.display = 'block';
+        }
+
+        // Получаем уникальный идентификатор пользователя
+        const userId = getUserId();
+
+        // Проверяем, просмотрел ли пользователь рекламу
+        // В реальной ситуации, Linkvertise должен будет отправить событие
+        // или перенаправить пользователя на ваш сайт с параметром,
+        // указывающим на успешное прохождение рекламы.
+        // Для демонстрации, мы можем имитировать это событие или проверку.
+
+        // Пример: Имитация успешного прохождения рекламы через URL-параметр
+        const urlParams = new URLSearchParams(window.location.search);
+        const adPassed = urlParams.get('ad_passed'); // Например, Linkvertise перенаправляет на вашсайт.com?ad_passed=true
+
+        if (adPassed === 'true') {
+            localStorage.setItem(`adViewed_${userId}`, 'true');
+        }
+
+        const adViewed = localStorage.getItem(`adViewed_${userId}`);
+
+        if (!adViewed) {
+            blockContent();
+            // В реальной ситуации, вам нужно будет настроить Linkvertise так,
+            // чтобы он перенаправлял пользователя обратно на эту страницу
+            // с параметром, указывающим на успешное прохождение рекламы,
+            // или использовать API Linkvertise (если доступно) для проверки статуса.
+
+            // Для тестирования, вы можете вручную изменить URL на
+            // вашсайт.com?ad_passed=true
+            // или добавить кнопку для имитации прохождения рекламы:
+            // setTimeout(() => {
+            //     localStorage.setItem(`adViewed_${userId}`, 'true');
+            //     unblockContent();
+            // }, 5000); // Имитация прохождения рекламы через 5 секунд
+        } else {
+            unblockContent();
+        }
+
+        // Важное примечание: Linkvertise не предоставляет прямого события 'linkvertiseAdViewed'
+        // для отслеживания на вашем сайте. Обычно это работает через перенаправление
+        // на ваш сайт после успешного прохождения всех шагов, или через их API.
+        // Вам нужно будет настроить Linkvertise так, чтобы он перенаправлял пользователя
+        // на ваш сайт с определенным параметром (например, ?success=true),
+        // который вы сможете проверить в своем скрипте.
+    </script>
+
+</body>
+</html>
