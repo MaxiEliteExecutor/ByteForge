@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8" />
-<title>GitHub Создать Файл</title>
+<title>GitHub Создать/Обновить файл</title>
 </head>
 <body>
 
@@ -11,7 +11,7 @@
 <p>Токен (с доступом к нужному репозиторию):</p>
 <input id="token" type="password" size="50" placeholder="Введите токен" />
 
-<p>Путь файла (например, docs/page.md):</p>
+<p>Путь файла (например, test/test.lua):</p>
 <input id="path" type="text" size="50" placeholder="Введите путь файла" />
 
 <p>Содержимое файла:</p>
@@ -27,7 +27,7 @@ async function createOrUpdateFile() {
   const token = document.getElementById('token').value.trim();
   const path = document.getElementById('path').value.trim();
   const content = document.getElementById('content').value;
-  const repo = 'username/repository'; // Замените на нужный репозиторий!
+  const repo = 'ByteForge/luashieldfree';
 
   if (!token || !path || !content) {
     alert('Заполните все поля!');
@@ -37,23 +37,31 @@ async function createOrUpdateFile() {
   const apiUrl = `https://api.github.com/repos/${repo}/contents/${path}`;
   const resultElem = document.getElementById('result');
 
+  let sha = null;
+
   try {
-    // Проверяем, есть ли файл, чтобы узнать sha (нужен для обновления)
-    let sha = null;
-    let getResp = await fetch(apiUrl, {
+    // Проверяем существует ли файл
+    const getResp = await fetch(apiUrl, {
       headers: { Authorization: 'token ' + token }
     });
 
-    if (getResp.status === 200) {
-      let data = await getResp.json();
-      sha = data.sha;
+    if (getResp.ok) {
+      const data = await getResp.json();
+      sha = data.sha; // Если файл есть, получаем sha для обновления
+    } else if (getResp.status === 404) {
+      // Файл не существует — это нормально, создаём новый
+      sha = null;
+    } else {
+      const errData = await getResp.json();
+      resultElem.textContent = 'Ошибка при проверке файла: ' + errData.message;
+      return;
     }
 
     // Кодируем содержимое в base64
-    let base64Content = btoa(unescape(encodeURIComponent(content)));
+    const base64Content = btoa(unescape(encodeURIComponent(content)));
 
     // Создаём или обновляем файл
-    let putResp = await fetch(apiUrl, {
+    const putResp = await fetch(apiUrl, {
       method: 'PUT',
       headers: {
         Authorization: 'token ' + token,
@@ -67,14 +75,14 @@ async function createOrUpdateFile() {
     });
 
     if (putResp.ok) {
-      resultElem.textContent = sha ? 'Файл успешно обновлен!' : 'Файл успешно создан!';
+      resultElem.textContent = sha ? 'Файл успешно обновлён!' : 'Файл успешно создан!';
     } else {
-      let err = await putResp.json();
-      resultElem.textContent = 'Ошибка: ' + err.message;
+      const err = await putResp.json();
+      resultElem.textContent = 'Ошибка при создании/обновлении файла: ' + err.message;
     }
 
   } catch (e) {
-    resultElem.textContent = 'Ошибка: ' + e.message;
+    resultElem.textContent = 'Ошибка сети или кода: ' + e.message;
   }
 }
 </script>
