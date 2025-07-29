@@ -1,95 +1,83 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <title>GitHub Create File Bot</title>
+<meta charset="UTF-8" />
+<title>GitHub Создать Файл</title>
 </head>
 <body>
-  <h1>GitHub File Creator</h1>
 
-  <label>
-    Personal Access Token:
-    <input type="password" id="token" size="50" placeholder="GitHub Token" />
-  </label>
-  <br/><br/>
+<h2>Создать или обновить файл в GitHub репозитории</h2>
 
-  <label>
-    Repository (username/repo):
-    <input type="text" id="repo" placeholder="yourusername/yourrepo" />
-  </label>
-  <br/><br/>
+<p>Токен (с доступом к нужному репозиторию):</p>
+<input id="token" type="password" size="50" placeholder="Введите токен" />
 
-  <label>
-    File path (e.g. docs/page.md):
-    <input type="text" id="filepath" placeholder="docs/page.md" />
-  </label>
-  <br/><br/>
+<p>Путь файла (например, docs/page.md):</p>
+<input id="path" type="text" size="50" placeholder="Введите путь файла" />
 
-  <label>
-    File content:
-    <br/>
-    <textarea id="content" rows="10" cols="60" placeholder="Write your file content here"></textarea>
-  </label>
-  <br/><br/>
+<p>Содержимое файла:</p>
+<textarea id="content" rows="10" cols="60" placeholder="Введите содержимое"></textarea>
+<br><br>
 
-  <button onclick="createOrUpdateFile()">Create/Update File</button>
+<button onclick="createOrUpdateFile()">Создать/Обновить файл</button>
 
-  <p id="status"></p>
+<p id="result"></p>
 
 <script>
 async function createOrUpdateFile() {
   const token = document.getElementById('token').value.trim();
-  const repo = document.getElementById('repo').value.trim();
-  const path = document.getElementById('filepath').value.trim();
+  const path = document.getElementById('path').value.trim();
   const content = document.getElementById('content').value;
+  const repo = 'username/repository'; // Замените на нужный репозиторий!
 
-  if (!token || !repo || !path) {
-    alert('Please fill all required fields!');
+  if (!token || !path || !content) {
+    alert('Заполните все поля!');
     return;
   }
 
-  const statusEl = document.getElementById('status');
-  statusEl.textContent = 'Processing...';
-
   const apiUrl = `https://api.github.com/repos/${repo}/contents/${path}`;
+  const resultElem = document.getElementById('result');
 
   try {
-    // First, check if file exists to get SHA (required for update)
+    // Проверяем, есть ли файл, чтобы узнать sha (нужен для обновления)
     let sha = null;
-    const getResponse = await fetch(apiUrl, {
-      headers: { Authorization: `token ${token}` }
+    let getResp = await fetch(apiUrl, {
+      headers: { Authorization: 'token ' + token }
     });
 
-    if (getResponse.status === 200) {
-      const getData = await getResponse.json();
-      sha = getData.sha;
+    if (getResp.status === 200) {
+      let data = await getResp.json();
+      sha = data.sha;
     }
 
-    // Prepare PUT request to create or update the file
-    const putResponse = await fetch(apiUrl, {
+    // Кодируем содержимое в base64
+    let base64Content = btoa(unescape(encodeURIComponent(content)));
+
+    // Создаём или обновляем файл
+    let putResp = await fetch(apiUrl, {
       method: 'PUT',
       headers: {
-        Authorization: `token ${token}`,
+        Authorization: 'token ' + token,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        message: sha ? `Update ${path}` : `Create ${path}`,
-        content: btoa(unescape(encodeURIComponent(content))),
+        message: sha ? `Обновление файла ${path}` : `Создание файла ${path}`,
+        content: base64Content,
         sha: sha || undefined
       })
     });
 
-    if (putResponse.ok) {
-      statusEl.textContent = `File ${sha ? 'updated' : 'created'} successfully!`;
+    if (putResp.ok) {
+      resultElem.textContent = sha ? 'Файл успешно обновлен!' : 'Файл успешно создан!';
     } else {
-      const errorData = await putResponse.json();
-      statusEl.textContent = `Error: ${errorData.message}`;
+      let err = await putResp.json();
+      resultElem.textContent = 'Ошибка: ' + err.message;
     }
 
-  } catch (error) {
-    statusEl.textContent = `Error: ${error.message}`;
+  } catch (e) {
+    resultElem.textContent = 'Ошибка: ' + e.message;
   }
 }
 </script>
+
 </body>
 </html>
