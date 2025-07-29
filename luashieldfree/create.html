@@ -34,7 +34,6 @@ function generateRandomFileName() {
   const randomString = Math.random().toString(36).substring(2, 10);
   return `script_${randomString}.lua`;
 }
-
 async function createOrUpdateFile() {
   if (!GITHUB_API_KEY || !REPO_PATH) {
     alert('GitHub API key or repository path is missing!');
