@@ -1,57 +1,68 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8" />
-<title>GitHub Bot с Логином</title>
-<style>
-  #login-section, #file-section {
-    max-width: 600px;
-    margin: 20px auto;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  #file-section { display: none; }
-</style>
+  <meta charset="UTF-8" />
+  <title>GitHub Bot с Логином</title>
+  <style>
+    #login-section, #file-section {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-family: Arial, sans-serif;
+    }
+    #file-section { display: none; }
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      cursor: pointer;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0;
+      box-sizing: border-box;
+    }
+    label {
+      display: block;
+      margin-bottom: 10px;
+    }
+  </style>
 </head>
 <body>
 
 <div id="login-section">
   <h3>Вход в GitHub</h3>
   <label>Имя пользователя GitHub:<br/>
-    <input id="username" type="text" size="40" placeholder="GitHub Username" />
-  </label><br/><br/>
+    <input id="username" type="text" size="40" placeholder="GitHub Username" required />
+  </label><br/>
   <label>Персональный токен доступа:<br/>
-    <input id="token" type="password" size="40" placeholder="GitHub Token" />
-  </label><br/><br/>
+    <input id="token" type="password" size="40" placeholder="GitHub Token" required />
+  </label><br/>
   <button onclick="login()">Войти</button>
-  <p id="login-result" style="color:red;"></p>
+  <p id="login-result" style="color: red;"></p>
 </div>
 
 <div id="file-section">
   <h3>Создать/обновить файл в репозитории</h3>
-
   <label>Репозиторий:<br/>
-    <input id="repo" type="text" size="40" placeholder="username/repository" />
-  </label><br/><br/>
-
+    <input id="repo" type="text" size="40" placeholder="username/repository" required />
+  </label><br/>
   <label>Путь файла:<br/>
-    <input id="path" type="text" size="40" placeholder="Путь файла" value="test/test.lua" />
-  </label><br/><br/>
-
+    <input id="path" type="text" size="40" placeholder="Путь файла" value="test/test.txt" required />
+  </label><br/>
   <label>Содержимое файла:<br/>
-    <textarea id="content" rows="10" cols="60">print("Hello from bot!")</textarea>
-  </label><br/><br/>
-
+    <textarea id="content" rows="10" cols="60" required>print("Hello from bot!")</textarea>
+  </label><br/>
   <button onclick="createOrUpdateFile()">Создать/Обновить</button>
-  <p id="result"></p>
   <button onclick="logout()">Выйти</button>
+  <p id="result"></p>
 </div>
 
 <script>
 let currentUsername = '';
 let currentToken = '';
-const LUAOBFUSCATOR_TOKEN = '52c8cc67-b734-c0d4-8c01-138e9fd89ca89375';
 
 async function login() {
   const username = document.getElementById('username').value.trim();
@@ -67,11 +78,14 @@ async function login() {
 
   try {
     const resp = await fetch('https://api.github.com/user', {
-      headers: { Authorization: 'token ' + token }
+      headers: { 
+        Authorization: `token ${token}`,
+        'Accept': 'application/vnd.github.v3+json'
+      }
     });
 
     if (!resp.ok) {
-      loginResult.textContent = 'Ошибка авторизации: неверный токен';
+      loginResult.textContent = `Ошибка авторизации: ${resp.status} ${resp.statusText}`;
       return;
     }
 
@@ -87,56 +101,25 @@ async function login() {
 
     document.getElementById('login-section').style.display = 'none';
     document.getElementById('file-section').style.display = 'block';
-
     document.getElementById('repo').value = `${username}/ByteForge`;
-
     loginResult.textContent = '';
   } catch (e) {
-    loginResult.textContent = 'Ошибка сети или API: ' + e.message;
+    loginResult.textContent = `Ошибка сети: ${e.message}`;
   }
 }
 
 function logout() {
   currentUsername = '';
   currentToken = '';
-
   document.getElementById('login-section').style.display = 'block';
   document.getElementById('file-section').style.display = 'none';
-
   document.getElementById('username').value = '';
   document.getElementById('token').value = '';
+  document.getElementById('repo').value = '';
+  document.getElementById('path').value = 'test/test.txt';
+  document.getElementById('content').value = 'print("Hello from bot!")';
   document.getElementById('result').textContent = '';
   document.getElementById('login-result').textContent = '';
-}
-
-async function obfuscateCode(code) {
-  try {
-    const response = await fetch('https://api.luaobfuscator.com/v1/obfuscate/code', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${LUAOBFUSCATOR_TOKEN}`
-      },
-      body: JSON.stringify({
-        code: code,
-        options: {
-          seed: 0,
-          virtualization: true,
-          tamperProtection: true,
-          controlFlowFlattening: true
-        }
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error(`LuaObfuscator API error: ${response.statusText}`);
-    }
-
-    const result = await response.json();
-    return result.obfuscatedCode;
-  } catch (e) {
-    throw new Error(`Obfuscation failed: ${e.message}`);
-  }
 }
 
 async function createOrUpdateFile() {
@@ -147,33 +130,24 @@ async function createOrUpdateFile() {
 
   const repo = document.getElementById('repo').value.trim();
   const path = document.getElementById('path').value.trim();
-  let content = document.getElementById('content').value;
+  const content = document.getElementById('content').value;
   const resultElem = document.getElementById('result');
 
   if (!repo || !path || !content) {
-    alert('Заполните все поля!');
+    resultElem.style.color = 'red';
+    resultElem.textContent = 'Заполните все поля!';
     return;
-  }
-
-  // Obfuscate if it's a Lua file
-  if (path.toLowerCase().endsWith('.lua')) {
-    try {
-      resultElem.textContent = 'Обфускация кода...';
-      content = await obfuscateCode(content);
-    } catch (e) {
-      resultElem.style.color = 'red';
-      resultElem.textContent = e.message;
-      return;
-    }
   }
 
   const apiUrl = `https://api.github.com/repos/${repo}/contents/${path}`;
 
   try {
     let sha = null;
-
     const getResp = await fetch(apiUrl, {
-      headers: { Authorization: 'token ' + currentToken }
+      headers: { 
+        Authorization: `token ${currentToken}`,
+        'Accept': 'application/vnd.github.v3+json'
+      }
     });
 
     if (getResp.ok) {
@@ -181,7 +155,8 @@ async function createOrUpdateFile() {
       sha = data.sha;
     } else if (getResp.status !== 404) {
       const errData = await getResp.json();
-      resultElem.textContent = 'Ошибка при проверке файла: ' + errData.message;
+      resultElem.style.color = 'red';
+      resultElem.textContent = `Ошибка при проверке файла: ${errData.message}`;
       return;
     }
 
@@ -190,11 +165,12 @@ async function createOrUpdateFile() {
     const putResp = await fetch(apiUrl, {
       method: 'PUT',
       headers: {
-        Authorization: 'token ' + currentToken,
-        'Content-Type': 'application/json'
+        Authorization: `token ${currentToken}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/vnd.github.v3+json'
       },
       body: JSON.stringify({
-        message: sha ? `https://raw.githubusercontent.com/MaxiEliteExecutor/ByteForge/refs/heads/main/${path}`,
+        message: sha ? `Update ${path}` : `Create ${path}`,
         content: base64Content,
         sha: sha || undefined
       })
@@ -206,11 +182,11 @@ async function createOrUpdateFile() {
     } else {
       const err = await putResp.json();
       resultElem.style.color = 'red';
-      resultElem.textContent = 'Ошибка создания/обновления файла: ' + err.message;
+      resultElem.textContent = `Ошибка создания/обновления файла: ${err.message}`;
     }
   } catch (e) {
     resultElem.style.color = 'red';
-    resultElem.textContent = 'Ошибка: ' + e.message;
+    resultElem.textContent = `Ошибка: ${e.message}`;
   }
 }
 </script>
