@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8" />
-<title>GitHub Bot с Логином</title>
+<title>GitHub Bot с Логином и Обфускацией</title>
 <style>
   #login-section, #file-section {
     max-width: 600px;
@@ -12,6 +12,7 @@
     border-radius: 5px;
   }
   #file-section { display: none; }
+  #result { white-space: pre-wrap; }
 </style>
 </head>
 <body>
@@ -43,7 +44,7 @@
     <textarea id="content" rows="10" cols="60">print("Hello from bot!")</textarea>
   </label><br/><br/>
 
-  <button onclick="createOrUpdateFile()">Создать/Обновить</button>
+  <button onclick="createOrUpdateFile()">Создать/Обновить с обфускацией</button>
   <p id="result"></p>
   <button onclick="logout()">Выйти</button>
 </div>
@@ -64,7 +65,6 @@ async function login() {
 
   loginResult.textContent = 'Проверка...';
 
-  // Проверяем токен и username через запрос к API
   try {
     const resp = await fetch('https://api.github.com/user', {
       headers: { Authorization: 'token ' + token }
@@ -82,14 +82,12 @@ async function login() {
       return;
     }
 
-    // Успешный логин
     currentUsername = username;
     currentToken = token;
 
     document.getElementById('login-section').style.display = 'none';
     document.getElementById('file-section').style.display = 'block';
 
-    // Подставим репозиторий по умолчанию
     document.getElementById('repo').value = `${username}/ByteForge`;
 
     loginResult.textContent = '';
@@ -127,13 +125,15 @@ async function createOrUpdateFile() {
     return;
   }
 
-  // 1. Call Lua Obfuscator API to obfuscate the content
-  let obfuscatedCode;
+  // Use public CORS proxy ONLY for testing (not safe for prod)
+  const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+  const obfuscateApiUrl = 'https://luaobfuscator.com/api/obfuscate';
+
   try {
     resultElem.style.color = 'black';
     resultElem.textContent = 'Обфускация кода...';
 
-    const obfuscateResp = await fetch('https://luaobfuscator.com/api/obfuscate', {
+    const obfuscateResp = await fetch(proxyUrl + obfuscateApiUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -150,18 +150,10 @@ async function createOrUpdateFile() {
     }
 
     const obfuscateData = await obfuscateResp.json();
-    obfuscatedCode = obfuscateData.obfuscatedCode || obfuscateData.code; // adjust if API differs
+    const obfuscatedCode = obfuscateData.obfuscatedCode || obfuscateData.code;
 
-  } catch (e) {
-    resultElem.style.color = 'red';
-    resultElem.textContent = 'Ошибка при вызове API обфускации: ' + e.message;
-    return;
-  }
+    const apiUrl = `https://api.github.com/repos/${repo}/contents/${path}`;
 
-  // 2. Proceed with GitHub upload with obfuscated code instead of original
-  const apiUrl = `https://api.github.com/repos/${repo}/contents/${path}`;
-
-  try {
     let sha = null;
 
     const getResp = await fetch(apiUrl, {
@@ -201,12 +193,12 @@ async function createOrUpdateFile() {
       resultElem.style.color = 'red';
       resultElem.textContent = 'Ошибка создания/обновления файла: ' + err.message;
     }
+
   } catch (e) {
     resultElem.style.color = 'red';
     resultElem.textContent = 'Ошибка: ' + e.message;
   }
 }
-
 </script>
 
 </body>
