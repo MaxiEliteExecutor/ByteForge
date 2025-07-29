@@ -27,20 +27,7 @@
 </div>
 
 <script>
-const GITHUB_API_KEY = process.env.githubnigakey;
-const REPO_PATH = process.env.Repo;
-
-function generateRandomFileName() {
-  const randomString = Math.random().toString(36).substring(2, 10);
-  return `script_${randomString}.lua`;
-}
 async function createOrUpdateFile() {
-  if (!GITHUB_API_KEY || !REPO_PATH) {
-    alert('GitHub API key or repository path is missing!');
-    return;
-  }
-
-  const path = generateRandomFileName();
   const content = document.getElementById('content').value;
   const resultElem = document.getElementById('result');
 
@@ -49,47 +36,23 @@ async function createOrUpdateFile() {
     return;
   }
 
-  const apiUrl = `https://api.github.com/repos/${REPO_PATH}/contents/${path}`;
-
   try {
-    let sha = null;
-
-    const getResp = await fetch(apiUrl, {
-      headers: { Authorization: `Bearer ${GITHUB_API_KEY}` }
-    });
-
-    if (getResp.ok) {
-      const data = await getResp.json();
-      sha = data.sha;
-    } else if (getResp.status !== 404) {
-      const errData = await getResp.json();
-      resultElem.style.color = 'red';
-      resultElem.textContent = 'Ошибка при проверке файла: ' + errData.message;
-      return;
-    }
-
-    const base64Content = btoa(unescape(encodeURIComponent(content)));
-
-    const putResp = await fetch(apiUrl, {
-      method: 'PUT',
+    const response = await fetch('/api/create-file.js', {
+      method: 'POST',
       headers: {
-        Authorization: `Bearer ${GITHUB_API_KEY}`,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        message: sha ? `Обновление файла ${path}` : `Создание файла ${path}`,
-        content: base64Content,
-        sha: sha || undefined
-      })
+      body: JSON.stringify({ content }),
     });
 
-    if (putResp.ok) {
+    const data = await response.json();
+
+    if (response.ok) {
       resultElem.style.color = 'green';
-      resultElem.textContent = sha ? 'Файл успешно обновлён!' : 'Файл успешно создан!';
+      resultElem.textContent = data.message;
     } else {
-      const err = await putResp.json();
       resultElem.style.color = 'red';
-      resultElem.textContent = 'Ошибка создания/обновления файла: ' + err.message;
+      resultElem.textContent = data.error;
     }
   } catch (e) {
     resultElem.style.color = 'red';
