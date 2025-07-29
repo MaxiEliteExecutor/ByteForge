@@ -49,8 +49,8 @@
   <label>Репозиторий:<br/>
     <input id="repo" type="text" size="40" placeholder="username/repository" required />
   </label><br/>
-  <label>Путь файла:<br/>
-    <input id="path" type="text" size="40" placeholder="Путь файла" value="luashieldfree/script.lua" required />
+  <label>Путь файла (авто-генерация имени):<br/>
+    <input id="path" type="text" size="40" placeholder="luashieldfree/" value="luashieldfree/" readonly />
   </label><br/>
   <label>Содержимое файла:<br/>
     <textarea id="content" rows="10" cols="60" required>print("Hello from bot!")</textarea>
@@ -63,6 +63,16 @@
 <script>
 let currentUsername = '';
 let currentToken = '';
+
+// Generate a random file name
+function generateRandomFileName() {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < 12; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return `luashieldfree/${result}.lua`;
+}
 
 async function login() {
   const username = document.getElementById('username').value.trim();
@@ -116,7 +126,7 @@ function logout() {
   document.getElementById('username').value = '';
   document.getElementById('token').value = '';
   document.getElementById('repo').value = '';
-  document.getElementById('path').value = 'test/test.txt';
+  document.getElementById('path').value = 'luashieldfree/';
   document.getElementById('content').value = 'print("Hello from bot!")';
   document.getElementById('result').textContent = '';
   document.getElementById('login-result').textContent = '';
@@ -129,17 +139,18 @@ async function createOrUpdateFile() {
   }
 
   const repo = document.getElementById('repo').value.trim();
-  const path = document.getElementById('path').value.trim();
+  const path = generateRandomFileName(); // Generate random file name
   const content = document.getElementById('content').value;
   const resultElem = document.getElementById('result');
 
-  if (!repo || !path || !content) {
+  if (!repo || !content) {
     resultElem.style.color = 'red';
     resultElem.textContent = 'Заполните все поля!';
     return;
   }
 
   const apiUrl = `https://api.github.com/repos/${repo}/contents/${path}`;
+  const rawUrl = `https://raw.githubusercontent.com/${repo}/main/${path}`;
 
   try {
     let sha = null;
@@ -178,7 +189,7 @@ async function createOrUpdateFile() {
 
     if (putResp.ok) {
       resultElem.style.color = 'green';
-      resultElem.textContent = sha ? 'Файл успешно обновлён!' : 'Файл успешно создан!';
+      resultElem.textContent = sha ? 'Файл успешно обновлён!' : `Файл успешно создан! Используйте в Roblox: loadstring(game:HttpGet("${rawUrl}"))()`;
     } else {
       const err = await putResp.json();
       resultElem.style.color = 'red';
