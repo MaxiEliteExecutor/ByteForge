@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8" />
-<title>GitHub Bot с Логином (Без Обфускации)</title>
+<title>GitHub Bot с Логином</title>
 <style>
   #login-section, #file-section {
     max-width: 600px;
@@ -43,7 +43,7 @@
     <textarea id="content" rows="10" cols="60">print("Hello from bot!")</textarea>
   </label><br/><br/>
 
-  <button onclick="createOrUpdateFile()">Создать/Обновить (без обфускации)</button>
+  <button onclick="createOrUpdateFile()">Создать/Обновить</button>
   <p id="result"></p>
   <button onclick="logout()">Выйти</button>
 </div>
@@ -51,6 +51,7 @@
 <script>
 let currentUsername = '';
 let currentToken = '';
+const LUAOBFUSCATOR_TOKEN = '52c8cc67-b734-c0d4-8c01-138e9fd89ca89375';
 
 async function login() {
   const username = document.getElementById('username').value.trim();
@@ -108,6 +109,36 @@ function logout() {
   document.getElementById('login-result').textContent = '';
 }
 
+async function obfuscateCode(code) {
+  try {
+    const response = await fetch('https://api.luaobfuscator.com/v1/obfuscate/code', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${LUAOBFUSCATOR_TOKEN}`
+      },
+      body: JSON.stringify({
+        code: code,
+        options: {
+          seed: 0,
+          virtualization: true,
+          tamperProtection: true,
+          controlFlowFlattening: true
+        }
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`LuaObfuscator API error: ${response.statusText}`);
+    }
+
+    const result = await response.json();
+    return result.obfuscatedCode;
+  } catch (e) {
+    throw new Error(`Obfuscation failed: ${e.message}`);
+  }
+}
+
 async function createOrUpdateFile() {
   if (!currentToken || !currentUsername) {
     alert('Пожалуйста, войдите в систему!');
@@ -116,12 +147,24 @@ async function createOrUpdateFile() {
 
   const repo = document.getElementById('repo').value.trim();
   const path = document.getElementById('path').value.trim();
-  const content = document.getElementById('content').value;
+  let content = document.getElementById('content').value;
   const resultElem = document.getElementById('result');
 
   if (!repo || !path || !content) {
     alert('Заполните все поля!');
     return;
+  }
+
+  // Obfuscate if it's a Lua file
+  if (path.toLowerCase().endsWith('.lua')) {
+    try {
+      resultElem.textContent = 'Обфускация кода...';
+      content = await obfuscateCode(content);
+    } catch (e) {
+      resultElem.style.color = 'red';
+      resultElem.textContent = e.message;
+      return;
+    }
   }
 
   const apiUrl = `https://api.github.com/repos/${repo}/contents/${path}`;
@@ -138,7 +181,6 @@ async function createOrUpdateFile() {
       sha = data.sha;
     } else if (getResp.status !== 404) {
       const errData = await getResp.json();
-      resultElem.style.color = 'red';
       resultElem.textContent = 'Ошибка при проверке файла: ' + errData.message;
       return;
     }
@@ -152,7 +194,7 @@ async function createOrUpdateFile() {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        message: sha ? `Обновление файла ${path}` : `Создание файла ${path}`,
+        message: sha ? `Обновление файла ${path} (обфусцирован)` : `Создание файла ${path} (обфусцирован)`,
         content: base64Content,
         sha: sha || undefined
       })
