@@ -127,6 +127,38 @@ async function createOrUpdateFile() {
     return;
   }
 
+  // 1. Call Lua Obfuscator API to obfuscate the content
+  let obfuscatedCode;
+  try {
+    resultElem.style.color = 'black';
+    resultElem.textContent = 'Обфускация кода...';
+
+    const obfuscateResp = await fetch('https://luaobfuscator.com/api/obfuscate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': '52c8cc67-b734-c0d4-8c01-138e9fd89ca89375'
+      },
+      body: JSON.stringify({ code: content })
+    });
+
+    if (!obfuscateResp.ok) {
+      const err = await obfuscateResp.json();
+      resultElem.style.color = 'red';
+      resultElem.textContent = 'Ошибка обфускации: ' + (err.message || obfuscateResp.statusText);
+      return;
+    }
+
+    const obfuscateData = await obfuscateResp.json();
+    obfuscatedCode = obfuscateData.obfuscatedCode || obfuscateData.code; // adjust if API differs
+
+  } catch (e) {
+    resultElem.style.color = 'red';
+    resultElem.textContent = 'Ошибка при вызове API обфускации: ' + e.message;
+    return;
+  }
+
+  // 2. Proceed with GitHub upload with obfuscated code instead of original
   const apiUrl = `https://api.github.com/repos/${repo}/contents/${path}`;
 
   try {
@@ -141,11 +173,12 @@ async function createOrUpdateFile() {
       sha = data.sha;
     } else if (getResp.status !== 404) {
       const errData = await getResp.json();
+      resultElem.style.color = 'red';
       resultElem.textContent = 'Ошибка при проверке файла: ' + errData.message;
       return;
     }
 
-    const base64Content = btoa(unescape(encodeURIComponent(content)));
+    const base64Content = btoa(unescape(encodeURIComponent(obfuscatedCode)));
 
     const putResp = await fetch(apiUrl, {
       method: 'PUT',
@@ -154,7 +187,7 @@ async function createOrUpdateFile() {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        message: sha ? `Обновление файла ${path}` : `Создание файла ${path}`,
+        message: sha ? `Обновление файла ${path} (обфусцированный)` : `Создание файла ${path} (обфусцированный)`,
         content: base64Content,
         sha: sha || undefined
       })
@@ -162,7 +195,7 @@ async function createOrUpdateFile() {
 
     if (putResp.ok) {
       resultElem.style.color = 'green';
-      resultElem.textContent = sha ? 'Файл успешно обновлён!' : 'Файл успешно создан!';
+      resultElem.textContent = sha ? 'Файл успешно обновлён с обфускацией!' : 'Файл успешно создан с обфускацией!';
     } else {
       const err = await putResp.json();
       resultElem.style.color = 'red';
@@ -173,6 +206,7 @@ async function createOrUpdateFile() {
     resultElem.textContent = 'Ошибка: ' + e.message;
   }
 }
+
 </script>
 
 </body>
