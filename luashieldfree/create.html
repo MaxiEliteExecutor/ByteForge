@@ -1,25 +1,14 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head>
-<meta charset="UTF-8" />
-<title>GitHub Создать/Обновить файл</title>
-</head>
+<head><meta charset="UTF-8" /><title>GitHub Create File</title></head>
 <body>
 
-<h2>Создать или обновить файл в GitHub репозитории</h2>
+<h3>Создать/обновить файл в GitHub репо</h3>
 
-<p>Токен (с доступом к нужному репозиторию):</p>
-<input id="token" type="password" size="50" placeholder="Введите токен" />
-
-<p>Путь файла (например, test/test.lua):</p>
-<input id="path" type="text" size="50" placeholder="Введите путь файла" />
-
-<p>Содержимое файла:</p>
-<textarea id="content" rows="10" cols="60" placeholder="Введите содержимое"></textarea>
-<br><br>
-
-<button onclick="createOrUpdateFile()">Создать/Обновить файл</button>
-
+<input id="token" type="password" placeholder="GitHub Token" size="50" /><br/>
+<input id="path" type="text" placeholder="Путь файла (например, create.html)" size="50" value="create.html"/><br/>
+<textarea id="content" rows="10" cols="60" placeholder="Содержимое файла">Hello from bot!</textarea><br/>
+<button onclick="createOrUpdateFile()">Создать/обновить</button>
 <p id="result"></p>
 
 <script>
@@ -27,7 +16,7 @@ async function createOrUpdateFile() {
   const token = document.getElementById('token').value.trim();
   const path = document.getElementById('path').value.trim();
   const content = document.getElementById('content').value;
-  const repo = 'ByteForge/luashieldfree';
+  const repo = 'ByteForge/luashieldfree'; // <- сюда твой репозиторий
 
   if (!token || !path || !content) {
     alert('Заполните все поля!');
@@ -40,27 +29,22 @@ async function createOrUpdateFile() {
   let sha = null;
 
   try {
-    // Проверяем существует ли файл
+    // Проверяем, есть ли файл
     const getResp = await fetch(apiUrl, {
       headers: { Authorization: 'token ' + token }
     });
 
     if (getResp.ok) {
       const data = await getResp.json();
-      sha = data.sha; // Если файл есть, получаем sha для обновления
-    } else if (getResp.status === 404) {
-      // Файл не существует — это нормально, создаём новый
-      sha = null;
-    } else {
+      sha = data.sha;
+    } else if (getResp.status !== 404) {
       const errData = await getResp.json();
       resultElem.textContent = 'Ошибка при проверке файла: ' + errData.message;
       return;
     }
 
-    // Кодируем содержимое в base64
     const base64Content = btoa(unescape(encodeURIComponent(content)));
 
-    // Создаём или обновляем файл
     const putResp = await fetch(apiUrl, {
       method: 'PUT',
       headers: {
@@ -68,7 +52,7 @@ async function createOrUpdateFile() {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        message: sha ? `Обновление файла ${path}` : `Создание файла ${path}`,
+        message: sha ? `Обновление ${path}` : `Создание ${path}`,
         content: base64Content,
         sha: sha || undefined
       })
@@ -78,11 +62,10 @@ async function createOrUpdateFile() {
       resultElem.textContent = sha ? 'Файл успешно обновлён!' : 'Файл успешно создан!';
     } else {
       const err = await putResp.json();
-      resultElem.textContent = 'Ошибка при создании/обновлении файла: ' + err.message;
+      resultElem.textContent = 'Ошибка создания файла: ' + err.message;
     }
-
   } catch (e) {
-    resultElem.textContent = 'Ошибка сети или кода: ' + e.message;
+    resultElem.textContent = 'Ошибка: ' + e.message;
   }
 }
 </script>
