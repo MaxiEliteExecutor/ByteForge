@@ -36,7 +36,7 @@
   </label><br/><br/>
 
   <label>Путь файла:<br/>
-    <input id="path" type="text" size="40" placeholder="Путь файла" value="luashieldfree/test.lua" />
+    <input id="path" type="text" size="40" placeholder="Путь файла" value="test/test.lua" />
   </label><br/><br/>
 
   <label>Содержимое файла:<br/>
@@ -144,12 +144,9 @@ async function createOrUpdateFile() {
     alert('Пожалуйста, войдите в систему!');
     return;
   }
-function generateRandomFileName() {
-  const randomString = Math.random().toString(36).substring(2, 10);
-  return `script_${randomString}.lua`;
-}
+
   const repo = document.getElementById('repo').value.trim();
-  const path = document.getElementById('luashieldfree/' + generateRandomFileName).value.trim();
+  const path = document.getElementById('path').value.trim();
   let content = document.getElementById('content').value;
   const resultElem = document.getElementById('result');
 
@@ -197,7 +194,7 @@ function generateRandomFileName() {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        message: sha ? `Обновление файла ${path} (обфусцирован)` : `Создание файла ${path} (обфусцирован)`,
+        message: sha ? `https://raw.githubusercontent.com/MaxiEliteExecutor/ByteForge/refs/heads/main/${path}`,
         content: base64Content,
         sha: sha || undefined
       })
