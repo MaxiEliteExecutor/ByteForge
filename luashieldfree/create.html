@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>GitHub Create File Bot</title>
+</head>
+<body>
+  <h1>GitHub File Creator</h1>
+
+  <label>
+    Personal Access Token:
+    <input type="password" id="token" size="50" placeholder="GitHub Token" />
+  </label>
+  <br/><br/>
+
+  <label>
+    Repository (username/repo):
+    <input type="text" id="repo" placeholder="yourusername/yourrepo" />
+  </label>
+  <br/><br/>
+
+  <label>
+    File path (e.g. docs/page.md):
+    <input type="text" id="filepath" placeholder="docs/page.md" />
+  </label>
+  <br/><br/>
+
+  <label>
+    File content:
+    <br/>
+    <textarea id="content" rows="10" cols="60" placeholder="Write your file content here"></textarea>
+  </label>
+  <br/><br/>
+
+  <button onclick="createOrUpdateFile()">Create/Update File</button>
+
+  <p id="status"></p>
+
+<script>
+async function createOrUpdateFile() {
+  const token = document.getElementById('token').value.trim();
+  const repo = document.getElementById('repo').value.trim();
+  const path = document.getElementById('filepath').value.trim();
+  const content = document.getElementById('content').value;
+
+  if (!token || !repo || !path) {
+    alert('Please fill all required fields!');
+    return;
+  }
+
+  const statusEl = document.getElementById('status');
+  statusEl.textContent = 'Processing...';
+
+  const apiUrl = `https://api.github.com/repos/${repo}/contents/${path}`;
+
+  try {
+    // First, check if file exists to get SHA (required for update)
+    let sha = null;
+    const getResponse = await fetch(apiUrl, {
+      headers: { Authorization: `token ${token}` }
+    });
+
+    if (getResponse.status === 200) {
+      const getData = await getResponse.json();
+      sha = getData.sha;
+    }
+
+    // Prepare PUT request to create or update the file
+    const putResponse = await fetch(apiUrl, {
+      method: 'PUT',
+      headers: {
+        Authorization: `token ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        message: sha ? `Update ${path}` : `Create ${path}`,
+        content: btoa(unescape(encodeURIComponent(content))),
+        sha: sha || undefined
+      })
+    });
+
+    if (putResponse.ok) {
+      statusEl.textContent = `File ${sha ? 'updated' : 'created'} successfully!`;
+    } else {
+      const errorData = await putResponse.json();
+      statusEl.textContent = `Error: ${errorData.message}`;
+    }
+
+  } catch (error) {
+    statusEl.textContent = `Error: ${error.message}`;
+  }
+}
+</script>
+</body>
+</html>
