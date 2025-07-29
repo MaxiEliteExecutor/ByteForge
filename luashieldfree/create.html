@@ -2,64 +2,155 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8" />
-<title>GitHub Create/Update File</title>
+<title>GitHub Bot с Логином</title>
+<style>
+  #login-section, #file-section {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  #file-section { display: none; }
+</style>
 </head>
 <body>
 
-<h3>Создать/обновить файл в репозитории ByteForge</h3>
+<div id="login-section">
+  <h3>Вход в GitHub</h3>
+  <label>Имя пользователя GitHub:<br/>
+    <input id="username" type="text" size="40" placeholder="GitHub Username" />
+  </label><br/><br/>
+  <label>Персональный токен доступа:<br/>
+    <input id="token" type="password" size="40" placeholder="GitHub Token" />
+  </label><br/><br/>
+  <button onclick="login()">Войти</button>
+  <p id="login-result" style="color:red;"></p>
+</div>
 
-<label>Token:<br/>
-<input id="token" type="password" size="60" placeholder="Вставь свой токен" /></label><br/><br/>
+<div id="file-section">
+  <h3>Создать/обновить файл в репозитории</h3>
 
-<label>Путь файла:<br/>
-<input id="path" type="text" size="60" value="test/test.lua" /></label><br/><br/>
+  <label>Репозиторий:<br/>
+    <input id="repo" type="text" size="40" placeholder="username/repository" />
+  </label><br/><br/>
 
-<label>Содержимое файла:<br/>
-<textarea id="content" rows="10" cols="70">print("Hello, ByteForge!")</textarea></label><br/><br/>
+  <label>Путь файла:<br/>
+    <input id="path" type="text" size="40" placeholder="Путь файла" value="test/test.lua" />
+  </label><br/><br/>
 
-<button onclick="createOrUpdateFile()">Создать/Обновить</button>
+  <label>Содержимое файла:<br/>
+    <textarea id="content" rows="10" cols="60">print("Hello from bot!")</textarea>
+  </label><br/><br/>
 
-<p id="result"></p>
+  <button onclick="createOrUpdateFile()">Создать/Обновить</button>
+  <p id="result"></p>
+  <button onclick="logout()">Выйти</button>
+</div>
 
 <script>
-async function createOrUpdateFile() {
-  const token = document.getElementById('token').value.trim();
-  const path = document.getElementById('path').value.trim();
-  const content = document.getElementById('content').value;
+let currentUsername = '';
+let currentToken = '';
 
-  if (!token || !path || !content) {
-    alert('Заполни все поля!');
+async function login() {
+  const username = document.getElementById('username').value.trim();
+  const token = document.getElementById('token').value.trim();
+  const loginResult = document.getElementById('login-result');
+
+  if (!username || !token) {
+    loginResult.textContent = 'Пожалуйста, заполните все поля!';
     return;
   }
 
-  const repo = 'MaxiEliteExecutor/ByteForge';
-  const apiUrl = `https://api.github.com/repos/${repo}/contents/${path}`;
-  const resultElem = document.getElementById('result');
+  loginResult.textContent = 'Проверка...';
 
+  // Проверяем токен и username через запрос к API
   try {
-    // Проверяем есть ли файл и получаем sha
-    let sha = null;
-    const getResponse = await fetch(apiUrl, {
+    const resp = await fetch('https://api.github.com/user', {
       headers: { Authorization: 'token ' + token }
     });
 
-    if (getResponse.ok) {
-      const data = await getResponse.json();
-      sha = data.sha;
-    } else if (getResponse.status !== 404) {
-      const errorData = await getResponse.json();
-      resultElem.textContent = 'Ошибка при проверке файла: ' + errorData.message;
+    if (!resp.ok) {
+      loginResult.textContent = 'Ошибка авторизации: неверный токен';
       return;
     }
 
-    // Кодируем содержимое в base64
+    const userData = await resp.json();
+
+    if (userData.login.toLowerCase() !== username.toLowerCase()) {
+      loginResult.textContent = 'Имя пользователя не совпадает с токеном';
+      return;
+    }
+
+    // Успешный логин
+    currentUsername = username;
+    currentToken = token;
+
+    document.getElementById('login-section').style.display = 'none';
+    document.getElementById('file-section').style.display = 'block';
+
+    // Подставим репозиторий по умолчанию
+    document.getElementById('repo').value = `${username}/ByteForge`;
+
+    loginResult.textContent = '';
+  } catch (e) {
+    loginResult.textContent = 'Ошибка сети или API: ' + e.message;
+  }
+}
+
+function logout() {
+  currentUsername = '';
+  currentToken = '';
+
+  document.getElementById('login-section').style.display = 'block';
+  document.getElementById('file-section').style.display = 'none';
+
+  document.getElementById('username').value = '';
+  document.getElementById('token').value = '';
+  document.getElementById('result').textContent = '';
+  document.getElementById('login-result').textContent = '';
+}
+
+async function createOrUpdateFile() {
+  if (!currentToken || !currentUsername) {
+    alert('Пожалуйста, войдите в систему!');
+    return;
+  }
+
+  const repo = document.getElementById('repo').value.trim();
+  const path = document.getElementById('path').value.trim();
+  const content = document.getElementById('content').value;
+  const resultElem = document.getElementById('result');
+
+  if (!repo || !path || !content) {
+    alert('Заполните все поля!');
+    return;
+  }
+
+  const apiUrl = `https://api.github.com/repos/${repo}/contents/${path}`;
+
+  try {
+    let sha = null;
+
+    const getResp = await fetch(apiUrl, {
+      headers: { Authorization: 'token ' + currentToken }
+    });
+
+    if (getResp.ok) {
+      const data = await getResp.json();
+      sha = data.sha;
+    } else if (getResp.status !== 404) {
+      const errData = await getResp.json();
+      resultElem.textContent = 'Ошибка при проверке файла: ' + errData.message;
+      return;
+    }
+
     const base64Content = btoa(unescape(encodeURIComponent(content)));
 
-    // Создаём или обновляем файл
-    const putResponse = await fetch(apiUrl, {
+    const putResp = await fetch(apiUrl, {
       method: 'PUT',
       headers: {
-        Authorization: 'token ' + token,
+        Authorization: 'token ' + currentToken,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
@@ -69,13 +160,16 @@ async function createOrUpdateFile() {
       })
     });
 
-    if (putResponse.ok) {
+    if (putResp.ok) {
+      resultElem.style.color = 'green';
       resultElem.textContent = sha ? 'Файл успешно обновлён!' : 'Файл успешно создан!';
     } else {
-      const errorPut = await putResponse.json();
-      resultElem.textContent = 'Ошибка при создании/обновлении файла: ' + errorPut.message;
+      const err = await putResp.json();
+      resultElem.style.color = 'red';
+      resultElem.textContent = 'Ошибка создания/обновления файла: ' + err.message;
     }
   } catch (e) {
+    resultElem.style.color = 'red';
     resultElem.textContent = 'Ошибка: ' + e.message;
   }
 }
