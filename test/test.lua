@@ -1,1 +1,1 @@
-print("Hello, ByteForge!")
+print("Hello from bot!")
