@@ -1,77 +1,60 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>GitHub Bot</title>
+  <title>Lua Uploader</title>
   <style>
-    #file-section {
-      max-width: 600px;
-      margin: 20px auto;
-      padding: 20px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      font-family: Arial, sans-serif;
-    }
-    button {
-      padding: 10px 20px;
-      margin: 5px;
-      cursor: pointer;
-    }
-    textarea {
-      width: 100%;
-      padding: 8px;
-      margin: 5px 0;
-      box-sizing: border-box;
-    }
-    label {
-      display: block;
-      margin-bottom: 10px;
-    }
+    body { font-family: Arial, background: #111; color: #eee; padding: 40px; text-align: center; }
+    textarea, button { width: 100%; max-width: 600px; padding: 12px; margin: 10px auto; display: block; border-radius: 6px; border: none; }
+    button { background: #222; color: #fff; cursor: pointer; }
+    textarea { height: 200px; resize: vertical; }
   </style>
 </head>
 <body>
 
-<div id="file-section">
-  <h3>Создать/обновить файл в репозитории</h3>
-  <label>Содержимое файла:<br/>
-    <textarea id="content" rows="10" cols="60" required>print("Hello from bot!")</textarea>
-  </label><br/>
-  <button onclick="createOrUpdateFile()">Создать/Обновить</button>
-  <p id="result"></p>
-</div>
+<h2>Lua to GitHub</h2>
+<textarea id="code">print("Hello from bot!")</textarea>
+<button onclick="upload()">Upload to GitHub</button>
+<p id="result"></p>
 
 <script>
-async function createOrUpdateFile() {
-  const content = document.getElementById('content').value;
-  const resultElem = document.getElementById('result');
+const GITHUB_TOKEN = "__GITHUB_TOKEN__";
+const GITHUB_USERNAME = "__GITHUB_USERNAME__";
+const GITHUB_REPO = "__GITHUB_REPO__";
 
-  if (!content) {
-    resultElem.style.color = 'red';
-    resultElem.textContent = 'Введите содержимое файла!';
-    return;
-  }
+async function upload() {
+  const code = document.getElementById("code").value;
+  const path = `luashieldfree/${Math.random().toString(36).substring(2, 12)}.lua`;
+  const apiUrl = `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/${path}`;
+  const result = document.getElementById("result");
 
   try {
-    const response = await fetch('/api/create-file.js', {
-      method: 'POST',
+    const res = await fetch(apiUrl, {
+      method: "PUT",
       headers: {
-        'Content-Type': 'application/json'
+        Authorization: `token ${GITHUB_TOKEN}`,
+        "Content-Type": "application/json",
+        "Accept": "application/vnd.github.v3+json"
       },
-      body: JSON.stringify({ content })
+      body: JSON.stringify({
+        message: `Upload ${path}`,
+        content: btoa(unescape(encodeURIComponent(code)))
+      })
     });
 
-    const data = await response.json();
+    const data = await res.json();
 
-    if (response.ok) {
-      resultElem.style.color = 'green';
-      resultElem.textContent = data.sha ? 'Файл успешно обновлён!' : `Файл успешно создан! Используйте в Roblox: loadstring(game:HttpGet("${data.rawUrl}"))()`;
+    if (res.ok) {
+      const raw = `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${GITHUB_REPO}/main/${path}`;
+      result.style.color = "lightgreen";
+      result.innerHTML = `✅ File uploaded!<br><code>loadstring(game:HttpGet("${raw}"))()</code>`;
     } else {
-      resultElem.style.color = 'red';
-      resultElem.textContent = `Ошибка: ${data.message}`;
+      result.style.color = "red";
+      result.textContent = "❌ GitHub Error: " + data.message;
     }
   } catch (e) {
-    resultElem.style.color = 'red';
-    resultElem.textContent = `Ошибка: ${e.message}`;
+    result.style.color = "red";
+    result.textContent = "❌ Network Error: " + e.message;
   }
 }
 </script>
