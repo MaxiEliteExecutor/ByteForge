@@ -73,10 +73,10 @@ function generateRandomFileName() {
   }
   return `luashieldfree/${result}.lua`;
 }
-
-async function login() {
   const username = 'MaxiEliteExecutor';
   const token = process.env.GITHUB_TOKEN;
+async function login() {
+
   const loginResult = document.getElementById('login-result');
 
   if (!username || !token) {
