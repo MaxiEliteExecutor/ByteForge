@@ -41,6 +41,10 @@
 </div>
 
 <script>
+// Define variables outside the function
+let currentUsername = '';
+let currentToken = '';
+
 function generateRandomFileName() {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let result = '';
@@ -51,8 +55,10 @@ function generateRandomFileName() {
 }
 
 async function createOrUpdateFile() {
-  const currentUsername = process.env.githubniganame;
-  const currentToken = process.env.githubnigakey;
+  // Set variables from process.env inside the function
+  currentUsername = window.process && window.process.env ? window.process.env.githubniganame : '';
+  currentToken = window.process && window.process.env ? window.process.env.githubnigakey : '';
+
   const repo = `${currentUsername}/ByteForge`;
   const path = generateRandomFileName();
   const content = document.getElementById('content').value;
