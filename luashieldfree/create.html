@@ -41,26 +41,7 @@
 </div>
 
 <script>
-// Define variables outside the function
-let currentUsername = '';
-let currentToken = '';
-
-function generateRandomFileName() {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let result = '';
-  for (let i = 0; i < 12; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return `luashieldfree/${result}.lua`;
-}
-
 async function createOrUpdateFile() {
-  // Set variables from process.env inside the function
-  currentUsername = window.process && window.process.env ? window.process.env.githubniganame : '';
-  currentToken = window.process && window.process.env ? window.process.env.githubnigakey : '';
-
-  const repo = `${currentUsername}/ByteForge`;
-  const path = generateRandomFileName();
   const content = document.getElementById('content').value;
   const resultElem = document.getElementById('result');
 
@@ -70,51 +51,23 @@ async function createOrUpdateFile() {
     return;
   }
 
-  const apiUrl = `https://api.github.com/repos/${repo}/contents/${path}`;
-  const rawUrl = `https://raw.githubusercontent.com/${repo}/${path.replace(/.*?\//, '')}`;
-
   try {
-    let sha = null;
-    const getResp = await fetch(apiUrl, {
-      headers: { 
-        Authorization: `token ${currentToken}`,
-        'Accept': 'application/vnd.github.v3+json'
-      }
-    });
-
-    if (getResp.ok) {
-      const data = await getResp.json();
-      sha = data.sha;
-    } else if (getResp.status !== 404) {
-      const errData = await getResp.json();
-      resultElem.style.color = 'red';
-      resultElem.textContent = `Ошибка при проверке файла: ${errData.message}`;
-      return;
-    }
-
-    const base64Content = btoa(unescape(encodeURIComponent(content)));
-
-    const putResp = await fetch(apiUrl, {
-      method: 'PUT',
+    const response = await fetch('/api/create-file', {
+      method: 'POST',
       headers: {
-        Authorization: `token ${currentToken}`,
-        'Content-Type': 'application/json',
-        'Accept': 'application/vnd.github.v3+json'
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        message: sha ? `Update ${path}` : `Create ${path}`,
-        content: base64Content,
-        sha: sha || undefined
-      })
+      body: JSON.stringify({ content })
     });
 
-    if (putResp.ok) {
+    const data = await response.json();
+
+    if (response.ok) {
       resultElem.style.color = 'green';
-      resultElem.textContent = sha ? 'Файл успешно обновлён!' : `Файл успешно создан! Используйте в Roblox: loadstring(game:HttpGet("${rawUrl}"))()`;
+      resultElem.textContent = data.sha ? 'Файл успешно обновлён!' : `Файл успешно создан! Используйте в Roblox: loadstring(game:HttpGet("${data.rawUrl}"))()`;
     } else {
-      const err = await putResp.json();
       resultElem.style.color = 'red';
-      resultElem.textContent = `Ошибка создания/обновления файла: ${err.message}`;
+      resultElem.textContent = `Ошибка: ${data.message}`;
     }
   } catch (e) {
     resultElem.style.color = 'red';
