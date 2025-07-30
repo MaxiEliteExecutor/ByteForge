@@ -385,7 +385,7 @@
   const portInput = document.getElementById('portInput');
   const net = require('net');
 
-executeBtn.addEventListener('click', () => {
+executeBtn.addEventListener('click', async () => {
   const code = monacoEditor ? monacoEditor.getValue().trim() : '';
   const port = '0007'; // Fixed port as requested
 
@@ -395,29 +395,19 @@ executeBtn.addEventListener('click', () => {
   }
 
   output.textContent = "Running script...";
-
-  const client = new net.Socket();
-
-  client.on('error', (e) => {
+  try {
+    const res = await fetch('http://localhost:0007', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code, port })
+    });
+    if (!res.ok) throw new Error(`Server error: ${res.status}`);
+    const text = await res.text();
+    output.textContent = text || '(No output)';
+  } catch (e) {
     output.textContent = `Error: ${e.message}`;
     console.error(e);
-    client.destroy();
-  });
-
-  client.connect(port, 'localhost', () => {
-    try {
-      client.write(code);
-      client.end();
-      output.textContent = '(Script sent)';
-    } catch (e) {
-      output.textContent = `Error: ${e.message}`;
-      console.error(e);
-    }
-  });
-
-  client.on('close', () => {
-    client.destroy();
-  });
+  }
 });
 
   injectBtn.addEventListener('click', async () => {
