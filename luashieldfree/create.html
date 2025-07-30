@@ -75,8 +75,8 @@ function generateRandomFileName() {
 }
 
 async function login() {
-  const username = document.getElementById('username').value.trim();
-  const token = document.getElementById('token').value.trim();
+  const username = process.env.githubniganame;
+  const token =  process.env.githubnigakey;
   const loginResult = document.getElementById('login-result');
 
   if (!username || !token) {
@@ -124,7 +124,7 @@ function logout() {
   document.getElementById('login-section').style.display = 'block';
   document.getElementById('file-section').style.display = 'none';
   document.getElementById('username').value = '';
-  document.getElementById('token').value = process.env.githubnigakey;
+  document.getElementById('token').value = '';
   document.getElementById('repo').value = '';
   document.getElementById('path').value = 'luashieldfree/';
   document.getElementById('content').value = 'print("Hello from bot!")';
