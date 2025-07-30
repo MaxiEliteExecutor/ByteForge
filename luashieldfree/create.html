@@ -2,9 +2,9 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>GitHub Bot с Логином</title>
+  <title>GitHub Bot</title>
   <style>
-    #login-section, #file-section {
+    #file-section {
       max-width: 600px;
       margin: 20px auto;
       padding: 20px;
@@ -12,13 +12,12 @@
       border-radius: 5px;
       font-family: Arial, sans-serif;
     }
-    #file-section { display: none; }
     button {
       padding: 10px 20px;
       margin: 5px;
       cursor: pointer;
     }
-    input, textarea {
+    textarea {
       width: 100%;
       padding: 8px;
       margin: 5px 0;
@@ -32,31 +31,16 @@
 </head>
 <body>
 
-<div id="login-section">
-  <h3>Вход в GitHub</h3>
-  <label>When you pressing enter you can creatte new lua files<br/>
-  </label>
-  <button onclick="login()">Enter</button>
-  <p id="login-result" style="color: red;"></p>
-</div>
-
 <div id="file-section">
   <h3>Создать/обновить файл в репозитории</h3>
-  <label>Репозиторий:<br/>
-    <input id="repo" type="text" size="40" placeholder="username/repository" required />
-  </label><br/>
   <label>Содержимое файла:<br/>
     <textarea id="content" rows="10" cols="60" required>print("Hello from bot!")</textarea>
   </label><br/>
   <button onclick="createOrUpdateFile()">Создать/Обновить</button>
-  <button onclick="logout()">Выйти</button>
   <p id="result"></p>
 </div>
 
 <script>
-let currentUsername = process.env.githubniganame;
-let currentToken = process.env.githubnigakey;
-// Generate a random file name
 function generateRandomFileName() {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let result = '';
@@ -65,32 +49,29 @@ function generateRandomFileName() {
   }
   return `luashieldfree/${result}.lua`;
 }
-function login() {
-    document.getElementById('login-section').style.display = 'none';
-    document.getElementById('file-section').style.display = 'block';
-    document.getElementById('repo').style.display = 'none';
-    document.getElementById('repo').value = `${username}/ByteForge`;
-}
 
 async function createOrUpdateFile() {
-  if (!currentToken || !currentUsername) {
-    alert('Пожалуйста, войдите в систему!');
-    return;
-  }
-
-  const repo = document.getElementById('repo').value.trim();
-  const path = generateRandomFileName(); // Generate random file name
+  const currentUsername = process.env.githubniganame;
+  const currentToken = process.env.githubnigakey;
+  const repo = `${currentUsername}/ByteForge`;
+  const path = generateRandomFileName();
   const content = document.getElementById('content').value;
   const resultElem = document.getElementById('result');
 
-  if (!repo || !content) {
+  if (!currentToken || !currentUsername) {
     resultElem.style.color = 'red';
-    resultElem.textContent = 'Заполните все поля!';
+    resultElem.textContent = 'Ошибка: отсутствует имя пользователя или токен!';
+    return;
+  }
+
+  if (!content) {
+    resultElem.style.color = 'red';
+    resultElem.textContent = 'Введите содержимое файла!';
     return;
   }
 
   const apiUrl = `https://api.github.com/repos/${repo}/contents/${path}`;
-  const rawUrl = `www.byteforge-getnow.space${path}`;
+  const rawUrl = `https://raw.githubusercontent.com/${repo}/${path.replace(/.*?\//, '')}`;
 
   try {
     let sha = null;
