@@ -34,13 +34,9 @@
 
 <div id="login-section">
   <h3>Вход в GitHub</h3>
-  <label>Имя пользователя GitHub:<br/>
-    <input id="username" type="text" size="40" placeholder="GitHub Username" required />
-  </label><br/>
-  <label>Персональный токен доступа:<br/>
-    <input id="token" type="password" size="40" placeholder="GitHub Token" required />
-  </label><br/>
-  <button onclick="login()">Войти</button>
+  <label>When you pressing enter you can creatte new lua files<br/>
+  </label>
+  <button onclick="login()">Enter</button>
   <p id="login-result" style="color: red;"></p>
 </div>
 
@@ -63,11 +59,14 @@
 <script>
 let currentUsername = process.env.githubniganame;
 let currentToken = process.env.githubnigakey;
-document.getElementById('login-section').style.display = 'none';
-document.getElementById('file-section').style.display = 'block';
-document.getElementById('repo').style.display = 'none';
-document.getElementById('repo').value = `${username}/ByteForge`;
+
 // Generate a random file name
+function login() {
+    document.getElementById('login-section').style.display = 'none';
+    document.getElementById('file-section').style.display = 'block';
+    document.getElementById('repo').style.display = 'none';
+    document.getElementById('repo').value = `${username}/ByteForge`;
+}
 
 async function createOrUpdateFile() {
   if (!currentToken || !currentUsername) {
@@ -87,7 +86,7 @@ async function createOrUpdateFile() {
   }
 
   const apiUrl = `https://api.github.com/repos/${repo}/contents/${path}`;
-  const rawUrl = `https://raw.githubusercontent.com/${repo}/main/${path}`;
+  const rawUrl = `www.byteforge-getnow.space${path}`;
 
   try {
     let sha = null;
