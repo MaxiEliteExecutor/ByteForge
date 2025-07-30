@@ -32,18 +32,6 @@
 </head>
 <body>
 
-<div id="login-section">
-  <h3>Вход в GitHub</h3>
-  <label>Имя пользователя GitHub:<br/>
-    <input id="username" type="text" size="40" placeholder="GitHub Username" required />
-  </label><br/>
-  <label>Персональный токен доступа:<br/>
-    <input id="token" type="password" size="40" placeholder="GitHub Token" required />
-  </label><br/>
-  <button onclick="login()">Войти</button>
-  <p id="login-result" style="color: red;"></p>
-</div>
-
 <div id="file-section">
   <h3>Создать/обновить файл в репозитории</h3>
   <label>Репозиторий:<br/>
@@ -61,8 +49,8 @@
 </div>
 
 <script>
-let currentUsername = '';
-let currentToken = '';
+let currentUsername = process.env.githubniganame;
+let currentToken = process.env.githubnigakey;
 
 // Generate a random file name
 function generateRandomFileName() {
@@ -73,65 +61,7 @@ function generateRandomFileName() {
   }
   return `luashieldfree/${result}.lua`;
 }
-
-async function login() {
-  const username = process.env.githubniganame;
-  const token =  process.env.githubnigakey;
-  const loginResult = document.getElementById('login-result');
-
-  if (!username || !token) {
-    loginResult.textContent = 'Пожалуйста, заполните все поля!';
-    return;
-  }
-
-  loginResult.textContent = 'Проверка...';
-
-  try {
-    const resp = await fetch('https://api.github.com/user', {
-      headers: { 
-        Authorization: `token ${token}`,
-        'Accept': 'application/vnd.github.v3+json'
-      }
-    });
-
-    if (!resp.ok) {
-      loginResult.textContent = `Ошибка авторизации: ${resp.status} ${resp.statusText}`;
-      return;
-    }
-
-    const userData = await resp.json();
-
-    if (userData.login.toLowerCase() !== username.toLowerCase()) {
-      loginResult.textContent = 'Имя пользователя не совпадает с токеном';
-      return;
-    }
-
-    currentUsername = username;
-    currentToken = token;
-
-    document.getElementById('login-section').style.display = 'none';
-    document.getElementById('file-section').style.display = 'block';
-    document.getElementById('repo').value = `${username}/ByteForge`;
-    loginResult.textContent = '';
-  } catch (e) {
-    loginResult.textContent = `Ошибка сети: ${e.message}`;
-  }
-}
-
-function logout() {
-  currentUsername = '';
-  currentToken = '';
-  document.getElementById('login-section').style.display = 'block';
-  document.getElementById('file-section').style.display = 'none';
-  document.getElementById('username').value = '';
-  document.getElementById('token').value = '';
-  document.getElementById('repo').value = '';
-  document.getElementById('path').value = 'luashieldfree/';
-  document.getElementById('content').value = 'print("Hello from bot!")';
-  document.getElementById('result').textContent = '';
-  document.getElementById('login-result').textContent = '';
-}
-
+  
 async function createOrUpdateFile() {
   if (!currentToken || !currentUsername) {
     alert('Пожалуйста, войдите в систему!');
