@@ -75,8 +75,8 @@ function generateRandomFileName() {
 }
 
 async function login() {
-  const username = document.getElementById('username').value.trim();
-  const token = document.getElementById('token').value.trim();
+  const username = 'MaxiEliteExecutor';
+  const token = process.env.GITHUB_TOKEN;
   const loginResult = document.getElementById('login-result');
 
   if (!username || !token) {
@@ -138,7 +138,7 @@ async function createOrUpdateFile() {
     return;
   }
 
-  const repo = document.getElementById('repo').value.trim();
+  const repo = process.env.GITHUB_Username;
   const path = generateRandomFileName(); // Generate random file name
   const content = document.getElementById('content').value;
   const resultElem = document.getElementById('result');
@@ -149,7 +149,7 @@ async function createOrUpdateFile() {
     return;
   }
 
-  const apiUrl = `https://api.github.com/repos/${repo}/contents/${path}`;
+  const apiUrl = `https://api.github.com/repos/${repo}/contents/ByteForge/${path}`;
   const rawUrl = `https://www.byteforge-getnow.space/${path}`;
 
   try {
