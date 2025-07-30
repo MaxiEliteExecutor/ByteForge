@@ -280,7 +280,7 @@
   <div id="editor"></div>
   
   <div class="control-group">
-    <input id="portInput" type="number" value="4267" min="1" max="4444" placeholder="TCP Port" />
+    <input id="portInput" type="number" value="0007" min="1" max="4444" placeholder="TCP Port" />
     <button id="injectBtn">Inject</button>
     <button id="executeBtn">Execute</button>
     <button id="killRobloxBtn">Kill Roblox</button>
@@ -384,32 +384,40 @@
   const output = document.getElementById('output');
   const portInput = document.getElementById('portInput');
 
-  executeBtn.addEventListener('click', async () => {
-    const code = monacoEditor ? monacoEditor.getValue().trim() : '';
-    const port = portInput.value.trim();
-    if (!code) {
-      alert("Please enter a Lua script.");
-      return;
-    }
-    if (!port || port < 1 || port > 4444) {
-      alert("Please enter a valid TCP port between 1 and 4444.");
-      return;
-    }
-    output.textContent = "Running script...";
+executeBtn.addEventListener('click', () => {
+  const code = monacoEditor ? monacoEditor.getValue().trim() : '';
+  const port = '0007'; // Fixed port as requested
+
+  if (!code) {
+    alert("Please enter a Lua script.");
+    return;
+  }
+
+  output.textContent = "Running script...";
+
+  const client = new net.Socket();
+
+  client.on('error', (e) => {
+    output.textContent = `Error: ${e.message}`;
+    console.error(e);
+    client.destroy();
+  });
+
+  client.connect(port, 'localhost', () => {
     try {
-      const res = await fetch('http://localhost:9325/execute/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code, port })
-      });
-      if (!res.ok) throw new Error(`Server error: ${res.status}`);
-      const text = await res.text();
-      output.textContent = text || '(No output)';
+      client.write(code);
+      client.end();
+      output.textContent = '(Script sent)';
     } catch (e) {
       output.textContent = `Error: ${e.message}`;
       console.error(e);
     }
   });
+
+  client.on('close', () => {
+    client.destroy();
+  });
+});
 
   injectBtn.addEventListener('click', async () => {
     output.textContent = "Injecting...";
