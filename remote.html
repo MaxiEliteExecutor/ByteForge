@@ -383,6 +383,7 @@
   const killRobloxBtn = document.getElementById('killRobloxBtn');
   const output = document.getElementById('output');
   const portInput = document.getElementById('portInput');
+  const net = require('net');
 
 executeBtn.addEventListener('click', () => {
   const code = monacoEditor ? monacoEditor.getValue().trim() : '';
