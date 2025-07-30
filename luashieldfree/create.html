@@ -71,7 +71,7 @@ function generateRandomFileName() {
   for (let i = 0; i < 12; i++) {
     result += chars.charAt(Math.floor(Math.random() * chars.length));
   }
-  return luashieldfree/${result}.lua;
+  return `luashieldfree/${result}.lua`;
 }
 
 async function login() {
@@ -89,13 +89,13 @@ async function login() {
   try {
     const resp = await fetch('https://api.github.com/user', {
       headers: { 
-        Authorization: token ${token},
+        Authorization: `token ${token}`,
         'Accept': 'application/vnd.github.v3+json'
       }
     });
 
     if (!resp.ok) {
-      loginResult.textContent = Ошибка авторизации: ${resp.status} ${resp.statusText};
+      loginResult.textContent = `Ошибка авторизации: ${resp.status} ${resp.statusText}`;
       return;
     }
 
@@ -111,10 +111,10 @@ async function login() {
 
     document.getElementById('login-section').style.display = 'none';
     document.getElementById('file-section').style.display = 'block';
-    document.getElementById('repo').value = ${username}/ByteForge;
+    document.getElementById('repo').value = `${username}/ByteForge`;
     loginResult.textContent = '';
   } catch (e) {
-    loginResult.textContent = Ошибка сети: ${e.message};
+    loginResult.textContent = `Ошибка сети: ${e.message}`;
   }
 }
 
@@ -149,14 +149,14 @@ async function createOrUpdateFile() {
     return;
   }
 
-  const apiUrl = https://api.github.com/repos/${repo}/contents/${path};
-  const rawUrl = https://raw.githubusercontent.com/${repo}/main/${path};
+  const apiUrl = `https://api.github.com/repos/${repo}/contents/${path}`;
+  const rawUrl = `https://raw.githubusercontent.com/${repo}/main/${path}`;
 
   try {
     let sha = null;
     const getResp = await fetch(apiUrl, {
       headers: { 
-        Authorization: token ${currentToken},
+        Authorization: `token ${currentToken}`,
         'Accept': 'application/vnd.github.v3+json'
       }
     });
@@ -167,7 +167,7 @@ async function createOrUpdateFile() {
     } else if (getResp.status !== 404) {
       const errData = await getResp.json();
       resultElem.style.color = 'red';
-      resultElem.textContent = Ошибка при проверке файла: ${errData.message};
+      resultElem.textContent = `Ошибка при проверке файла: ${errData.message}`;
       return;
     }
 
@@ -176,12 +176,12 @@ async function createOrUpdateFile() {
     const putResp = await fetch(apiUrl, {
       method: 'PUT',
       headers: {
-        Authorization: token ${currentToken},
+        Authorization: `token ${currentToken}`,
         'Content-Type': 'application/json',
         'Accept': 'application/vnd.github.v3+json'
       },
       body: JSON.stringify({
-        message: sha ? Update ${path} : Create ${path},
+        message: sha ? `Update ${path}` : `Create ${path}`,
         content: base64Content,
         sha: sha || undefined
       })
@@ -189,15 +189,15 @@ async function createOrUpdateFile() {
 
     if (putResp.ok) {
       resultElem.style.color = 'green';
-      resultElem.textContent = sha ? 'Файл успешно обновлён!' : Файл успешно создан! Используйте в Roblox: loadstring(game:HttpGet("${rawUrl}"))();
+      resultElem.textContent = sha ? 'Файл успешно обновлён!' : `Файл успешно создан! Используйте в Roblox: loadstring(game:HttpGet("${rawUrl}"))()`;
     } else {
       const err = await putResp.json();
       resultElem.style.color = 'red';
-      resultElem.textContent = Ошибка создания/обновления файла: ${err.message};
+      resultElem.textContent = `Ошибка создания/обновления файла: ${err.message}`;
     }
   } catch (e) {
     resultElem.style.color = 'red';
-    resultElem.textContent = Ошибка: ${e.message};
+    resultElem.textContent = `Ошибка: ${e.message}`;
   }
 }
 </script>
