@@ -45,9 +45,6 @@
   <label>Репозиторий:<br/>
     <input id="repo" type="text" size="40" placeholder="username/repository" required />
   </label><br/>
-  <label>Путь файла (авто-генерация имени):<br/>
-    <input id="path" type="text" size="40" placeholder="luashieldfree/" value="luashieldfree/" readonly />
-  </label><br/>
   <label>Содержимое файла:<br/>
     <textarea id="content" rows="10" cols="60" required>print("Hello from bot!")</textarea>
   </label><br/>
@@ -59,8 +56,15 @@
 <script>
 let currentUsername = process.env.githubniganame;
 let currentToken = process.env.githubnigakey;
-
 // Generate a random file name
+function generateRandomFileName() {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < 12; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return `luashieldfree/${result}.lua`;
+}
 function login() {
     document.getElementById('login-section').style.display = 'none';
     document.getElementById('file-section').style.display = 'block';
