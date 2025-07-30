@@ -32,6 +32,18 @@
 </head>
 <body>
 
+<div id="login-section">
+  <h3>Вход в GitHub</h3>
+  <label>Имя пользователя GitHub:<br/>
+    <input id="username" type="text" size="40" placeholder="GitHub Username" required />
+  </label><br/>
+  <label>Персональный токен доступа:<br/>
+    <input id="token" type="password" size="40" placeholder="GitHub Token" required />
+  </label><br/>
+  <button onclick="login()">Войти</button>
+  <p id="login-result" style="color: red;"></p>
+</div>
+
 <div id="file-section">
   <h3>Создать/обновить файл в репозитории</h3>
   <label>Репозиторий:<br/>
@@ -51,17 +63,12 @@
 <script>
 let currentUsername = process.env.githubniganame;
 let currentToken = process.env.githubnigakey;
-
+document.getElementById('login-section').style.display = 'none';
+document.getElementById('file-section').style.display = 'block';
+document.getElementById('repo').style.display = 'none';
+document.getElementById('repo').value = `${username}/ByteForge`;
 // Generate a random file name
-function generateRandomFileName() {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let result = '';
-  for (let i = 0; i < 12; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return `luashieldfree/${result}.lua`;
-}
-  
+
 async function createOrUpdateFile() {
   if (!currentToken || !currentUsername) {
     alert('Пожалуйста, войдите в систему!');
