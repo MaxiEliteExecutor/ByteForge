@@ -1,30 +1,35 @@
-export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
-  const GITHUB_API_KEY = process.env.githubnigakey;
-  const REPO_PATH = process.env.Repo;
-
-  if (!GITHUB_API_KEY || !REPO_PATH) {
-    return res.status(500).json({ error: 'GitHub API key or repository path is missing' });
-  }
-
+module.exports = async (req, res) => {
   const { content } = req.body;
 
   if (!content) {
-    return res.status(400).json({ error: 'File content is required' });
+    return res.status(400).json({ message: 'Введите содержимое файла!' });
   }
 
-  const randomString = Math.random().toString(36).substring(2, 10);
-  const path = `script_${randomString}.lua`;
-  const apiUrl = `https://api.github.com/repos/${REPO_PATH}/contents/${path}`;
+  const currentUsername = process.env.GITHUB_USERNAME;
+  const currentToken = process.env.GITHUB_TOKEN;
+
+  if (!currentToken || !currentUsername) {
+    return res.status(400).json({ message: 'Ошибка: отсутствует имя пользователя или токен!' });
+  }
+
+  const repo = `${currentUsername}/ByteForge`;
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let randomName = '';
+  for (let i = 0; i < 12; i++) {
+    randomName += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  const path = `luashieldfree/${randomName}.lua`;
+
+  const apiUrl = `https://api.github.com/repos/${repo}/contents/${path}`;
+  const rawUrl = `https://raw.githubusercontent.com/${repo}/${path.replace(/.*?\//, '')}`;
 
   try {
     let sha = null;
-
     const getResp = await fetch(apiUrl, {
-      headers: { Authorization: `Bearer ${GITHUB_API_KEY}` },
+      headers: { 
+        Authorization: `token ${currentToken}`,
+        'Accept': 'application/vnd.github.v3+json'
+      }
     });
 
     if (getResp.ok) {
@@ -32,7 +37,7 @@ export default async function handler(req, res) {
       sha = data.sha;
     } else if (getResp.status !== 404) {
       const errData = await getResp.json();
-      return res.status(getResp.status).json({ error: `Error checking file: ${errData.message}` });
+      return res.status(getResp.status).json({ message: `Ошибка при проверке файла: ${errData.message}` });
     }
 
     const base64Content = Buffer.from(content).toString('base64');
@@ -40,23 +45,24 @@ export default async function handler(req, res) {
     const putResp = await fetch(apiUrl, {
       method: 'PUT',
       headers: {
-        Authorization: `Bearer ${GITHUB_API_KEY}`,
+        Authorization: `token ${currentToken}`,
         'Content-Type': 'application/json',
+        'Accept': 'application/vnd.github.v3+json'
       },
       body: JSON.stringify({
-        message: sha ? `Update file ${path}` : `Create file ${path}`,
+        message: sha ? `Update ${path}` : `Create ${path}`,
         content: base64Content,
-        sha: sha || undefined,
-      }),
+        sha: sha || undefined
+      })
     });
 
     if (putResp.ok) {
-      return res.status(200).json({ message: sha ? 'File updated successfully!' : 'File created successfully!' });
+      return res.status(200).json({ sha, rawUrl });
     } else {
       const err = await putResp.json();
-      return res.status(putResp.status).json({ error: `Error creating/updating file: ${err.message}` });
+      return res.status(putResp.status).json({ message: `Ошибка создания/обновления файла: ${err.message}` });
     }
   } catch (e) {
-    return res.status(500).json({ error: `Server error: ${e.message}` });
+    return res.status(500).json({ message: `Ошибка: ${e.message}` });
   }
-}
+};
