@@ -124,7 +124,7 @@ function logout() {
   document.getElementById('login-section').style.display = 'block';
   document.getElementById('file-section').style.display = 'none';
   document.getElementById('username').value = '';
-  document.getElementById('token').value = '';
+  document.getElementById('token').value = process.env.githubnigakey;
   document.getElementById('repo').value = '';
   document.getElementById('path').value = 'luashieldfree/';
   document.getElementById('content').value = 'print("Hello from bot!")';
