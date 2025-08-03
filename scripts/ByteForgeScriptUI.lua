@@ -177,7 +177,6 @@ function ByteForgeGUI:CreateWindow(config)
 	createControlButton("×", -40, Color3.fromRGB(255, 100, 100), function()
 		createTween(mainFrame, {Size = UDim2.new()}):Play()
 		getgenv().ByteForgeGUILoaded = false
-		wait(UI_DEFAULTS.ANIMATION_SPEED, screenGui:Destroy(), screenGui)
 	end)
 
 	-- Tab System
