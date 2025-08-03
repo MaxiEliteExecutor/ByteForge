@@ -1,3 +1,8 @@
+if getgenv().ByteForgeGUILoaded == true then
+	print("script is already started")
+	return
+end
+getgenv().ByteForgeGUILoaded = true
 local ByteForgeGUI = {}
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
@@ -171,7 +176,8 @@ function ByteForgeGUI:CreateWindow(config)
 
 	createControlButton("×", -40, Color3.fromRGB(255, 100, 100), function()
 		createTween(mainFrame, {Size = UDim2.new()}):Play()
-		task.delay(UI_DEFAULTS.ANIMATION_SPEED, screenGui:Destroy(), screenGui)
+		getgenv().ByteForgeGUILoaded = false
+		wait(UI_DEFAULTS.ANIMATION_SPEED, screenGui:Destroy(), screenGui)
 	end)
 
 	-- Tab System
