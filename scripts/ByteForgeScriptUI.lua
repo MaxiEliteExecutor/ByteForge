@@ -1,4 +1,4 @@
-getgenv().ByteForgeGUILoaded == true then
+if getgenv().ByteForgeGUILoaded == true then
     print("script is already started")
     return -- Exit the entire script, preventing further execution
 end
