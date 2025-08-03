@@ -1,7 +1,9 @@
-if getgenv().ByteForgeGUILoaded == true then
-	print("script is already started")
-	return
+getgenv().ByteForgeGUILoaded == true then
+    print("script is already started")
+    return -- Exit the entire script, preventing further execution
 end
+
+-- Mark the script as loaded
 getgenv().ByteForgeGUILoaded = true
 local ByteForgeGUI = {}
 local Players = game:GetService("Players")
