@@ -133,7 +133,7 @@
       background: rgba(0,0,0,0.4);
       padding: 20px;
       border-radius: 8px;
-      height: 60vh; /* Adjust height to span most of the viewport */
+      height: 60vh;
       animation: slideUp 1s ease 0.6s forwards;
       opacity: 0;
     }
@@ -148,7 +148,7 @@
       width: 100%;
       max-width: 400px;
       padding: 10px;
-      margin: 10px 0; /* Reduced margin for tighter spacing */
+      margin: 10px 0;
       border: none;
       border-radius: 8px;
       background: #333;
@@ -271,7 +271,7 @@
       Download older Roblox versions directly in your browser. Select a binary type, channel, and version hash to fetch deployments from Roblox's official CDN.
     </p>
     <div class="form-container">
-      <form id="downgradeForm">
+      <form id="downloadForm">
         <label for="binaryType">Binary Type:</label>
         <select id="binaryType" name="binaryType" required>
           <option value="WindowsPlayer">Windows Player</option>
@@ -281,12 +281,12 @@
         </select>
 
         <label for="channel">Channel (optional, defaults to LIVE):</label>
-        <input type="text" id="channel" name="channel" placeholder="e.g., LIVE or zcanary">
+        <input id="channel" name="channel" type="text" placeholder="e.g., LIVE or zcanary">
 
         <label for="version">Version Hash (required):</label>
-        <input type="text" id="version" name="version" placeholder="e.g., 2a06298afe3947ab" required>
+        <input id="version" name="version" type="text" placeholder="e.g., 2a06298afe3947ab" required>
 
-        <button type="submit" class="btn">Download Deployment</button>
+        <button type="button" class="btn" onclick="downloadFromForm()">Download Deployment</button>
       </form>
       <p id="error"></p>
       <p id="status"></p>
@@ -395,7 +395,7 @@
 
     draw();
 
-    // Downgrader logic
+    // Downgrader logic adapted from RDD
     function showMessage(elementId, message, isError = false) {
       const element = document.getElementById(elementId);
       element.textContent = message;
@@ -405,63 +405,58 @@
       }
     }
 
-    document.getElementById('downgradeForm').addEventListener('submit', async function(event) {
-      event.preventDefault();
-
+    function downloadFromForm() {
       const binaryType = document.getElementById('binaryType').value;
       const channel = document.getElementById('channel').value || 'LIVE';
       const version = document.getElementById('version').value;
-
-      document.getElementById('error').style.display = 'none';
-      document.getElementById('status').style.display = 'none';
 
       if (!version) {
         showMessage('error', 'Version hash is required!', true);
         return;
       }
 
-      try {
-        showMessage('status', 'Fetching deployment files...');
+      showMessage('status', 'Fetching deployment files...');
 
-        const baseUrl = `https://setup-aws.rbxcdn.com/${version}-${binaryType}`;
-        
-        // Placeholder: Fetch manifest or file list
-        const manifestUrl = `${baseUrl}/manifest.json`; // Adjust based on actual Roblox CDN structure
-        const response = await fetch(manifestUrl);
-        if (!response.ok) {
-          throw new Error(`Failed to fetch manifest: ${response.statusText}`);
-        }
+      const baseUrl = `https://setup-aws.rbxcdn.com/${version}-${channel}-${binaryType}`;
+      const manifestUrl = `${baseUrl}/manifest.json`; // Placeholder; adjust based on RDD src
 
-        // Placeholder manifest (replace with actual file list)
-        const manifest = await response.json(); // Example: { files: ["RobloxPlayerBeta.exe", "RobloxApp.zip"] }
-        const zip = new JSZip();
+      fetch(manifestUrl)
+        .then(response => {
+          if (!response.ok) throw new Error(`Manifest fetch failed: ${response.statusText}`);
+          return response.json();
+        })
+        .then(manifest => {
+          const zip = new JSZip();
+          const promises = manifest.files.map(file => 
+            fetch(`${baseUrl}/${file}`)
+              .then(res => {
+                if (!res.ok) throw new Error(`File fetch failed: ${file}`);
+                return res.arrayBuffer();
+              })
+              .then(data => zip.file(file, data))
+          );
 
-        for (const file of manifest.files) {
-          const fileUrl = `${baseUrl}/${file}`;
-          const fileResponse = await fetch(fileUrl);
-          if (!fileResponse.ok) {
-            throw new Error(`Failed to fetch ${file}: ${fileResponse.statusText}`);
-          }
-          const fileData = await fileResponse.arrayBuffer();
-          zip.file(file, fileData);
-        }
-
-        const extension = binaryType.includes('Mac') ? 'dmg' : 'zip';
-        const content = await zip.generateAsync({ type: 'blob' });
-        const downloadUrl = URL.createObjectURL(content);
-        const a = document.createElement('a');
-        a.href = downloadUrl;
-        a.download = `${binaryType}-${version}.${extension}`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(downloadUrl);
-
-        showMessage('status', 'Download started successfully!');
-      } catch (error) {
-        showMessage('error', `Error: ${error.message}`, true);
-      }
-    });
+          return Promise.all(promises).then(() => zip);
+        })
+        .then(zip => {
+          const extension = binaryType.includes('Mac') ? 'dmg' : 'zip';
+          return zip.generateAsync({ type: 'blob' }).then(content => ({ content, extension }));
+        })
+        .then(({ content, extension }) => {
+          const downloadUrl = URL.createObjectURL(content);
+          const a = document.createElement('a');
+          a.href = downloadUrl;
+          a.download = `${binaryType}-${version}.${extension}`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(downloadUrl);
+          showMessage('status', 'Download started successfully!');
+        })
+        .catch(error => {
+          showMessage('error', `Error: ${error.message}`, true);
+        });
+    }
   </script>
 </body>
 </html>
