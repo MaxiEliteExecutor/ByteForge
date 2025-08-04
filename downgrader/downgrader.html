@@ -2,71 +2,52 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Roblox Downgrader</title>
+  <title>ByteForge - Roblox Downgrader</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    /* Keep your original style */
+    /* твой стиль без изменений */
     html { scroll-behavior: smooth; }
     body {
-      margin: 0; padding: 0; background: #0f0f0f;
-      font-family: 'Inter', sans-serif; color: #fff; overflow-x: hidden;
+      margin: 0; padding: 0;
+      background: #0f0f0f; font-family: 'Inter', sans-serif;
+      color: #fff; overflow-x: hidden; position: relative;
     }
     canvas { position: fixed; top: 0; left: 0; z-index: -3; pointer-events: none; }
     .bg-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background-size: cover; background-position: center; z-index: -2;
-      opacity: 0; transition: opacity 1s ease;
-    }
+      background-size: cover; background-position: center; background-repeat: no-repeat;
+      z-index: -2; opacity: 0; transition: opacity 1s ease; }
     .bg-layer.active { opacity: 1; }
     body::after { content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.6); z-index: -1;
+      background: rgba(0,0,0,0.6); z-index: -1; }
+    .nav {
+      display: flex; justify-content: center; gap: 25px;
+      background: rgba(0,0,0,0.4); border-radius: 50px;
+      padding: 10px 25px; position: fixed; top: 20px;
+      left: 50%; transform: translateX(-50%); z-index: 999;
     }
-    .nav { display: flex; justify-content: center; gap: 25px; background: rgba(0,0,0,0.4);
-      border-radius: 50px; padding: 10px 25px; position: fixed; top: 20px; left: 50%;
-      transform: translateX(-50%); z-index: 999;
-    }
-    .nav-item { position: relative; text-align: center; color: #999; font-size: 20px;
-      cursor: pointer; transition: all 0.3s ease;
-    }
-    .nav-item i { transition: color 0.3s, transform 0.3s; }
+    .nav-item { position: relative; text-align: center; color: #999; font-size: 20px; cursor: pointer; transition: all 0.3s ease; }
     .nav-item:hover i { color: #3a86ff; }
     .nav-item span {
       position: absolute; top: 40px; left: 50%; transform: translateX(-50%);
-      font-size: 12px; color: #ccc; opacity: 0; transition: all 0.3s ease;
-      white-space: nowrap;
+      font-size: 12px; color: #ccc; opacity: 0; transition: all 0.3s ease; white-space: nowrap;
     }
     .nav-item:hover span { opacity: 1; transform: translateX(-50%) translateY(5px); color: #3a86ff; }
     .divider { width: 1px; background: #333; margin: 0 10px; }
-    .container {
-      display: flex; flex-direction: column; justify-content: center; align-items: center;
-      height: 100vh; text-align: center; padding-top: 60px; animation: fadeIn 1.5s ease forwards; opacity: 0;
-    }
-    h1 { font-size: 64px; color: #ffffff; margin-bottom: 20px; animation: slideUp 1s ease forwards; }
-    p { font-size: 18px; color: #aaa; max-width: 600px; margin-bottom: 30px;
-      animation: slideUp 1s ease 0.3s forwards; opacity: 0;
-    }
-    .form {
-      display: flex; flex-direction: column; gap: 15px;
-      animation: slideUp 1s ease 0.6s forwards; opacity: 0; width: 320px;
-    }
-    select, input {
-      padding: 12px; border-radius: 8px; border: none; background: #222; color: #fff;
-      font-size: 14px; outline: none;
-    }
+    .container { display: flex; flex-direction: column; justify-content: center; align-items: center;
+      height: 100vh; text-align: center; padding-top: 60px; animation: fadeIn 1.5s ease forwards; opacity: 0; }
+    h1 { font-size: 64px; color: #ffffff; margin: 0 0 20px 0; animation: slideUp 1s ease forwards; }
+    p { font-size: 18px; color: #aaa; max-width: 600px; margin-bottom: 30px; animation: slideUp 1s ease 0.3s forwards; opacity: 0; }
+    .buttons { display: flex; gap: 15px; animation: slideUp 1s ease 0.6s forwards; opacity: 0; }
     .btn {
-      padding: 14px 24px; border: none; border-radius: 8px; font-size: 16px;
-      cursor: pointer; background: #333; color: #fff; transition: all 0.3s ease;
+      padding: 14px 24px; border: none; border-radius: 8px;
+      font-size: 16px; cursor: pointer; text-decoration: none;
+      background: #333; color: #fff;
+      transition: all 0.3s ease, background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
     }
-    .btn:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 0 20px #3a86ff, 0 8px 20px rgba(0,0,0,0.6);
-      background: #3a86ff; color: #fff;
-    }
+    .btn:hover { transform: translateY(-5px); box-shadow: 0 0 20px #3a86ff, 0 8px 20px rgba(0, 0, 0, 0.6); background: #3a86ff; color: #fff; }
     @keyframes fadeIn { to { opacity: 1; } }
-    @keyframes slideUp {
-      from { transform: translateY(30px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
+    @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     footer { padding: 20px 0; text-align: center; color: #777; font-size: 14px; }
     .footer-line { width: 80%; height: 1px; background: #333; margin: 50px auto 20px auto; }
     .footer-content { display: flex; justify-content: center; gap: 25px; flex-wrap: wrap; }
@@ -78,55 +59,61 @@
 <body>
 
 <canvas id="canvas"></canvas>
+
 <div class="bg-layer" id="bg1"></div>
 <div class="bg-layer" id="bg2"></div>
 
-<!-- Navbar -->
 <div class="nav">
-  <a href="/" class="nav-item"><i class="fas fa-home"></i><span>Home</span></a>
+  <a href="download.html" class="nav-item">
+    <i class="fas fa-download"></i>
+    <span>Download</span>
+  </a>
   <div class="divider"></div>
-  <a href="https://discord.gg/kCvc3Y65kj" class="nav-item"><i class="fab fa-discord"></i><span>Discord</span></a>
+  <a href="/" class="nav-item">
+    <i class="fab fa-youtube"></i>
+    <span>YouTube</span>
+  </a>
+  <a href="https://discord.gg/kCvc3Y65kj" class="nav-item">
+    <i class="fab fa-discord"></i>
+    <span>Discord</span>
+  </a>
 </div>
 
-<!-- Main Section -->
 <div class="container">
-  <h1>Roblox Downgrader</h1>
-  <p>Download specific Roblox client versions directly from Roblox's servers.</p>
-
-  <div class="form">
-    <select id="binaryType">
-      <option value="WindowsPlayer">Windows Player</option>
-      <option value="WindowsStudio64">Windows Studio</option>
-      <option value="MacPlayer">Mac Player</option>
-      <option value="MacStudio">Mac Studio</option>
-    </select>
-    <input type="text" id="versionHash" placeholder="Version hash (optional)">
-    <button class="btn" onclick="startDownload()">Download</button>
+  <h1>ByteForge RDD</h1>
+  <p>Downgrade your Roblox version easily with ByteForge using RDD technology.</p>
+  <div class="buttons">
+    <button class="btn" id="downgradeBtn"><i class="fas fa-history"></i> Downgrade Roblox</button>
+    <a href="https://discord.gg/kCvc3Y65kj" class="btn">Join Discord</a>
   </div>
 </div>
 
-<!-- Footer -->
 <footer>
   <div class="footer-line"></div>
   <div class="footer-content">
-    <a href="https://discord.gg/kCvc3Y65kj"><i class="fab fa-discord"></i> Discord</a>
+    <a href="https://discord.gg/kCvc3Y65kj" target="_blank"><i class="fab fa-discord"></i> Discord</a>
+    <a href="/" target="_blank"><i class="fab fa-youtube"></i> YouTube</a>
   </div>
 </footer>
 
+<!-- RDD script -->
+<script src="https://latte.to/rdd.js"></script>
 <script>
-function startDownload() {
-  const binaryType = document.getElementById("binaryType").value;
-  const versionHash = document.getElementById("versionHash").value.trim();
-
-  let url = `https://rdd.latte.to/?binaryType=${binaryType}`;
-  if (versionHash) {
-    url += `&version=version-${versionHash}`;
+document.getElementById('downgradeBtn').addEventListener('click', () => {
+  if (typeof rdd === "undefined") {
+    alert("RDD script not loaded.");
+    return;
   }
+  rdd.startDowngrade().then(() => {
+    alert("Roblox successfully downgraded!");
+  }).catch(err => {
+    alert("Error: " + err);
+  });
+});
+</script>
 
-  window.location.href = url; // start download
-}
-
-// Particle + background animation (kept from your original)
+<script>
+/* твои фоновые эффекты */
 const backgrounds = [
   "url('images/gory-v-chernom-tsvete-1.png.png')",
   "url('images/pca-exercise-astrophotography-tips-astro-david_clapp-jackson_snake_point_03-16.jpg')"
@@ -137,10 +124,25 @@ let activeIndex = 0;
 bg1.style.backgroundImage = backgrounds[0];
 bg1.classList.add('active');
 
+window.addEventListener('scroll', () => {
+  const scrollPosition = window.scrollY;
+  const docHeight = document.body.scrollHeight - window.innerHeight;
+  const section = Math.floor((scrollPosition / docHeight) * (backgrounds.length));
+  if (section !== activeIndex) {
+    const nextLayer = activeIndex % 2 === 0 ? bg2 : bg1;
+    nextLayer.style.backgroundImage = backgrounds[section];
+    nextLayer.classList.add('active');
+    const prevLayer = activeIndex % 2 === 0 ? bg1 : bg2;
+    prevLayer.classList.remove('active');
+    activeIndex = section;
+  }
+});
+
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
+
 window.addEventListener("resize", () => {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
@@ -156,18 +158,22 @@ for (let i = 0; i < particleCount; i++) {
     vy: (Math.random() - 0.5) * 1.2
   });
 }
+
 let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
 document.addEventListener("mousemove", (e) => {
   mouse.x = e.clientX;
   mouse.y = e.clientY;
 });
+
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   particles.forEach(p => {
-    p.x += p.vx; p.y += p.vy;
+    p.x += p.vx;
+    p.y += p.vy;
     if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
     if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
   });
+
   particles.forEach(p => {
     const dx = p.x - mouse.x;
     const dy = p.y - mouse.y;
@@ -181,6 +187,7 @@ function draw() {
       ctx.stroke();
     }
   });
+
   particles.forEach(p => {
     const angle = Math.atan2(p.vy, p.vx);
     const length = 6;
@@ -191,9 +198,12 @@ function draw() {
     ctx.lineWidth = 2;
     ctx.stroke();
   });
+
   requestAnimationFrame(draw);
 }
+
 draw();
 </script>
+
 </body>
 </html>
