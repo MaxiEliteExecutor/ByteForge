@@ -2,9 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>ByteForge</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ByteForge - Downgrader</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <style>
     html {
       scroll-behavior: smooth;
@@ -101,10 +103,9 @@
     }
     .container {
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
       text-align: center;
       padding-top: 60px;
       animation: fadeIn 1.5s ease forwards;
@@ -124,28 +125,67 @@
       animation: slideUp 1s ease 0.3s forwards;
       opacity: 0;
     }
-    .buttons {
+    .form-container {
       display: flex;
-      gap: 15px;
+      flex-direction: column;
+      justify-content: space-evenly;
+      align-items: center;
+      background: rgba(0,0,0,0.4);
+      padding: 20px;
+      border-radius: 8px;
+      height: 60vh; /* Adjust height to span most of the viewport */
       animation: slideUp 1s ease 0.6s forwards;
       opacity: 0;
     }
-    .btn {
+    label {
+      font-size: 16px;
+      color: #ccc;
+      margin: 0;
+      width: 100%;
+      text-align: left;
+    }
+    select, input {
+      width: 100%;
+      max-width: 400px;
+      padding: 10px;
+      margin: 10px 0; /* Reduced margin for tighter spacing */
+      border: none;
+      border-radius: 8px;
+      background: #333;
+      color: #fff;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+    select:focus, input:focus {
+      outline: none;
+      box-shadow: 0 0 10px #3a86ff;
+    }
+    button.btn {
       padding: 14px 24px;
       border: none;
       border-radius: 8px;
       font-size: 16px;
       cursor: pointer;
-      text-decoration: none;
       background: #333;
       color: #fff;
       transition: all 0.3s ease, background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
     }
-    .btn:hover {
+    button.btn:hover {
       transform: translateY(-5px);
       box-shadow: 0 0 20px #3a86ff, 0 8px 20px rgba(0, 0, 0, 0.6);
       background: #3a86ff;
       color: #fff;
+    }
+    #error, #status {
+      font-size: 16px;
+      margin-top: 10px;
+      display: none;
+    }
+    #error {
+      color: #ff4d4d;
+    }
+    #status {
+      color: #3a86ff;
     }
     @keyframes fadeIn {
       to { opacity: 1; }
@@ -193,151 +233,235 @@
   </style>
 </head>
 <body>
+  <canvas id="canvas"></canvas>
+  <div class="bg-layer" id="bg1"></div>
+  <div class="bg-layer" id="bg2"></div>
 
-<canvas id="canvas"></canvas>
-
-<div class="bg-layer" id="bg1"></div>
-<div class="bg-layer" id="bg2"></div>
-
-<div class="nav">
-  <a href="download.html" class="nav-item">
-    <i class="fas fa-download"></i>
-    <span>Download</span>
-  </a>
-  <div class="divider"></div>
-  <a href="/" class="nav-item">
-    <i class="fab fa-youtube"></i>
-    <span>Youtube</span>
-  </a>
-  <a href="/sunc.html" class="nav-item">
-    <i class="fas fa-vial"></i>
-    <span>sunc test</span>
-  </a>
-  <a href="https://discord.gg/kCvc3Y65kj" class="nav-item">
-    <i class="fab fa-discord"></i>
-    <span>Discord</span>
-  </a>
-  <a href="/remote.html" class="nav-item">
-    <i class="fas fa-server"></i>
-    <span>Remote Exec</span>
-  </a>
+  <div class="nav">
+    <a href="download.html" class="nav-item">
+      <i class="fas fa-download"></i>
+      <span>Download</span>
+    </a>
+    <div class="divider"></div>
+    <a href="/" class="nav-item">
+      <i class="fab fa-youtube"></i>
+      <span>Youtube</span>
+    </a>
+    <a href="/sunc.html" class="nav-item">
+      <i class="fas fa-vial"></i>
+      <span>sunc test</span>
+    </a>
+    <a href="https://discord.gg/kCvc3Y65kj" class="nav-item">
+      <i class="fab fa-discord"></i>
+      <span>Discord</span>
+    </a>
+    <a href="/remote.html" class="nav-item">
+      <i class="fas fa-server"></i>
+      <span>Remote Exec</span>
+    </a>
     <a href="/vip.html" class="nav-item">
-    <i class="fas fa-vip"></i>
-    <span>Vip</span>
-  </a>
-</div>
-
-<div class="container">
-  <h1>ByteForge</h1>
-  <p>
-    free Roblox internel executor — Fast inject and run all your script a good and fast-updating injector, just two clicks and you can already fly without rules and turn on the aim bot.
-  </p>
-  <div class="buttons">
-    <a href="download.html" class="btn">Download</a>
-    <a href="https://discord.gg/kCvc3Y65kj" class=btn>Join Discord</a>
+      <i class="fas fa-vip"></i>
+      <span>Vip</span>
+    </a>
   </div>
-</div>
 
-<footer>
-  <div class="footer-line"></div>
-  <div class="footer-content">
-    <a href="https://discord.gg/kCvc3Y65kj" target="_blank"><i class="fab fa-discord"></i> Discord</a>
-    <a href="/" target="_blank"><i class="fab fa-youtube"></i> YouTube</a>
+  <div class="container">
+    <h1>ByteForge Downgrader</h1>
+    <p>
+      Download older Roblox versions directly in your browser. Select a binary type, channel, and version hash to fetch deployments from Roblox's official CDN.
+    </p>
+    <div class="form-container">
+      <form id="downgradeForm">
+        <label for="binaryType">Binary Type:</label>
+        <select id="binaryType" name="binaryType" required>
+          <option value="WindowsPlayer">Windows Player</option>
+          <option value="WindowsStudio64">Windows Studio 64</option>
+          <option value="MacPlayer">Mac Player</option>
+          <option value="MacStudio">Mac Studio</option>
+        </select>
+
+        <label for="channel">Channel (optional, defaults to LIVE):</label>
+        <input type="text" id="channel" name="channel" placeholder="e.g., LIVE or zcanary">
+
+        <label for="version">Version Hash (required):</label>
+        <input type="text" id="version" name="version" placeholder="e.g., 2a06298afe3947ab" required>
+
+        <button type="submit" class="btn">Download Deployment</button>
+      </form>
+      <p id="error"></p>
+      <p id="status"></p>
+    </div>
   </div>
-</footer>
 
-<script>
-  const backgrounds = [
-    "url('images/gory-v-chernom-tsvete-1.png.png')",
-    "url('images/pca-exercise-astrophotography-tips-astro-david_clapp-jackson_snake_point_03-16.jpg')"
-  ];
-  const bg1 = document.getElementById("bg1");
-  const bg2 = document.getElementById("bg2");
-  let activeIndex = 0;
-  bg1.style.backgroundImage = backgrounds[0];
-  bg1.classList.add('active');
+  <footer>
+    <div class="footer-line"></div>
+    <div class="footer-content">
+      <a href="https://discord.gg/kCvc3Y65kj" target="_blank"><i class="fab fa-discord"></i> Discord</a>
+      <a href="/" target="_blank"><i class="fab fa-youtube"></i> YouTube</a>
+    </div>
+  </footer>
 
-  window.addEventListener('scroll', () => {
-    const scrollPosition = window.scrollY;
-    const docHeight = document.body.scrollHeight - window.innerHeight;
-    const section = Math.floor((scrollPosition / docHeight) * (backgrounds.length));
-    if (section !== activeIndex) {
-      const nextLayer = activeIndex % 2 === 0 ? bg2 : bg1;
-      nextLayer.style.backgroundImage = backgrounds[section];
-      nextLayer.classList.add('active');
-      const prevLayer = activeIndex % 2 === 0 ? bg1 : bg2;
-      prevLayer.classList.remove('active');
-      activeIndex = section;
-    }
-  });
+  <script>
+    // Background switching
+    const backgrounds = [
+      "url('images/gory-v-chernom-tsvete-1.png.png')",
+      "url('images/pca-exercise-astrophotography-tips-astro-david_clapp-jackson_snake_point_03-16.jpg')"
+    ];
+    const bg1 = document.getElementById("bg1");
+    const bg2 = document.getElementById("bg2");
+    let activeIndex = 0;
+    bg1.style.backgroundImage = backgrounds[0];
+    bg1.classList.add('active');
 
-  const canvas = document.getElementById("canvas");
-  const ctx = canvas.getContext("2d");
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-
-  window.addEventListener("resize", () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  });
-
-  const particles = [];
-  const particleCount = 550;
-  for (let i = 0; i < particleCount; i++) {
-    particles.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * 1.2,
-      vy: (Math.random() - 0.5) * 1.2
-    });
-  }
-
-  let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
-
-  document.addEventListener("mousemove", (e) => {
-    mouse.x = e.clientX;
-    mouse.y = e.clientY;
-  });
-
-  function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    particles.forEach(p => {
-      p.x += p.vx;
-      p.y += p.vy;
-      if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-      if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-    });
-
-    particles.forEach(p => {
-      const dx = p.x - mouse.x;
-      const dy = p.y - mouse.y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < 160) {
-        ctx.beginPath();
-        ctx.moveTo(p.x, p.y);
-        ctx.lineTo(mouse.x, mouse.y);
-        ctx.strokeStyle = `rgba(90,200,255,${1 - dist / 160})`;
-        ctx.lineWidth = 1.2;
-        ctx.stroke();
+    window.addEventListener('scroll', () => {
+      const scrollPosition = window.scrollY;
+      const docHeight = document.body.scrollHeight - window.innerHeight;
+      const section = Math.floor((scrollPosition / docHeight) * (backgrounds.length));
+      if (section !== activeIndex) {
+        const nextLayer = activeIndex % 2 === 0 ? bg2 : bg1;
+        nextLayer.style.backgroundImage = backgrounds[section];
+        nextLayer.classList.add('active');
+        const prevLayer = activeIndex % 2 === 0 ? bg1 : bg2;
+        prevLayer.classList.remove('active');
+        activeIndex = section;
       }
     });
 
-    particles.forEach(p => {
-      const angle = Math.atan2(p.vy, p.vx);
-      const length = 6;
-      ctx.beginPath();
-      ctx.moveTo(p.x, p.y);
-      ctx.lineTo(p.x + Math.cos(angle) * length, p.y + Math.sin(angle) * length);
-      ctx.strokeStyle = 'rgba(90,200,255,0.8)';
-      ctx.lineWidth = 2;
-      ctx.stroke();
+    // Particle animation
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
     });
 
-    requestAnimationFrame(draw);
-  }
+    const particles = [];
+    const particleCount = 550;
+    for (let i = 0; i < particleCount; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 1.2,
+        vy: (Math.random() - 0.5) * 1.2
+      });
+    }
 
-  draw();
-</script>
+    let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
 
+    document.addEventListener("mousemove", (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+      });
+
+      particles.forEach(p => {
+        const dx = p.x - mouse.x;
+        const dy = p.y - mouse.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 160) {
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(mouse.x, mouse.y);
+          ctx.strokeStyle = `rgba(90,200,255,${1 - dist / 160})`;
+          ctx.lineWidth = 1.2;
+          ctx.stroke();
+        }
+      });
+
+      particles.forEach(p => {
+        const angle = Math.atan2(p.vy, p.vx);
+        const length = 6;
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(p.x + Math.cos(angle) * length, p.y + Math.sin(angle) * length);
+        ctx.strokeStyle = 'rgba(90,200,255,0.8)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      });
+
+      requestAnimationFrame(draw);
+    }
+
+    draw();
+
+    // Downgrader logic
+    function showMessage(elementId, message, isError = false) {
+      const element = document.getElementById(elementId);
+      element.textContent = message;
+      element.style.display = 'block';
+      if (!isError) {
+        setTimeout(() => { element.style.display = 'none'; }, 5000);
+      }
+    }
+
+    document.getElementById('downgradeForm').addEventListener('submit', async function(event) {
+      event.preventDefault();
+
+      const binaryType = document.getElementById('binaryType').value;
+      const channel = document.getElementById('channel').value || 'LIVE';
+      const version = document.getElementById('version').value;
+
+      document.getElementById('error').style.display = 'none';
+      document.getElementById('status').style.display = 'none';
+
+      if (!version) {
+        showMessage('error', 'Version hash is required!', true);
+        return;
+      }
+
+      try {
+        showMessage('status', 'Fetching deployment files...');
+
+        const baseUrl = `https://setup-aws.rbxcdn.com/${version}-${binaryType}`;
+        
+        // Placeholder: Fetch manifest or file list
+        const manifestUrl = `${baseUrl}/manifest.json`; // Adjust based on actual Roblox CDN structure
+        const response = await fetch(manifestUrl);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch manifest: ${response.statusText}`);
+        }
+
+        // Placeholder manifest (replace with actual file list)
+        const manifest = await response.json(); // Example: { files: ["RobloxPlayerBeta.exe", "RobloxApp.zip"] }
+        const zip = new JSZip();
+
+        for (const file of manifest.files) {
+          const fileUrl = `${baseUrl}/${file}`;
+          const fileResponse = await fetch(fileUrl);
+          if (!fileResponse.ok) {
+            throw new Error(`Failed to fetch ${file}: ${fileResponse.statusText}`);
+          }
+          const fileData = await fileResponse.arrayBuffer();
+          zip.file(file, fileData);
+        }
+
+        const extension = binaryType.includes('Mac') ? 'dmg' : 'zip';
+        const content = await zip.generateAsync({ type: 'blob' });
+        const downloadUrl = URL.createObjectURL(content);
+        const a = document.createElement('a');
+        a.href = downloadUrl;
+        a.download = `${binaryType}-${version}.${extension}`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(downloadUrl);
+
+        showMessage('status', 'Download started successfully!');
+      } catch (error) {
+        showMessage('error', `Error: ${error.message}`, true);
+      }
+    });
+  </script>
 </body>
 </html>
