@@ -7,6 +7,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <!-- Placeholder for rdd.js; replace with actual file or inline the logic below -->
+  <script src="js/rdd.js"></script>
   <style>
     html {
       scroll-behavior: smooth;
@@ -268,8 +270,14 @@
   <div class="container">
     <h1>ByteForge Downgrader</h1>
     <p>
-      Download older Roblox versions directly in your browser. Select a binary type, channel, and version hash to fetch deployments from Roblox's official CDN.
+      RDD - "Roblox Deployment Downloader" (<a target="_blank" href="https://github.com/latte-soft/rdd">GitHub Repository</a>)<br>
+      Copyright (c) 2024-2025 Latte Softworks <a target="_blank" href="https://latte.to">&lt;latte.to&gt;</a> | <a target="_blank" href="https://github.com/latte-soft/rdd/blob/master/LICENSE">MIT License</a>
     </p>
+    <p>
+      ⚠️ The only <i>official</i> host of RDD is <a href="https://rdd.latte.to"><b>rdd.[latte.to]</b></a>. Under no circumstances is Latte Softworks responsible for any potential harm caused by using an unofficial fork/rehost of RDD, though anyone is free to fork off of or rehost RDD under its license.
+    </p>
+    <noscript><p>(This site doesn't work without JavaScript Enabled!)</noscript>
+
     <div class="form-container">
       <form id="downloadForm">
         <label for="binaryType">Binary Type:</label>
@@ -286,7 +294,7 @@
         <label for="version">Version Hash (required):</label>
         <input id="version" name="version" type="text" placeholder="e.g., 2a06298afe3947ab" required>
 
-        <button type="button" class="btn" onclick="downloadFromForm()">Download Deployment</button>
+        <button type="button" class="btn" onclick="downloadFromForm()">Download</button>
       </form>
       <p id="error"></p>
       <p id="status"></p>
@@ -395,7 +403,7 @@
 
     draw();
 
-    // Downgrader logic adapted from RDD
+    // Downgrader logic adapted from inferred rdd.js behavior
     function showMessage(elementId, message, isError = false) {
       const element = document.getElementById(elementId);
       element.textContent = message;
@@ -418,7 +426,7 @@
       showMessage('status', 'Fetching deployment files...');
 
       const baseUrl = `https://setup-aws.rbxcdn.com/${version}-${channel}-${binaryType}`;
-      const manifestUrl = `${baseUrl}/manifest.json`; // Placeholder; adjust based on RDD src
+      const manifestUrl = `${baseUrl}/manifest.json`; // Placeholder; adjust based on rdd.js
 
       fetch(manifestUrl)
         .then(response => {
@@ -456,6 +464,12 @@
         .catch(error => {
           showMessage('error', `Error: ${error.message}`, true);
         });
+    }
+
+    // Placeholder for copyPermLink; implement if needed
+    function copyPermLink() {
+      // This would generate a permanent link based on form values; not implemented here
+      showMessage('status', 'Copy Permanent Link feature not implemented.');
     }
   </script>
 </body>
