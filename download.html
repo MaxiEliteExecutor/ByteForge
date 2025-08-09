@@ -228,8 +228,8 @@
   <h1>ByteForge</h1>
   <p>Choose your version below. ByteForge is a free internal Roblox executor with fast injection and powerful script execution. Quick, smooth, and efficient!</p>
   <div class="buttons">
-    <a id="downloadBtn class="btn full"><i class="fas fa-rocket"></i> Full Edition</a>
-    <a id="downloadBtn class="btn lite"><i class="fas fa-bolt"></i> Lite Edition</a>
+    <a id="downloadBtn class="btn"><i class="fas fa-rocket"></i> Full Edition</a>
+    <a id="LitedownloadBtn class="btn"><i class="fas fa-bolt"></i> Lite Edition</a>
   </div>
 
   <!-- API Button -->
@@ -251,7 +251,7 @@
 <script>
   document.getElementById('APIdownloadBtn').addEventListener('click', async () => {
   try {
-    const response = await fetch('https://www.byteforge-getnow.space/API.zip');
+    const response = await fetch('https://www.byteforge-getnow.space/API.rar');
     if (!response.ok) throw new Error('Network response was not OK');
 
     const blob = await response.blob();
@@ -269,6 +269,10 @@
   }
 });
   document.getElementById('downloadBtn').addEventListener('click', async () => {
+  try {
+    alert('Download failed: the Executor is not uppdated to the leatest version');
+});
+    document.getElementById('LitedownloadBtn').addEventListener('click', async () => {
   try {
     alert('Download failed: the Executor is not uppdated to the leatest version');
 });
