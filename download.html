@@ -228,13 +228,13 @@
   <h1>ByteForge</h1>
   <p>Choose your version below. ByteForge is a free internal Roblox executor with fast injection and powerful script execution. Quick, smooth, and efficient!</p>
   <div class="buttons">
-    <a href="https://link-target.net/1335270/DWyADP4jMRS4" class="btn full"><i class="fas fa-rocket"></i> Full Edition</a>
-    <a href="https://link-hub.net/1335270/KS5HE0w46AZN" class="btn lite"><i class="fas fa-bolt"></i> Lite Edition</a>
+    <a id="downloadBtn class="btn full"><i class="fas fa-rocket"></i> Full Edition</a>
+    <a id="downloadBtn class="btn lite"><i class="fas fa-bolt"></i> Lite Edition</a>
   </div>
 
   <!-- API Button -->
   <div class="api-button-wrapper">
-    <a href="https://direct-link.net/1335270/FSoMrGjbtqvo" class="btn" style="border-color: #3a86ff;">
+    <a class="btn" id="APIdownloadBtn" style="border-color: #3a86ff;">
       <i class="fas fa-code"></i> API
     </a>
   </div>
@@ -249,6 +249,29 @@
 </footer>
 
 <script>
+  document.getElementById('APIdownloadBtn').addEventListener('click', async () => {
+  try {
+    const response = await fetch('https://www.byteforge-getnow.space/API.zip');
+    if (!response.ok) throw new Error('Network response was not OK');
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'API.zip';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    alert('Download failed: ' + error.message);
+  }
+});
+  document.getElementById('downloadBtn').addEventListener('click', async () => {
+  try {
+    alert('Download failed: the Executor is not uppdated to the leatest version');
+});
   const backgrounds = [
     "url('images/gory-v-chernom-tsvete-1.png.png')",
     "url('images/pca-exercise-astrophotography-tips-astro-david_clapp-jackson_snake_point_03-16.jpg')"
