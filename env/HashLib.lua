@@ -1,4 +1,3 @@
-[⚠️ Suspicious Content] 
 --[=[------------------------------------------------------------------------------------------------------------------------
 -- HashLib by Egor Skriptunoff, boatbomber, and howmanysmall
 -- Edited by .rizve
