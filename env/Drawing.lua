@@ -1,9 +1,8 @@
-
-local coreGui = game.CoreGui
+[⚠️ Suspicious Content] local coreGui = game:GetService("CoreGui")
 
 local camera = workspace.CurrentCamera
 local drawingUI = Instance.new("ScreenGui")
-drawingUI.Name = ""
+drawingUI.Name = "Drawing | Xeno"
 drawingUI.IgnoreGuiInset = true
 drawingUI.DisplayOrder = 0x7fffffff
 drawingUI.Parent = coreGui
@@ -73,6 +72,37 @@ DrawingLib.Fonts = {
 	["Plex"] = 2,
 	["Monospace"] = 3
 }
+
+function DrawingLib.new(drawingType)
+	drawingIndex += 1
+	if drawingType == "Line" then
+		return DrawingLib.createLine()
+	elseif drawingType == "Text" then
+		return DrawingLib.createText()
+	elseif drawingType == "Circle" then
+		return DrawingLib.createCircle()
+	elseif drawingType == "Square" then
+		return DrawingLib.createSquare()
+	elseif drawingType == "Image" then
+		return DrawingLib.createImage()
+	elseif drawingType == "Quad" then
+		return DrawingLib.createQuad()
+	elseif drawingType == "Triangle" then
+		return DrawingLib.createTriangle()
+	elseif drawingType == "Frame" then
+		return DrawingLib.createFrame()
+	elseif drawingType == "ScreenGui" then
+		return DrawingLib.createScreenGui()
+	elseif drawingType == "TextButton" then
+		return DrawingLib.createTextButton()
+	elseif drawingType == "TextLabel" then
+		return DrawingLib.createTextLabel()
+	elseif drawingType == "TextBox" then
+		return DrawingLib.createTextBox()
+	else
+		error("Invalid drawing type: " .. tostring(drawingType))
+	end
+end
 
 function DrawingLib.createLine()
 	local lineObj = ({
@@ -567,6 +597,7 @@ function DrawingLib.createFrame()
 		Visible = true,
 		ZIndex = 1
 	} + baseDrawingObj)
+
 	local frame = Instance.new("Frame")
 	frame.Name = drawingIndex
 	frame.Size = frameObj.Size
@@ -669,6 +700,8 @@ function DrawingLib.createScreenGui()
 		__tostring = function() return "Drawing" end
 	})
 end
+
+
 
 function DrawingLib.createTextButton()
 	local buttonObj = ({
@@ -904,63 +937,17 @@ function DrawingLib.createTextBox()
 	})
 end
 
-getgenv().Drawing = {
-    Fonts = {
-        ["UI"] = 0,
-        ["System"] = 1,
-        ["Plex"] = 2,
-        ["Monospace"] = 3
-    },
-    
-    new = function(drawingType)
-        drawingIndex += 1
-        if drawingType == "Line" then
-            return DrawingLib.createLine()
-        elseif drawingType == "Text" then
-            return DrawingLib.createText()
-        elseif drawingType == "Circle" then
-            return DrawingLib.createCircle()
-        elseif drawingType == "Square" then
-            return DrawingLib.createSquare()
-        elseif drawingType == "Image" then
-            return DrawingLib.createImage()
-        elseif drawingType == "Quad" then
-            return DrawingLib.createQuad()
-        elseif drawingType == "Triangle" then
-            return DrawingLib.createTriangle()
-        elseif drawingType == "Frame" then
-            return DrawingLib.createFrame()
-        elseif drawingType == "ScreenGui" then
-            return DrawingLib.createScreenGui()
-        elseif drawingType == "TextButton" then
-            return DrawingLib.createTextButton()
-        elseif drawingType == "TextLabel" then
-            return DrawingLib.createTextLabel()
-        elseif drawingType == "TextBox" then
-            return DrawingLib.createTextBox()
-        else
-            error("Invalid drawing type: " .. tostring(drawingType))
-        end
-    end
-}
+local drawingFunctions = {}
 
-getgenv().saveinstance = function(options)
-	if type(options) ~= "table" then
-		print("invalid argument #1 to 'saveinstance' (table expected, got %s) ")
-	end
-
-	local success, result = pcall(function()
-		return loadstring(game:HttpGet("https://raw.githubusercontent.com/luau/SynSaveInstance/main/saveinstance.luau"))()
+function drawingFunctions.isrenderobj(drawingObj)
+	local success, isrenderobj = pcall(function()
+		return drawingObj.Parent == drawingUI
 	end)
-
-	if not success then
-		print("Failed to load saveinstance: " .. tostring(result))
-	end
-
-	return result(options)
+	if not success then return false end
+	return isrenderobj
 end
 
-getgenv().getrenderproperty = function(drawingObj, property)
+function drawingFunctions.getrenderproperty(drawingObj, property)
 	local success, drawingProperty  = pcall(function()
 		return drawingObj[property]
 	end)
@@ -971,21 +958,15 @@ getgenv().getrenderproperty = function(drawingObj, property)
 	end
 end
 
-getgenv().setrenderproperty = function(drawingObj, property, value)
-	assert(getgenv().getrenderproperty(drawingObj, property), "'" .. tostring(property) .. "' is not a valid property of " .. tostring(drawingObj) .. ", " .. tostring(typeof(drawingObj)))
+function drawingFunctions.setrenderproperty(drawingObj, property, value)
+	assert(drawingFunctions.getrenderproperty(drawingObj, property), "'" .. tostring(property) .. "' is not a valid property of " .. tostring(drawingObj) .. ", " .. tostring(typeof(drawingObj)))
 	drawingObj[property]  = value
 end
-getgenv().cleardrawcache = function()
+
+function drawingFunctions.cleardrawcache()
 	for _, drawing in drawingUI:GetDescendants() do
 		drawing:Remove()
 	end
 end
-getgenv().http = {
-	request = request or request or http_request or syn.request or http and http.request or nil
-}
-getgenv().isrenderobj = function(drawingObj) 
-  local success, isrenderobj = pcall(function() return 
-  drawingObj.Parent == drawingUI end) 
-  if not success then return false end 
-  return isrenderobj 
-end 
+
+return {Drawing = DrawingLib, functions = drawingFunctions}
