@@ -1,4 +1,3 @@
-[⚠️ Suspicious Content] 
 local drawingUI = nil
 task.spawn(function()
 	repeat task.wait()
